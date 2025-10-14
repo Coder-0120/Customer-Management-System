@@ -8,7 +8,7 @@ import RegisterCustomer from './Pages/RegisterCustomer';
 function App() {
   return (
     <Router>
-      {/* <Navbar /> */}
+      <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Custlogin />} />
