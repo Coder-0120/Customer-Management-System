@@ -15,6 +15,7 @@ const Custlogin = () => {
         const res=await axios.post("http://localhost:5000/api/customer/login",{phoneNo,password});
         console.log(res.data);
         alert("Login Successful");
+        localStorage.setItem("CustomerDetails",JSON.stringify(res.data.customer));
         navigate("/");
       }catch(err){
         console.log(err);
@@ -23,7 +24,7 @@ const Custlogin = () => {
   }
   return (
     <div className="container mt-5 borderradius" >
-      <h2 className="mb-4 text-center">Login</h2>
+      <h2 className="mb-4 text-center">Customer Login</h2>
       <div className="row justify-content-center" >
         <div className="col-md-6" >
           <form onSubmit={handleLogin} className="border p-3 shadow-sm" style={{backgroundImage: "linear-gradient(to right, #f0f4f8, #e0e7ee)"}}>
@@ -50,6 +51,7 @@ const Custlogin = () => {
               />
             </div>
             <button type="submit" className="btn btn-primary w-100 ">Login</button>
+            <Link to="/ownerLogin" className="btn btn-link w-100 mt-2">Owner? Login Here</Link>
            
           </form>
         </div>

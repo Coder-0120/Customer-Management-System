@@ -2,6 +2,7 @@ import './App.css';
 import Navbar from './Components/Navbar';
 import LandingPage from './Pages/LandingPage';
 import Custlogin from './Pages/Custlogin';
+import Ownerlogin from './Pages/Ownerlogin';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RegisterCustomer from './Pages/RegisterCustomer';
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Custlogin />} />
         <Route path='/register' element={<RegisterCustomer/>}/>
+        <Route path="/ownerLogin" element={<Ownerlogin />} /> 
       </Routes>
     </Router>
   );
