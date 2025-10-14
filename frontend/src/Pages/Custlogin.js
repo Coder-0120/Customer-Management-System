@@ -8,9 +8,19 @@ const Custlogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 //   const navigate = useNavigate();
-    const handleLogin = async (e) => {
-    e.preventDefault();
-    }
+  const handleLogin = async (e) => {
+      e.preventDefault();
+
+      try{
+        const res=await axios.post("http://localhost:5000/api/customer/login",{email,password});
+        console.log(res.data);
+        alert("Login Successful");
+        // navigate("/dashboard");
+      }catch(err){
+        console.log(err);
+        alert("Login Failed");
+      }
+  }
 
 
   return (
