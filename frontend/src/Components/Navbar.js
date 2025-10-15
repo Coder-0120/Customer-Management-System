@@ -21,7 +21,10 @@ const Navbar = () => {
         <li className="nav-item">
           <Link className="nav-link" to="/register">Add_Customer</Link>
         </li>
-        <li className="nav-item dropdown">
+        <li className="nav-item">
+          <Link className="nav-link" to="/owner-dashboard">OwnerDashboard</Link>
+        </li>
+        {/* <li className="nav-item dropdown">
           <a className="nav-link dropdown-toggle" href="#" role="button" data-coreui-toggle="dropdown" aria-expanded="false">
             Dropdown
           </a>
@@ -31,10 +34,7 @@ const Navbar = () => {
             <li><hr className="dropdown-divider"/></li>
             <li><a className="dropdown-item" href="#">Something else here</a></li>
           </ul>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
+        </li> */}
       </ul>
      
     </div>

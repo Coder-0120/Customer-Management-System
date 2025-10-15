@@ -77,4 +77,16 @@ Router.delete("/delete/:id",async(req,res)=>{
     return res.status(404).json({success:false,message:'failed to delete'})
    }
 })
+
+// to edit any customer details..
+
+Router.put("/update/:id",async(req,res)=>{
+    try{
+        const customer=await CustomerModel.findByIdAndUpdate(req.params.id,req.body,{new:true});
+        return res.status(201).json({success:true,message:"Customers details updated successfully"});
+    }
+    catch(error){
+        return res.status(404).json({success:false,message:"failed to update.."});
+    }
+})
 module.exports = Router;

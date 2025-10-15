@@ -21,11 +21,13 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
       min: 0,
+      set: v => v || 0,
     },
     AdvanceDeposit: {
       type: Number,
       default: 0,
       min: 0,
+      set: v => v || 0,
     },
     password: {
       type: String,
