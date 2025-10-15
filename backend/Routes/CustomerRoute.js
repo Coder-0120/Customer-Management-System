@@ -65,7 +65,16 @@ Router.get("/AllCustomers", async (req, res) => {
     catch(error){
         return res.status(400).json({success:false,message:"error in fetching all customers.."});
     }
-   
+})
 
+// to delete customer..
+Router.delete("/delete/:id",async(req,res)=>{
+   try{
+     await CustomerModel.findByIdAndDelete(req.params.id);
+     return res.status(201).json({success:false,message:"Customer deleted successfully.."})
+   }
+   catch(error){
+    return res.status(404).json({success:false,message:'failed to delete'})
+   }
 })
 module.exports = Router;
