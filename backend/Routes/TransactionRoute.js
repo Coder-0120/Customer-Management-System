@@ -54,9 +54,5 @@ Router.post("/add/:id", async (req, res) => {
     catch(error){
         return res.status(404).json({success:false,message:"error in adding transaction.."})
     }
-   
-
-
-
 })
 module.exports = Router;

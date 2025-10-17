@@ -9,6 +9,8 @@ const OwnerDashboard = () => {
   const [TransactionType, setTransactionType] = useState("");
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
+  const [History,setHistory]=useState("");
+  const[showHistoryModal,SetshowHistoryModal]=useState(false);
 
   useEffect(() => {
     // to get all customers..
@@ -105,6 +107,29 @@ const OwnerDashboard = () => {
     }
 
   }
+  const HandleHistory=async(customer)=>{
+    SetselectedCustomer(customer);
+    SetshowHistoryModal(true);
+
+  }
+
+  // to fetch history
+  useEffect(()=>{
+     const fetchTransactionHistory=async()=>{
+    try{
+      const res=await axios.get(`http://localhost:5000/api/transaction/history/${selectedCustomer._id}`);
+      setHistory(res.data.transactions);
+    }
+    catch(error){
+      console.log(error);
+      // alert("failed to get all history");
+    }
+
+  }
+  fetchTransactionHistory();
+
+  },[])
+ 
 
   // to clear values..
   const resetTransactionFields = () => {
@@ -149,7 +174,7 @@ const OwnerDashboard = () => {
               <h6 style={{ color: "green" }}>
                 Advance Deposit: {customer.AdvanceDeposit}
               </h6>
-              <div style={{ gap: "10px", display: "flex", padding: "10px" }}>
+              <div style={{ gap: "5px", display: "flex", padding: "" }}>
                 <button
                   style={{
                     color: "black",
@@ -179,6 +204,16 @@ const OwnerDashboard = () => {
                   onClick={() => handleEditTransaction(customer)}
                 >
                   Add Transaction
+                </button>
+                <button
+                  style={{
+                    color: "white",
+                    backgroundColor: "indigo",
+                    borderRadius: "5px",
+                  }}
+                  onClick={() => HandleHistory(customer)}
+                >
+                  History
                 </button>
               </div>
             </div>
@@ -415,6 +450,52 @@ const OwnerDashboard = () => {
                 Save
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* History Modal */}
+       {showHistoryModal && selectedCustomer && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ background: "white", padding: "20px", borderRadius: "10px" }}>
+            <h2>{selectedCustomer.name} - Transaction History</h2>
+            <button onClick={() => SetshowHistoryModal(false)}>Close</button>
+
+            {History.length === 0 ? (
+              <p>No transactions found.</p>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Remarks</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {History.map((t) => (
+                    <tr key={t._id}>
+                      <td>{t.transactionType}</td>
+                      <td>{t.amount}</td>
+                      <td>{t.remarks}</td>
+                      <td>{new Date(t.createdAt).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       )}
