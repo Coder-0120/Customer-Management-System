@@ -48,7 +48,7 @@ Router.post("/add/:id", async (req, res) => {
         customer.DueAmount=updDueAmt;
         customer.AdvanceDeposit=updAdvAmt;
         await customer.save();
-        return res.status(200).json({ success: true, message: "transaction added successfully.." });
+        return res.status(200).json({ success: true, message: "transaction added successfully.." , updatedCustomer: customer,});
 
     }
     catch(error){

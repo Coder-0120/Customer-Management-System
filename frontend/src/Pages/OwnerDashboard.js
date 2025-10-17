@@ -6,9 +6,9 @@ const OwnerDashboard = () => {
   const [selectedCustomer, SetselectedCustomer] = useState(null);
   const [showModal, setshowModal] = useState(false);
   const [showTransactionModal, setshowTransactionModal] = useState(false);
-  const[TransactionType,setTransactionType]=useState("");
-  const[Amount,SetAmount]=useState(0);
-  const[Remarks,SetRemarks]=useState("");
+  const [TransactionType, setTransactionType] = useState("");
+  const [Amount, SetAmount] = useState(0);
+  const [Remarks, SetRemarks] = useState("");
 
   useEffect(() => {
     // to get all customers..
@@ -70,31 +70,49 @@ const OwnerDashboard = () => {
   }
 
   // to save transaction details.. 
-  const handleTransactionSave=async()=>{
+  const handleTransactionSave = async () => {
     setshowTransactionModal(false);
-    const Data={
-     
-      transactionType:TransactionType,
-      amount:Amount,
-      remarks:Remarks
+    const Data = {
+
+      transactionType: TransactionType,
+      amount: Amount,
+      remarks: Remarks
     }
     try {
-      await axios.post(
-        `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`,Data
+      const res = await axios.post(
+        `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`, Data
       );
       alert("Transaction saved..")
 
-      // setAllCustomers((prev) =>
-      //   prev.map((cust) =>
-      //     cust._id === selectedCustomer._id ? {...cust} : cust
-      //   )
-      // );
+      setAllCustomers((prev) =>
+        prev.map((cust) =>
+          cust._id === selectedCustomer._id
+            ? {
+              ...cust,
+              DueAmount: res.data.updatedCustomer.DueAmount,
+              AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit,
+            }
+            : cust
+        )
+      );
+      SetAmount(0);
+      SetRemarks("");
+      setTransactionType("");
+
     } catch (error) {
       console.log(error);
       alert("failed to add Transaction details");
     }
 
   }
+
+  // to clear values..
+  const resetTransactionFields = () => {
+  setTransactionType("");
+  SetAmount(0);
+  SetRemarks("");
+};
+
 
   return (
     <div>
@@ -328,7 +346,7 @@ const OwnerDashboard = () => {
                 fontSize: "20px",
                 cursor: "pointer",
               }}
-              onClick={() => setshowTransactionModal(false)}
+              onClick={() => {setshowTransactionModal(false); resetTransactionFields();}}
             >
               ✖
             </button>
@@ -351,13 +369,13 @@ const OwnerDashboard = () => {
               <option value="advanceWithdraw">Withdraw from Advance</option>
             </select>
 
-             <label>Amount:</label>
+            <label>Amount:</label>
             <input
               type="Number"
               value={Amount}
               onChange={(e) => SetAmount((e.target.value))}
             />
-             <label>Remarks:</label>
+            <label>Remarks:</label>
             <input
               type="text"
               value={Remarks}
@@ -375,7 +393,7 @@ const OwnerDashboard = () => {
               }}
             >
               <button
-                onClick={() => setshowTransactionModal(false)}
+              onClick={() => {setshowTransactionModal(false); resetTransactionFields();}}
                 style={{
                   backgroundColor: "gray",
                   color: "white",
