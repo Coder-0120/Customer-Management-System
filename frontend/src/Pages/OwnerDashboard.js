@@ -137,6 +137,13 @@ const OwnerDashboard = () => {
   SetAmount(0);
   SetRemarks("");
 };
+// Define color mapping
+const typeColors = {
+  duePayment: "#ff4d4d",       // red
+  dueIncrease: "#ffa500",      // orange
+  advanceDeposit: "#28a745",   // green
+  advanceWithdraw: "#007bff",  // blue
+};
 
 
   return (
@@ -224,237 +231,7 @@ const OwnerDashboard = () => {
       )}
 
       {/* Edit Modal */}
-      {showModal && selectedCustomer && (
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: "1000",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "20px",
-              borderRadius: "10px",
-              width: "400px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
-            <button
-              style={{
-                alignSelf: "flex-end",
-                background: "none",
-                border: "none",
-                fontSize: "20px",
-                cursor: "pointer",
-              }}
-              onClick={() => setshowModal(false)}
-            >
-              ✖
-            </button>
-            <h2>Edit Customer Details</h2>
-
-            <label>Name:</label>
-            <input
-              type="text"
-              value={selectedCustomer.name}
-              onChange={(e) =>
-                SetselectedCustomer({
-                  ...selectedCustomer,
-                  name: e.target.value,
-                })
-              }
-            />
-
-            <label>Address:</label>
-            <input
-              type="text"
-              value={selectedCustomer.address}
-              onChange={(e) =>
-                SetselectedCustomer({
-                  ...selectedCustomer,
-                  address: e.target.value,
-                })
-              }
-            />
-
-            {/* <label>Due Amount:</label>
-            <input
-              type="number"
-              value={selectedCustomer.DueAmount}
-              onChange={(e) =>
-                SetselectedCustomer({
-                  ...selectedCustomer,
-                  DueAmount: e.target.value,
-                })
-              }
-            />
-
-            <label>Advance Deposit:</label>
-            <input
-              type="number"
-              value={selectedCustomer.AdvanceDeposit}
-              onChange={(e) =>
-                SetselectedCustomer({
-                  ...selectedCustomer,
-                  AdvanceDeposit: e.target.value,
-                })
-              }
-            /> */}
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "10px",
-              }}
-            >
-              <button
-                onClick={() => setshowModal(false)}
-                style={{
-                  backgroundColor: "gray",
-                  color: "white",
-                  padding: "6px 12px",
-                  borderRadius: "5px",
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                style={{
-                  backgroundColor: "green",
-                  color: "white",
-                  padding: "6px 12px",
-                  borderRadius: "5px",
-                }}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Transaction Modal */}
-      {showTransactionModal && selectedCustomer && (
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: "1000",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "20px",
-              borderRadius: "10px",
-              width: "400px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
-            <button
-              style={{
-                alignSelf: "flex-end",
-                background: "none",
-                border: "none",
-                fontSize: "20px",
-                cursor: "pointer",
-              }}
-              onClick={() => {setshowTransactionModal(false); resetTransactionFields();}}
-            >
-              ✖
-            </button>
-            <h2>Add Transaction Details</h2>
-            <label>Transaction Type :</label>
-
-            <select
-              value={TransactionType}
-              onChange={(e) => setTransactionType(e.target.value)}
-              style={{
-                padding: "8px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-              }}
-            >
-              <option value="">-- Select Transaction Type --</option>
-              <option value="duePayment">Pay Due Amount</option>
-              <option value="dueIncrease">Increase Due Amount</option>
-              <option value="advanceDeposit">Add Advance Payment</option>
-              <option value="advanceWithdraw">Withdraw from Advance</option>
-            </select>
-
-            <label>Amount:</label>
-            <input
-              type="Number"
-              value={Amount}
-              onChange={(e) => SetAmount((e.target.value))}
-            />
-            <label>Remarks:</label>
-            <input
-              type="text"
-              value={Remarks}
-              placeholder="Your message..."
-              onChange={(e) =>
-                SetRemarks(e.target.value)
-              }
-            />
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "10px",
-              }}
-            >
-              <button
-              onClick={() => {setshowTransactionModal(false); resetTransactionFields();}}
-                style={{
-                  backgroundColor: "gray",
-                  color: "white",
-                  padding: "6px 12px",
-                  borderRadius: "5px",
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleTransactionSave}
-                style={{
-                  backgroundColor: "green",
-                  color: "white",
-                  padding: "6px 12px",
-                  borderRadius: "5px",
-                }}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* History Modal */}
-    {showHistoryModal && selectedCustomer && (
+   {showModal && selectedCustomer && (
   <div
     style={{
       position: "fixed",
@@ -462,88 +239,815 @@ const OwnerDashboard = () => {
       left: 0,
       width: "100%",
       height: "100%",
-      backgroundColor: "rgba(0,0,0,0.6)",
+      backgroundColor: "rgba(0,0,0,0.7)",
       display: "flex",
-      justifyContent: "center",
       alignItems: "center",
+      justifyContent: "center",
       zIndex: 1000,
-      overflowY: "auto",
+      backdropFilter: "blur(4px)",
       padding: "20px",
-      boxShadow: "0 0 10px rgba(0,0,0,0.5)",
     }}
+    onClick={() => setshowModal(false)}
   >
     <div
       style={{
-        background: "#fff",
-        padding: "30px",
-        borderRadius: "12px",
-        maxWidth: "800px",
+        background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+        padding: "35px",
+        borderRadius: "16px",
         width: "100%",
-        boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+        maxWidth: "480px",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
         position: "relative",
+        animation: "slideIn 0.3s ease-out",
       }}
+      onClick={(e) => e.stopPropagation()}
     >
-      <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
-        {selectedCustomer.name} - Transaction History
-      </h2>
+      <style>
+        {`
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          .edit-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          }
+        `}
+      </style>
 
       <button
-        onClick={() => SetshowHistoryModal(false)}
+        onClick={() => setshowModal(false)}
         style={{
           position: "absolute",
-          top: "15px",
-          right: "15px",
-          background: "transparent",
+          top: "20px",
+          right: "20px",
+          background: "#ff4757",
           border: "none",
-          fontSize: "22px",
+          width: "36px",
+          height: "36px",
+          borderRadius: "50%",
+          fontSize: "18px",
           cursor: "pointer",
-          color: "#f70000ff",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "all 0.2s ease",
+          boxShadow: "0 2px 8px rgba(255,71,87,0.3)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#ee5a6f";
+          e.currentTarget.style.transform = "rotate(90deg)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "#ff4757";
+          e.currentTarget.style.transform = "rotate(0deg)";
         }}
       >
         ✖
       </button>
 
-      {History.length === 0 ? (
-        <p style={{ textAlign: "center", fontStyle: "italic", marginTop: "40px" }}>
-          No transactions found.
+      <div style={{
+        marginBottom: "30px",
+        paddingBottom: "20px",
+        borderBottom: "2px solid #e0e0e0"
+      }}>
+        <h2 style={{
+          margin: 0,
+          fontSize: "24px",
+          fontWeight: "600",
+          color: "#2c3e50",
+          marginBottom: "5px"
+        }}>
+          Edit Customer
+        </h2>
+        <p style={{
+          margin: 0,
+          fontSize: "14px",
+          color: "#7f8c8d"
+        }}>
+          Update customer information
         </p>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div>
+          <label style={{
+            display: "block",
+            marginBottom: "8px",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2c3e50"
+          }}>
+            Customer Name <span style={{ color: "#e74c3c" }}>*</span>
+          </label>
+          <input
+            type="text"
+            value={selectedCustomer.name}
+            onChange={(e) =>
+              SetselectedCustomer({
+                ...selectedCustomer,
+                name: e.target.value,
+              })
+            }
+            placeholder="Enter customer name"
+            className="edit-input"
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              borderRadius: "8px",
+              border: "2px solid #e0e0e0",
+              fontSize: "14px",
+              transition: "all 0.2s ease",
+              backgroundColor: "#fff"
+            }}
+          />
+        </div>
+
+        <div>
+          <label style={{
+            display: "block",
+            marginBottom: "8px",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2c3e50"
+          }}>
+            Address <span style={{ color: "#e74c3c" }}>*</span>
+          </label>
+          <textarea
+            value={selectedCustomer.address}
+            onChange={(e) =>
+              SetselectedCustomer({
+                ...selectedCustomer,
+                address: e.target.value,
+              })
+            }
+            placeholder="Enter customer address"
+            className="edit-input"
+            rows="3"
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              borderRadius: "8px",
+              border: "2px solid #e0e0e0",
+              fontSize: "14px",
+              transition: "all 0.2s ease",
+              resize: "vertical",
+              fontFamily: "inherit",
+              backgroundColor: "#fff"
+            }}
+          />
+        </div>
+
+        <div style={{
+          background: "linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)",
+          padding: "16px",
+          borderRadius: "8px",
+          border: "1px solid #c8e6c9"
+        }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginBottom: "8px"
+          }}>
+            <span style={{ fontSize: "18px" }}>ℹ️</span>
+            <span style={{
+              fontSize: "14px",
+              fontWeight: "600",
+              color: "#2e7d32"
+            }}>
+              Financial Information
+            </span>
+          </div>
+          <p style={{
+            margin: 0,
+            fontSize: "13px",
+            color: "#558b2f",
+            lineHeight: "1.5"
+          }}>
+            Due and Advance amounts can only be modified through transactions. Use the "Add Transaction" button to update financial details.
+          </p>
+        </div>
+
+        <div style={{
+          display: "flex",
+          gap: "12px",
+          marginTop: "10px"
+        }}>
+          <button
+            onClick={() => setshowModal(false)}
+            style={{
+              flex: 1,
+              backgroundColor: "#95a5a6",
+              color: "white",
+              padding: "12px 20px",
+              borderRadius: "8px",
+              border: "none",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 8px rgba(149,165,166,0.3)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#7f8c8d";
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(149,165,166,0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#95a5a6";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(149,165,166,0.3)";
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!selectedCustomer.name || !selectedCustomer.address}
+            style={{
+              flex: 1,
+              background: (!selectedCustomer.name || !selectedCustomer.address)
+                ? "#bdc3c7"
+                : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+              padding: "12px 20px",
+              borderRadius: "8px",
+              border: "none",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: (!selectedCustomer.name || !selectedCustomer.address) ? "not-allowed" : "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: (!selectedCustomer.name || !selectedCustomer.address)
+                ? "none"
+                : "0 2px 8px rgba(102,126,234,0.3)"
+            }}
+            onMouseEnter={(e) => {
+              if (selectedCustomer.name && selectedCustomer.address) {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(102,126,234,0.4)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedCustomer.name && selectedCustomer.address) {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(102,126,234,0.3)";
+              }
+            }}
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+      {/* Transaction Modal */}
+     {showTransactionModal && selectedCustomer && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0,0,0,0.7)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 1000,
+      backdropFilter: "blur(4px)",
+      padding: "20px",
+    }}
+    onClick={() => {
+      setshowTransactionModal(false);
+      resetTransactionFields();
+    }}
+  >
+    <div
+      style={{
+        background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+        padding: "35px",
+        borderRadius: "16px",
+        width: "100%",
+        maxWidth: "480px",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+        position: "relative",
+        animation: "slideIn 0.3s ease-out",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <style>
+        {`
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          .transaction-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          }
+          
+          .transaction-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          }
+        `}
+      </style>
+
+      <button
+        onClick={() => {
+          setshowTransactionModal(false);
+          resetTransactionFields();
+        }}
+        style={{
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          background: "#ff4757",
+          border: "none",
+          width: "36px",
+          height: "36px",
+          borderRadius: "50%",
+          fontSize: "18px",
+          cursor: "pointer",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "all 0.2s ease",
+          boxShadow: "0 2px 8px rgba(255,71,87,0.3)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#ee5a6f";
+          e.currentTarget.style.transform = "rotate(90deg)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "#ff4757";
+          e.currentTarget.style.transform = "rotate(0deg)";
+        }}
+      >
+        ✖
+      </button>
+
+      <div style={{
+        marginBottom: "30px",
+        paddingBottom: "20px",
+        borderBottom: "2px solid #e0e0e0"
+      }}>
+        <h2 style={{
+          margin: 0,
+          fontSize: "24px",
+          fontWeight: "600",
+          color: "#2c3e50",
+          marginBottom: "5px"
+        }}>
+          Add Transaction
+        </h2>
+        <p style={{
+          margin: 0,
+          fontSize: "14px",
+          color: "#7f8c8d"
+        }}>
+          {selectedCustomer.name}
+        </p>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div>
+          <label style={{
+            display: "block",
+            marginBottom: "8px",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2c3e50"
+          }}>
+            Transaction Type <span style={{ color: "#e74c3c" }}>*</span>
+          </label>
+          <select
+            value={TransactionType}
+            onChange={(e) => setTransactionType(e.target.value)}
+            className="transaction-select"
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              borderRadius: "8px",
+              border: "2px solid #e0e0e0",
+              fontSize: "14px",
+              backgroundColor: "#fff",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              color: TransactionType ? "#2c3e50" : "#95a5a6"
+            }}
+          >
+            <option value="" >Select transaction type</option>
+            <option value="duePayment">💰 Pay Due Amount</option>
+            <option value="dueIncrease">📈 Increase Due Amount</option>
+            <option value="advanceDeposit">💵 Add Advance Payment</option>
+            <option value="advanceWithdraw">💸 Withdraw from Advance</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={{
+            display: "block",
+            marginBottom: "8px",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2c3e50"
+          }}>
+            Amount <span style={{ color: "#e74c3c" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <span style={{
+              position: "absolute",
+              left: "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              fontSize: "16px",
+              color: "#7f8c8d",
+              fontWeight: "600"
+            }}>
+              ₹
+            </span>
+            <input
+              type="number"
+              value={Amount}
+              onChange={(e) => SetAmount(e.target.value)}
+              placeholder="0"
+              className="transaction-input"
+              style={{
+                width: "100%",
+                padding: "12px 16px 12px 38px",
+                borderRadius: "8px",
+                border: "2px solid #e0e0e0",
+                fontSize: "14px",
+                transition: "all 0.2s ease",
+                backgroundColor: "#fff"
+              }}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label style={{
+            display: "block",
+            marginBottom: "8px",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2c3e50"
+          }}>
+            Remarks
+          </label>
+          <textarea
+            value={Remarks}
+            placeholder="Add notes or description (optional)"
+            onChange={(e) => SetRemarks(e.target.value)}
+            className="transaction-input"
+            rows="3"
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              borderRadius: "8px",
+              border: "2px solid #e0e0e0",
+              fontSize: "14px",
+              transition: "all 0.2s ease",
+              resize: "vertical",
+              fontFamily: "inherit",
+              backgroundColor: "#fff"
+            }}
+          />
+        </div>
+
+        <div style={{
+          display: "flex",
+          gap: "12px",
+          marginTop: "10px"
+        }}>
+          <button
+            onClick={() => {
+              setshowTransactionModal(false);
+              resetTransactionFields();
+            }}
+            style={{
+              flex: 1,
+              backgroundColor: "#95a5a6",
+              color: "white",
+              padding: "12px 20px",
+              borderRadius: "8px",
+              border: "none",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 8px rgba(149,165,166,0.3)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#7f8c8d";
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(149,165,166,0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#95a5a6";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 2px 8px rgba(149,165,166,0.3)";
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleTransactionSave}
+            disabled={!TransactionType || !Amount}
+            style={{
+              flex: 1,
+              background: (!TransactionType || !Amount) 
+                ? "#bdc3c7" 
+                : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+              padding: "12px 20px",
+              borderRadius: "8px",
+              border: "none",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: (!TransactionType || !Amount) ? "not-allowed" : "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: (!TransactionType || !Amount) 
+                ? "none" 
+                : "0 2px 8px rgba(102,126,234,0.3)"
+            }}
+            onMouseEnter={(e) => {
+              if (TransactionType && Amount) {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(102,126,234,0.4)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (TransactionType && Amount) {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(102,126,234,0.3)";
+              }
+            }}
+          >
+            Save Transaction
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+      {/* History Modal */}
+   {showHistoryModal && selectedCustomer && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0,0,0,0.7)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+      padding: "20px",
+      backdropFilter: "blur(4px)",
+    }}
+    onClick={() => SetshowHistoryModal(false)}
+  >
+    <div
+      style={{
+        background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+        padding: "35px",
+        borderRadius: "16px",
+        maxWidth: "900px",
+        width: "100%",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+        position: "relative",
+        animation: "slideIn 0.3s ease-out",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <style>
+        {`
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style>
+
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center",
+        marginBottom: "25px",
+        paddingBottom: "15px",
+        borderBottom: "2px solid #e0e0e0"
+      }}>
+        <h2 style={{ 
+          margin: 0,
+          fontSize: "24px",
+          fontWeight: "600",
+          color: "#2c3e50"
+        }}>
+          {selectedCustomer.name}
+        </h2>
+        <button
+          onClick={() => SetshowHistoryModal(false)}
+          style={{
+            background: "#ff4757",
+            border: "none",
+            width: "36px",
+            height: "36px",
+            borderRadius: "50%",
+            fontSize: "18px",
+            cursor: "pointer",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "all 0.2s ease",
+            boxShadow: "0 2px 8px rgba(255,71,87,0.3)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#ee5a6f";
+            e.currentTarget.style.transform = "rotate(90deg)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#ff4757";
+            e.currentTarget.style.transform = "rotate(0deg)";
+          }}
+        >
+          ✖
+        </button>
+      </div>
+
+      <div style={{
+        fontSize: "14px",
+        color: "#7f8c8d",
+        marginBottom: "20px",
+        fontWeight: "500"
+      }}>
+        Transaction History
+      </div>
+
+      {History.length === 0 ? (
+        <div style={{
+          textAlign: "center",
+          padding: "60px 20px",
+          color: "#95a5a6",
+        }}>
+          <div style={{ fontSize: "48px", marginBottom: "15px" }}>📋</div>
+          <p style={{ fontSize: "16px", fontStyle: "italic" }}>
+            No transactions found.
+          </p>
+        </div>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table
             style={{
               width: "100%",
-              borderCollapse: "collapse",
-              marginTop: "10px",
+              borderCollapse: "separate",
+              borderSpacing: "0",
+              fontSize: "14px",
             }}
           >
             <thead>
-              <tr style={{ backgroundColor: "#f0f0f0" }}>
-                <th style={{ padding: "10px 15px", textAlign: "left" }}>Type</th>
-                <th style={{ padding: "10px 15px", textAlign: "right" }}>Amount</th>
-                <th style={{ padding: "10px 15px", textAlign: "left" }}>Remarks</th>
-                <th style={{ padding: "10px 15px", textAlign: "left" }}>updatedDue</th>
-                <th style={{ padding: "10px 15px", textAlign: "left" }}>updatedAdvance</th>
-                <th style={{ padding: "10px 15px", textAlign: "center" }}>Date</th>
+              <tr style={{ 
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                color: "#fff"
+              }}>
+                <th style={{ 
+                  padding: "14px 16px", 
+                  textAlign: "left",
+                  fontWeight: "600",
+                  borderTopLeftRadius: "8px"
+                }}>Type</th>
+                <th style={{ padding: "14px 16px", textAlign: "right", fontWeight: "600" }}>Amount</th>
+                <th style={{ padding: "14px 16px", textAlign: "left", fontWeight: "600" }}>Remarks</th>
+                <th style={{ padding: "14px 16px", textAlign: "right", fontWeight: "600" }}>Updated Due</th>
+                <th style={{ padding: "14px 16px", textAlign: "right", fontWeight: "600" }}>Updated Advance</th>
+                <th style={{ 
+                  padding: "14px 16px", 
+                  textAlign: "center", 
+                  fontWeight: "600",
+                  borderTopRightRadius: "8px"
+                }}>Date</th>
               </tr>
             </thead>
             <tbody>
-              {History.map((t) => (
+              {History.map((t, index) => (
                 <tr
                   key={t._id}
                   style={{
-                    borderBottom: "1px solid #e0e0e0",
-                    transition: "background 0.3s",
+                    backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8f9fa",
+                    borderBottom: "1px solid #e9ecef",
+                    transition: "all 0.2s ease",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9f9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#e8f4f8";
+                    e.currentTarget.style.transform = "scale(1.01)";
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
                 >
-                  <td style={{ padding: "10px 15px" }}>{t.transactionType}</td>
-                  <td style={{ padding: "10px 15px", textAlign: "right" }}>{t.amount}</td>
-                  <td style={{ padding: "10px 15px" }}>{t.remarks || "-"}</td>
-                  <td style={{ padding: "10px 15px" }}>{t.updatedDue}</td>
-                  <td style={{ padding: "10px 15px" }}>{t.updatedAdvance}</td>
-                  <td style={{ padding: "10px 15px", textAlign: "center" }}>
-                    {new Date(t.createdAt).toLocaleString()}
+                  <td style={{ 
+                    padding: "12px 16px",
+                  }}>
+                    <span style={{
+                      backgroundColor: typeColors[t.transactionType] || "#95a5a6",
+                      padding: "4px 12px",
+                      borderRadius: "20px",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      color: "#fff",
+                      display: "inline-block",
+                      textTransform: "capitalize"
+                    }}>
+                      {t.transactionType}
+                    </span>
+                  </td>
+                  <td style={{ 
+                    padding: "12px 16px", 
+                    textAlign: "right",
+                    fontWeight: "600",
+                    color: "#2c3e50"
+                  }}>
+                    ₹{t.amount.toLocaleString()}
+                  </td>
+                  <td style={{ 
+                    padding: "12px 16px",
+                    color: "#7f8c8d",
+                    fontStyle: t.remarks ? "normal" : "italic"
+                  }}>
+                    {t.remarks || "No remarks"}
+                  </td>
+                  <td style={{ 
+                    padding: "12px 16px", 
+                    textAlign: "right",
+                    fontWeight: "500",
+                    color: t.updatedDue > 0 ? "#e74c3c" : "#27ae60"
+                  }}>
+                    ₹{t.updatedDue.toLocaleString()}
+                  </td>
+                  <td style={{ 
+                    padding: "12px 16px", 
+                    textAlign: "right",
+                    fontWeight: "500",
+                    color: t.updatedAdvance > 0 ? "#27ae60" : "#95a5a6"
+                  }}>
+                    ₹{t.updatedAdvance.toLocaleString()}
+                  </td>
+                  <td style={{ 
+                    padding: "12px 16px", 
+                    textAlign: "center",
+                    color: "#7f8c8d",
+                    fontSize: "13px"
+                  }}>
+                    {new Date(t.createdAt).toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                    <br />
+                    <span style={{ fontSize: "11px", color: "#95a5a6" }}>
+                      {new Date(t.createdAt).toLocaleTimeString('en-IN', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
                   </td>
                 </tr>
               ))}
