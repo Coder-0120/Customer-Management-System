@@ -55,4 +55,17 @@ Router.post("/add/:id", async (req, res) => {
         return res.status(404).json({success:false,message:"error in adding transaction.."})
     }
 })
+
+Router.get("/history/:id",async(req,res)=>{
+    const customerId = req.params.id;
+    try{
+        const customerTransactionHistory = await TransactionModel.find({ customerId }).sort({ createdAt: -1 });
+        return res.status(201).json({success:true,message:"fetched transaction history..",transactions:customerTransactionHistory});
+
+    }
+    catch(error){
+        return res.status(404).json({success:false,message:'error in fetching transaction history..'});
+    }
+
+})
 module.exports = Router;

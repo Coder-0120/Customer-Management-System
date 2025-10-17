@@ -128,7 +128,7 @@ const OwnerDashboard = () => {
   }
   fetchTransactionHistory();
 
-  },[])
+  },[selectedCustomer]) // to fetch transactions only when customer changes.. also work without array but make performance slow as no. of calls increase..
  
 
   // to clear values..
