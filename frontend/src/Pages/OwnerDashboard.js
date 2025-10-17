@@ -454,51 +454,107 @@ const OwnerDashboard = () => {
         </div>
       )}
       {/* History Modal */}
-       {showHistoryModal && selectedCustomer && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ background: "white", padding: "20px", borderRadius: "10px" }}>
-            <h2>{selectedCustomer.name} - Transaction History</h2>
-            <button onClick={() => SetshowHistoryModal(false)}>Close</button>
+    {showHistoryModal && selectedCustomer && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0,0,0,0.6)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+      overflowY: "auto",
+      padding: "20px",
+      boxShadow: "0 0 10px rgba(0,0,0,0.5)",
+    }}
+  >
+    <div
+      style={{
+        background: "#fff",
+        padding: "30px",
+        borderRadius: "12px",
+        maxWidth: "800px",
+        width: "100%",
+        boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+        position: "relative",
+      }}
+    >
+      <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
+        {selectedCustomer.name} - Transaction History
+      </h2>
 
-            {History.length === 0 ? (
-              <p>No transactions found.</p>
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Remarks</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {History.map((t) => (
-                    <tr key={t._id}>
-                      <td>{t.transactionType}</td>
-                      <td>{t.amount}</td>
-                      <td>{t.remarks}</td>
-                      <td>{new Date(t.createdAt).toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+      <button
+        onClick={() => SetshowHistoryModal(false)}
+        style={{
+          position: "absolute",
+          top: "15px",
+          right: "15px",
+          background: "transparent",
+          border: "none",
+          fontSize: "22px",
+          cursor: "pointer",
+          color: "#f70000ff",
+        }}
+      >
+        ✖
+      </button>
+
+      {History.length === 0 ? (
+        <p style={{ textAlign: "center", fontStyle: "italic", marginTop: "40px" }}>
+          No transactions found.
+        </p>
+      ) : (
+        <div style={{ overflowX: "auto" }}>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              marginTop: "10px",
+            }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: "#f0f0f0" }}>
+                <th style={{ padding: "10px 15px", textAlign: "left" }}>Type</th>
+                <th style={{ padding: "10px 15px", textAlign: "right" }}>Amount</th>
+                <th style={{ padding: "10px 15px", textAlign: "left" }}>Remarks</th>
+                <th style={{ padding: "10px 15px", textAlign: "left" }}>updatedDue</th>
+                <th style={{ padding: "10px 15px", textAlign: "left" }}>updatedAdvance</th>
+                <th style={{ padding: "10px 15px", textAlign: "center" }}>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {History.map((t) => (
+                <tr
+                  key={t._id}
+                  style={{
+                    borderBottom: "1px solid #e0e0e0",
+                    transition: "background 0.3s",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f9f9f9")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <td style={{ padding: "10px 15px" }}>{t.transactionType}</td>
+                  <td style={{ padding: "10px 15px", textAlign: "right" }}>{t.amount}</td>
+                  <td style={{ padding: "10px 15px" }}>{t.remarks || "-"}</td>
+                  <td style={{ padding: "10px 15px" }}>{t.updatedDue}</td>
+                  <td style={{ padding: "10px 15px" }}>{t.updatedAdvance}</td>
+                  <td style={{ padding: "10px 15px", textAlign: "center" }}>
+                    {new Date(t.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
