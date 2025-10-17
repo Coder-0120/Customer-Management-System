@@ -8,6 +8,7 @@ const OwnerDashboard = () => {
   const [showTransactionModal, setshowTransactionModal] = useState(false);
   const[TransactionType,setTransactionType]=useState("");
   const[Amount,SetAmount]=useState(0);
+  const[Remarks,SetRemarks]=useState("");
 
   useEffect(() => {
     // to get all customers..
@@ -41,6 +42,7 @@ const OwnerDashboard = () => {
     setshowModal(true);
   };
 
+  // to save the updated details of customers
   const handleSave = async () => {
     setshowModal(false);
 
@@ -60,9 +62,38 @@ const OwnerDashboard = () => {
       alert("failed to update customer details");
     }
   };
+
+  // to add transaction details
   const handleEditTransaction = async (customer) => {
     SetselectedCustomer({ ...customer })
     setshowTransactionModal(true);
+  }
+
+  // to save transaction details.. 
+  const handleTransactionSave=async()=>{
+    setshowTransactionModal(false);
+    const Data={
+     
+      transactionType:TransactionType,
+      amount:Amount,
+      remarks:Remarks
+    }
+    try {
+      await axios.post(
+        `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`,Data
+      );
+      alert("Transaction saved..")
+
+      // setAllCustomers((prev) =>
+      //   prev.map((cust) =>
+      //     cust._id === selectedCustomer._id ? {...cust} : cust
+      //   )
+      // );
+    } catch (error) {
+      console.log(error);
+      alert("failed to add Transaction details");
+    }
+
   }
 
   return (
@@ -100,7 +131,7 @@ const OwnerDashboard = () => {
               <h6 style={{ color: "green" }}>
                 Advance Deposit: {customer.AdvanceDeposit}
               </h6>
-              <div style={{ gap: "20px", display: "flex", padding: "20px" }}>
+              <div style={{ gap: "10px", display: "flex", padding: "10px" }}>
                 <button
                   style={{
                     color: "black",
@@ -123,8 +154,8 @@ const OwnerDashboard = () => {
                 </button>
                 <button
                   style={{
-                    color: "white",
-                    backgroundColor: "red",
+                    color: "black",
+                    backgroundColor: "orange",
                     borderRadius: "5px",
                   }}
                   onClick={() => handleEditTransaction(customer)}
@@ -204,7 +235,7 @@ const OwnerDashboard = () => {
               }
             />
 
-            <label>Due Amount:</label>
+            {/* <label>Due Amount:</label>
             <input
               type="number"
               value={selectedCustomer.DueAmount}
@@ -226,7 +257,7 @@ const OwnerDashboard = () => {
                   AdvanceDeposit: e.target.value,
                 })
               }
-            />
+            /> */}
 
             <div
               style={{
@@ -302,11 +333,6 @@ const OwnerDashboard = () => {
               ✖
             </button>
             <h2>Add Transaction Details</h2>
-
-
-
-
-
             <label>Transaction Type :</label>
 
             <select
@@ -324,6 +350,7 @@ const OwnerDashboard = () => {
               <option value="advanceDeposit">Add Advance Payment</option>
               <option value="advanceWithdraw">Withdraw from Advance</option>
             </select>
+
              <label>Amount:</label>
             <input
               type="Number"
@@ -332,9 +359,15 @@ const OwnerDashboard = () => {
                 SetAmount(e.target.value)
               }
             />
-            
-
-
+             <label>Remarks:</label>
+            <input
+              type="text"
+              value={Remarks}
+              placeholder="Your message..."
+              onChange={(e) =>
+                SetRemarks(e.target.value)
+              }
+            />
 
             <div
               style={{
@@ -355,7 +388,7 @@ const OwnerDashboard = () => {
                 Cancel
               </button>
               <button
-                onClick={handleSave}
+                onClick={handleTransactionSave}
                 style={{
                   backgroundColor: "green",
                   color: "white",

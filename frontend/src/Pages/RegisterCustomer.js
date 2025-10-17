@@ -14,7 +14,9 @@ const RegisterCustomer = () => {
     const handleChange=(e)=>{
         SetCustomer({...Customer,[e.target.name]:e.target.value})
     }
+   
   
+    // to add new customer
   const handleRegister = async (e) => {
       e.preventDefault();
 
@@ -24,7 +26,7 @@ const RegisterCustomer = () => {
             DueAmount:Number(Customer.DueAmount),
             AdvanceDeposit:Number(Customer.AdvanceDeposit)
         });
-        console.log(res.data);
+        // console.log(res.data);
         alert("New Customer Added Successful");
         // navigate("/dashboard");
       }catch(err){
