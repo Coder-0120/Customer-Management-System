@@ -355,9 +355,7 @@ const OwnerDashboard = () => {
             <input
               type="Number"
               value={Amount}
-              onChange={(e) =>
-                SetAmount(e.target.value)
-              }
+              onChange={(e) => SetAmount((e.target.value))}
             />
              <label>Remarks:</label>
             <input
