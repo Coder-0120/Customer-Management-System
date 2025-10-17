@@ -137,12 +137,12 @@ const OwnerDashboard = () => {
   SetAmount(0);
   SetRemarks("");
 };
-// Define color mapping
+
 const typeColors = {
-  duePayment: "#ff4d4d",       // red
-  dueIncrease: "#ffa500",      // orange
-  advanceDeposit: "#28a745",   // green
-  advanceWithdraw: "#007bff",  // blue
+  duePayment: "#ff4d4d",       
+  dueIncrease: "#ffa500",      
+  advanceDeposit: "#28a745",   
+  advanceWithdraw: "#007bff",  
 };
 
 
