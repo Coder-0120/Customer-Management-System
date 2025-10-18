@@ -9,9 +9,12 @@ const OwnerDashboard = () => {
   const [TransactionType, setTransactionType] = useState("");
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
-  const [History,setHistory]=useState("");
+  const [History,setHistory]=useState([[]]);
   const[showHistoryModal,SetshowHistoryModal]=useState(false);
   const [searchTerm,setSearchTerm]=useState("");
+  const[historyFilterType,setHistoryFilterType]=useState("");
+  const[historyStartDate,setHistoryStartDate]=useState("");
+  const[historyEndDate,setHistoryEndDate]=useState("");
 
   useEffect(() => {
     // to get all customers..
@@ -853,7 +856,8 @@ const typeColors = {
 )}
 
       {/* History Modal */}
-   {showHistoryModal && selectedCustomer && (
+ {/* Filtered History Modal */}
+{showHistoryModal && selectedCustomer && (
   <div
     style={{
       position: "fixed",
@@ -886,215 +890,160 @@ const typeColors = {
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      <style>
-        {`
-          @keyframes slideIn {
-            from {
-              opacity: 0;
-              transform: translateY(-20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}
-      </style>
-
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center",
-        marginBottom: "25px",
-        paddingBottom: "15px",
-        borderBottom: "2px solid #e0e0e0"
-      }}>
-        <h2 style={{ 
-          margin: 0,
-          fontSize: "24px",
-          fontWeight: "600",
-          color: "#2c3e50"
-        }}>
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "25px",
+          paddingBottom: "15px",
+          borderBottom: "2px solid #e0e0e0",
+        }}
+      >
+        <h2 style={{ margin: 0, fontSize: "24px", fontWeight: "600", color: "#2c3e50" }}>
           {selectedCustomer.name}
         </h2>
-        <button
-          onClick={() => SetshowHistoryModal(false)}
+      <button
+  onClick={() => SetshowHistoryModal(false)}
+  style={{
+    background: "#ff4757",
+    border: "none",
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    fontSize: "18px",
+    cursor: "pointer",
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "all 0.3s ease",
+    boxShadow: "0 2px 8px rgba(255,71,87,0.3)",
+  }}
+  className="close-btn"
+>
+  ✖
+</button>
+
+<style>
+{`
+  .close-btn:hover {
+    background: #ee5a6f;
+    transform: rotate(90deg);
+  }
+`}
+</style>
+
+      </div>
+
+      {/* Filter Section */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+        <select
+          value={historyFilterType}
+          onChange={(e) => setHistoryFilterType(e.target.value)}
+          style={{ padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+        >
+          <option value="">All Types</option>
+          <option value="duePayment">Pay Due Amount</option>
+          <option value="dueIncrease">Increase Due Amount</option>
+          <option value="advanceDeposit">Add Advance Payment</option>
+          <option value="advanceWithdraw">Withdraw from Advance</option>
+        </select>
+
+        <input
+          type="date"
+          value={historyStartDate}
+          onChange={(e) => setHistoryStartDate(e.target.value)}
+          style={{ padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+        />
+        <input
+          type="date"
+          value={historyEndDate}
+          onChange={(e) => setHistoryEndDate(e.target.value)}
+          style={{ padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+        />
+      </div>
+
+      {/* Filtered Table */}
+      <div style={{ overflowX: "auto" }}>
+        <table
           style={{
-            background: "#ff4757",
-            border: "none",
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            fontSize: "18px",
-            cursor: "pointer",
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "all 0.2s ease",
-            boxShadow: "0 2px 8px rgba(255,71,87,0.3)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#ee5a6f";
-            e.currentTarget.style.transform = "rotate(90deg)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "#ff4757";
-            e.currentTarget.style.transform = "rotate(0deg)";
+            width: "100%",
+            borderCollapse: "separate",
+            borderSpacing: "0",
+            fontSize: "14px",
           }}
         >
-          ✖
-        </button>
-      </div>
+          <thead>
+            <tr style={{ background: "#667eea", color: "#fff" }}>
+              <th style={{ padding: "14px 16px", textAlign: "left" }}>Type</th>
+              <th style={{ padding: "14px 16px", textAlign: "right" }}>Amount</th>
+              <th style={{ padding: "14px 16px", textAlign: "left" }}>Remarks</th>
+              <th style={{ padding: "14px 16px", textAlign: "right" }}>Updated Due</th>
+              <th style={{ padding: "14px 16px", textAlign: "right" }}>Updated Advance</th>
+              <th style={{ padding: "14px 16px", textAlign: "center" }}>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+         {(History || []).filter((t) => {
+  if (!t) return false; // skip undefined entries
 
-      <div style={{
-        fontSize: "14px",
-        color: "#7f8c8d",
-        marginBottom: "20px",
-        fontWeight: "500"
-      }}>
-        Transaction History
-      </div>
+  const typeMatch = historyFilterType ? t.transactionType === historyFilterType : true;
 
-      {History.length === 0 ? (
-        <div style={{
-          textAlign: "center",
-          padding: "60px 20px",
-          color: "#95a5a6",
-        }}>
-          <div style={{ fontSize: "48px", marginBottom: "15px" }}>📋</div>
-          <p style={{ fontSize: "16px", fontStyle: "italic" }}>
-            No transactions found.
-          </p>
-        </div>
-      ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "separate",
-              borderSpacing: "0",
-              fontSize: "14px",
-            }}
-          >
-            <thead>
-              <tr style={{ 
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                color: "#fff"
-              }}>
-                <th style={{ 
-                  padding: "14px 16px", 
-                  textAlign: "left",
-                  fontWeight: "600",
-                  borderTopLeftRadius: "8px"
-                }}>Type</th>
-                <th style={{ padding: "14px 16px", textAlign: "right", fontWeight: "600" }}>Amount</th>
-                <th style={{ padding: "14px 16px", textAlign: "left", fontWeight: "600" }}>Remarks</th>
-                <th style={{ padding: "14px 16px", textAlign: "right", fontWeight: "600" }}>Updated Due</th>
-                <th style={{ padding: "14px 16px", textAlign: "right", fontWeight: "600" }}>Updated Advance</th>
-                <th style={{ 
-                  padding: "14px 16px", 
-                  textAlign: "center", 
-                  fontWeight: "600",
-                  borderTopRightRadius: "8px"
-                }}>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {History.map((t, index) => (
-                <tr
-                  key={t._id}
-                  style={{
-                    backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8f9fa",
-                    borderBottom: "1px solid #e9ecef",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#e8f4f8";
-                    e.currentTarget.style.transform = "scale(1.01)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa";
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                >
-                  <td style={{ 
-                    padding: "12px 16px",
-                  }}>
-                    <span style={{
-                      backgroundColor: typeColors[t.transactionType] || "#95a5a6",
-                      padding: "4px 12px",
-                      borderRadius: "20px",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      color: "#fff",
-                      display: "inline-block",
-                      textTransform: "capitalize"
-                    }}>
-                      {t.transactionType}
-                    </span>
-                  </td>
-                  <td style={{ 
-                    padding: "12px 16px", 
-                    textAlign: "right",
-                    fontWeight: "600",
-                    color: "#2c3e50"
-                  }}>
-                    ₹{t.amount.toLocaleString()}
-                  </td>
-                  <td style={{ 
-                    padding: "12px 16px",
-                    color: "#7f8c8d",
-                    fontStyle: t.remarks ? "normal" : "italic"
-                  }}>
-                    {t.remarks || "No remarks"}
-                  </td>
-                  <td style={{ 
-                    padding: "12px 16px", 
-                    textAlign: "right",
-                    fontWeight: "500",
-                    color: t.updatedDue > 0 ? "#e74c3c" : "#27ae60"
-                  }}>
-                    ₹{t.updatedDue.toLocaleString()}
-                  </td>
-                  <td style={{ 
-                    padding: "12px 16px", 
-                    textAlign: "right",
-                    fontWeight: "500",
-                    color: t.updatedAdvance > 0 ? "#27ae60" : "#95a5a6"
-                  }}>
-                    ₹{t.updatedAdvance.toLocaleString()}
-                  </td>
-                  <td style={{ 
-                    padding: "12px 16px", 
-                    textAlign: "center",
-                    color: "#7f8c8d",
-                    fontSize: "13px"
-                  }}>
-                    {new Date(t.createdAt).toLocaleDateString('en-IN', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric'
-                    })}
-                    <br />
-                    <span style={{ fontSize: "11px", color: "#95a5a6" }}>
-                      {new Date(t.createdAt).toLocaleTimeString('en-IN', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+  const created = t.createdAt ? new Date(t.createdAt) : null;
+  const start = historyStartDate ? new Date(historyStartDate) : null;
+  const end = historyEndDate ? new Date(historyEndDate) : null;
+  const dateMatch = (!start || (created && created >= start)) && (!end || (created && created <= end));
+
+  return typeMatch && dateMatch;
+}).map((t, index) => (
+  <tr key={t?._id || index} style={{ backgroundColor: index % 2 === 0 ? "#fff" : "#f8f9fa" }}>
+    <td style={{ padding: "12px 16px" }}>
+      <span
+        style={{
+          backgroundColor: typeColors[t?.transactionType] || "#95a5a6",
+          padding: "4px 12px",
+          borderRadius: "20px",
+          fontSize: "12px",
+          fontWeight: "600",
+          color: "#fff",
+          textTransform: "capitalize",
+          display: "inline-block",
+        }}
+      >
+        {t?.transactionType || "N/A"}
+      </span>
+    </td>
+    <td style={{ padding: "12px 16px", textAlign: "right", fontWeight: "600" }}>
+      ₹{(t?.amount || 0).toLocaleString()}
+    </td>
+    <td style={{ padding: "12px 16px", fontStyle: t?.remarks ? "normal" : "italic", color: "#7f8c8d" }}>
+      {t?.remarks || "No remarks"}
+    </td>
+    <td style={{ padding: "12px 16px", textAlign: "right", color: t?.updatedDue > 0 ? "#e74c3c" : "#27ae60" }}>
+      ₹{(t?.updatedDue || 0).toLocaleString()}
+    </td>
+    <td style={{ padding: "12px 16px", textAlign: "right", color: t?.updatedAdvance > 0 ? "#27ae60" : "#95a5a6" }}>
+      ₹{(t?.updatedAdvance || 0).toLocaleString()}
+    </td>
+    <td style={{ padding: "12px 16px", textAlign: "center", fontSize: "13px", color: "#7f8c8d" }}>
+      {t?.createdAt ? new Date(t.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "N/A"}
+      <br />
+      <span style={{ fontSize: "11px", color: "#95a5a6" }}>
+        {t?.createdAt ? new Date(t.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : ""}
+      </span>
+    </td>
+  </tr>
+))}
+
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 )}
+
 
     </div>
   );
