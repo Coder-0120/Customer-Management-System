@@ -11,6 +11,7 @@ const OwnerDashboard = () => {
   const [Remarks, SetRemarks] = useState("");
   const [History,setHistory]=useState("");
   const[showHistoryModal,SetshowHistoryModal]=useState(false);
+  const [searchTerm,setSearchTerm]=useState("");
 
   useEffect(() => {
     // to get all customers..
@@ -151,84 +152,120 @@ const typeColors = {
       <h1 style={{ textAlign: "center", textDecorationLine: "underline" }}>
         Owner Dashboard
       </h1>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px",boxShadow:'0px 0px 20px black' }}>
+  <input
+    type="text"
+    placeholder="Search by name or phone..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    style={{
+      width: "250px",
+      padding: "8px",
+      borderRadius: "8px",
+      border: "1px solid #ccc",
+      outline: "none",
+    }}
+  />
+</div>
 
-      {AllCustomers && AllCustomers.length > 0 ? (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            flexDirection: "row",
-            gap: "10px",
-          }}
-        >
-          {AllCustomers.map((customer) => (
-            <div
-              key={customer._id}
-              style={{
-                border: "2px solid black",
-                width: "300px",
-                height: "250px",
-                margin: "5px",
-                padding: "10px",
-                borderRadius: "20px",
-                boxShadow: "2px 2px 6px rgba(0,0,0,0.2)",
-              }}
-            >
-              <h3>Name: {customer.name}</h3>
-              <p>Phone No: {customer.phoneNo}</p>
-              <p>Address: {customer.address}</p>
-              <h6 style={{ color: "red" }}>Due Amount: {customer.DueAmount}</h6>
-              <h6 style={{ color: "green" }}>
-                Advance Deposit: {customer.AdvanceDeposit}
-              </h6>
-              <div style={{ gap: "5px", display: "flex", padding: "" }}>
-                <button
-                  style={{
-                    color: "black",
-                    backgroundColor: "yellow",
-                    borderRadius: "5px",
-                  }}
-                  onClick={() => handleEdit(customer)}
-                >
-                  Edit
-                </button>
-                <button
-                  style={{
-                    color: "white",
-                    backgroundColor: "red",
-                    borderRadius: "5px",
-                  }}
-                  onClick={() => handleDelete(customer._id)}
-                >
-                  Delete
-                </button>
-                <button
-                  style={{
-                    color: "black",
-                    backgroundColor: "orange",
-                    borderRadius: "5px",
-                  }}
-                  onClick={() => handleEditTransaction(customer)}
-                >
-                  Add Transaction
-                </button>
-                <button
-                  style={{
-                    color: "white",
-                    backgroundColor: "indigo",
-                    borderRadius: "5px",
-                  }}
-                  onClick={() => HandleHistory(customer)}
-                >
-                  History
-                </button>
-              </div>
+
+     {/*  Customer Cards */}
+{AllCustomers && AllCustomers.length > 0 ? (
+  (() => {
+    const filteredCustomers = AllCustomers.filter((customer) => {
+      if (!searchTerm) return true;
+      const nameMatch = customer.name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const phoneMatch = customer.phoneNo
+        ?.toString()
+        .includes(searchTerm);
+      return nameMatch || phoneMatch;
+    });
+
+    return filteredCustomers.length > 0 ? (
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          flexDirection: "row",
+          gap: "10px",
+        }}
+      >
+        {filteredCustomers.map((customer) => (
+          <div
+            key={customer._id}
+            style={{
+              border: "2px solid black",
+              width: "300px",
+              height: "250px",
+              margin: "5px",
+              padding: "10px",
+              borderRadius: "20px",
+              boxShadow: "2px 2px 6px rgba(0,0,0,0.2)",
+            }}
+          >
+            <h3>Name: {customer.name}</h3>
+            <p>Phone No: {customer.phoneNo}</p>
+            <p>Address: {customer.address}</p>
+            <h6 style={{ color: "red" }}>Due Amount: {customer.DueAmount}</h6>
+            <h6 style={{ color: "green" }}>
+              Advance Deposit: {customer.AdvanceDeposit}
+            </h6>
+            <div style={{ gap: "5px", display: "flex" }}>
+              <button
+                style={{
+                  color: "black",
+                  backgroundColor: "yellow",
+                  borderRadius: "5px",
+                }}
+                onClick={() => handleEdit(customer)}
+              >
+                Edit
+              </button>
+              <button
+                style={{
+                  color: "white",
+                  backgroundColor: "red",
+                  borderRadius: "5px",
+                }}
+                onClick={() => handleDelete(customer._id)}
+              >
+                Delete
+              </button>
+              <button
+                style={{
+                  color: "black",
+                  backgroundColor: "orange",
+                  borderRadius: "5px",
+                }}
+                onClick={() => handleEditTransaction(customer)}
+              >
+                Add Transaction
+              </button>
+              <button
+                style={{
+                  color: "white",
+                  backgroundColor: "indigo",
+                  borderRadius: "5px",
+                }}
+                onClick={() => HandleHistory(customer)}
+              >
+                History
+              </button>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p>No customers found.</p>
-      )}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p style={{ textAlign: "center", color: "#888" }}>
+        No matching customers found.
+      </p>
+    );
+  })()
+) : (
+  <p>No customers found.</p>
+)}
 
       {/* Edit Modal */}
    {showModal && selectedCustomer && (
