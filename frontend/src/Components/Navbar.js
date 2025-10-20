@@ -24,6 +24,9 @@ const Navbar = () => {
         <li className="nav-item">
           <Link className="nav-link" to="/owner-dashboard">OwnerDashboard</Link>
         </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/customer-dashboard">CustomerDashboard</Link>
+        </li>
         {/* <li className="nav-item dropdown">
           <a className="nav-link dropdown-toggle" href="#" role="button" data-coreui-toggle="dropdown" aria-expanded="false">
             Dropdown
