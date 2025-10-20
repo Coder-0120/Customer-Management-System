@@ -4,10 +4,9 @@ import axios from 'axios'
 const CustomerDashboard = () => {
   const customerInfo = JSON.parse(localStorage.getItem("CustomerDetails"));
   const [transactions, setTransactions] = useState([]);
-    const [historyFilterType, setHistoryFilterType] = useState("");
-    const [historyStartDate, setHistoryStartDate] = useState("");
-    const [historyEndDate, setHistoryEndDate] = useState("");
-  
+  const [historyFilterType, setHistoryFilterType] = useState("");
+  const [historyStartDate, setHistoryStartDate] = useState("");
+  const [historyEndDate, setHistoryEndDate] = useState("");
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -28,12 +27,51 @@ const CustomerDashboard = () => {
     advanceWithdraw: "#007bff",
   };
 
+  // Filter transactions
+  const filteredTransactions = transactions.filter((t) => {
+    // Filter by type
+    if (historyFilterType && t.transactionType !== historyFilterType) {
+      return false;
+    }
+
+    // Filter by date range
+    const transactionDate = new Date(t.createdAt);
+    if (historyStartDate) {
+      const startDate = new Date(historyStartDate);
+      if (transactionDate < startDate) return false;
+    }
+    if (historyEndDate) {
+      const endDate = new Date(historyEndDate);
+      endDate.setHours(23, 59, 59, 999); // Include entire end date
+      if (transactionDate > endDate) return false;
+    }
+
+    return true;
+  });
+
+  // Clear all filters
+  const clearFilters = () => {
+    setHistoryFilterType("");
+    setHistoryStartDate("");
+    setHistoryEndDate("");
+  };
+
   return (
     <div style={{
       minHeight: "100vh",
       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       padding: "40px 20px"
     }}>
+      <style>
+        {`
+          .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+          }
+        `}
+      </style>
+
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <h1 style={{
           textAlign: "center",
@@ -46,7 +84,7 @@ const CustomerDashboard = () => {
           Customer Dashboard
         </h1>
 
-        {/* Account  Card */}
+        {/* Account Card */}
         <div style={{
           background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
           borderRadius: "16px",
@@ -118,7 +156,7 @@ const CustomerDashboard = () => {
           </div>
         </div>
 
-        {/* Transaction  Card */}
+        {/* Transaction Card */}
         <div style={{
           background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
           borderRadius: "16px",
@@ -135,42 +173,110 @@ const CustomerDashboard = () => {
           }}>
             Transaction History
           </h2>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
-              <select
-                value={historyFilterType}
-                onChange={(e) => setHistoryFilterType(e.target.value)}
-                style={{ padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
+
+          {/* Filters */}
+          <div style={{ 
+            display: "flex", 
+            gap: "12px", 
+            marginBottom: "20px", 
+            flexWrap: "wrap",
+            alignItems: "center"
+          }}>
+            <select
+              value={historyFilterType}
+              onChange={(e) => setHistoryFilterType(e.target.value)}
+              className="filter-select"
+              style={{ 
+                padding: "10px 14px", 
+                borderRadius: "8px", 
+                border: "2px solid #e0e0e0",
+                fontSize: "14px",
+                backgroundColor: "#fff",
+                cursor: "pointer",
+                transition: "all 0.2s ease"
+              }}
+            >
+              <option value="">All Types</option>
+              <option value="duePayment">💰 Pay Due Amount</option>
+              <option value="dueIncrease">📈 Increase Due Amount</option>
+              <option value="advanceDeposit">💵 Add Advance Payment</option>
+              <option value="advanceWithdraw">💸 Withdraw from Advance</option>
+            </select>
+
+            <input
+              type="date"
+              value={historyStartDate}
+              onChange={(e) => setHistoryStartDate(e.target.value)}
+              placeholder="Start Date"
+              className="filter-input"
+              style={{ 
+                padding: "10px 14px", 
+                borderRadius: "8px", 
+                border: "2px solid #e0e0e0",
+                fontSize: "14px",
+                transition: "all 0.2s ease"
+              }}
+            />
+
+            <input
+              type="date"
+              value={historyEndDate}
+              onChange={(e) => setHistoryEndDate(e.target.value)}
+              placeholder="End Date"
+              className="filter-input"
+              style={{ 
+                padding: "10px 14px", 
+                borderRadius: "8px", 
+                border: "2px solid #e0e0e0",
+                fontSize: "14px",
+                transition: "all 0.2s ease"
+              }}
+            />
+
+            {(historyFilterType || historyStartDate || historyEndDate) && (
+              <button
+                onClick={clearFilters}
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: "8px",
+                  border: "none",
+                  background: "#95a5a6",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "#7f8c8d"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "#95a5a6"}
               >
-                <option value="">All Types</option>
-                <option value="duePayment">Pay Due Amount</option>
-                <option value="dueIncrease">Increase Due Amount</option>
-                <option value="advanceDeposit">Add Advance Payment</option>
-                <option value="advanceWithdraw">Withdraw from Advance</option>
-              </select>
+                Clear Filters
+              </button>
+            )}
 
-              <input
-                type="date"
-                value={historyStartDate}
-                onChange={(e) => setHistoryStartDate(e.target.value)}
-                style={{ padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
-              />
-              <input
-                type="date"
-                value={historyEndDate}
-                onChange={(e) => setHistoryEndDate(e.target.value)}
-                style={{ padding: "8px", borderRadius: "6px", border: "1px solid #ccc" }}
-              />
+            <div style={{
+              marginLeft: "auto",
+              fontSize: "14px",
+              color: "#7f8c8d",
+              fontWeight: "600"
+            }}>
+              {filteredTransactions.length} of {transactions.length} transactions
             </div>
+          </div>
 
-          {transactions.length === 0 ? (
+          {filteredTransactions.length === 0 ? (
             <div style={{
               textAlign: "center",
               padding: "60px 20px",
               color: "#95a5a6"
             }}>
-              <div style={{ fontSize: "48px", marginBottom: "15px" }}>📋</div>
+              <div style={{ fontSize: "48px", marginBottom: "15px" }}>
+                {transactions.length === 0 ? "📋" : "🔍"}
+              </div>
               <p style={{ fontSize: "16px", fontStyle: "italic" }}>
-                No transactions found.
+                {transactions.length === 0 
+                  ? "No transactions found." 
+                  : "No transactions match the selected filters."}
               </p>
             </div>
           ) : (
@@ -195,7 +301,7 @@ const CustomerDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions.map((t, index) => (
+                  {filteredTransactions.map((t, index) => (
                     <tr
                       key={t._id}
                       style={{
