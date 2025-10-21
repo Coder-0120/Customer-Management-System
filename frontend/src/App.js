@@ -8,6 +8,8 @@ import RegisterCustomer from './Pages/RegisterCustomer';
 import CustomerDashboard from "./Pages/CustomerDashboard";
 import Payment from './Pages/Payment';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import ProofSection from './Pages/ProofSection';
+import CustNotifications from './Pages/CustNotifications';
 
 const CustomerProtectedRoute = ({ children }) => {
 
@@ -30,7 +32,9 @@ function App() {
         <Route path="/register" element={<OwnerProtectedRoute><RegisterCustomer/></OwnerProtectedRoute>} />
         <Route path="/ownerLogin" element={<Ownerlogin />} /> 
         <Route path="/owner-dashboard" element={<OwnerProtectedRoute><OwnerDashboard/></OwnerProtectedRoute>} />
+        <Route path="/proof-section" element={<OwnerProtectedRoute><ProofSection/></OwnerProtectedRoute>} />
         <Route path="/customer-dashboard" element={<CustomerProtectedRoute><CustomerDashboard/></CustomerProtectedRoute>}/>
+        <Route path="/customer-notifications" element={<CustomerProtectedRoute><CustNotifications/></CustomerProtectedRoute>}/>
         <Route path="/payment" element={<CustomerProtectedRoute><Payment/></CustomerProtectedRoute>}/>
       </Routes>
     </Router>
