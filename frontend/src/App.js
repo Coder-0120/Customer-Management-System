@@ -6,6 +6,7 @@ import Ownerlogin from './Pages/Ownerlogin';
 import OwnerDashboard from './Pages/OwnerDashboard';
 import RegisterCustomer from './Pages/RegisterCustomer';
 import CustomerDashboard from "./Pages/CustomerDashboard";
+import Payment from './Pages/Payment';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 const CustomerProtectedRoute = ({ children }) => {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/ownerLogin" element={<Ownerlogin />} /> 
         <Route path="/owner-dashboard" element={<OwnerProtectedRoute><OwnerDashboard/></OwnerProtectedRoute>} />
         <Route path="/customer-dashboard" element={<CustomerProtectedRoute><CustomerDashboard/></CustomerProtectedRoute>}/>
+        <Route path="/payment" element={<CustomerProtectedRoute><Payment/></CustomerProtectedRoute>}/>
       </Routes>
     </Router>
   );
