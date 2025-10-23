@@ -1,0 +1,55 @@
+const express = require("express");
+const Router = express.Router();
+const PaymentProofModel = require("../Models/PaymentProof");
+const multer = require("multer");
+const path = require("path");
+
+// ===== Multer Storage Configuration =====
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Folder to store uploaded images
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // unique filename
+  },
+});
+
+const upload = multer({ storage });
+
+// ===== POST: Add Payment Proof =====
+Router.post("/add", upload.single("image"), async (req, res) => {
+  try {
+    const { user, transactionAmount, transactionID, transactiontype, message } = req.body;
+
+    // File path from multer
+    const proofUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    if (!proofUrl) {
+      return res.status(400).json({ success: false, message: "Proof image is required" });
+    }
+
+    const newProof = await PaymentProofModel.create({
+      user,
+      transactionAmount,
+      transactionID,
+      transactiontype,
+      message,
+      proofUrl,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Payment proof saved successfully",
+      data: newProof,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save payment proof",
+      error: error.message,
+    });
+  }
+});
+
+module.exports = Router;
