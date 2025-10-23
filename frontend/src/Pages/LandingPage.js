@@ -1,6 +1,8 @@
 import React from 'react';
 
 const LandingPage = () => {
+  const customer=JSON.parse(localStorage.getItem("CustomerDetails"));
+  const owner=JSON.parse(localStorage.getItem("OwnerDetails"));
   const handleLogin = () => {
     console.log('Navigate to login');
     // Your navigation logic here
@@ -140,7 +142,7 @@ const LandingPage = () => {
               }}
               className="cta-button"
             >
-              Access Your Account →
+              {customer?`Welcome ${customer.name}`:owner?`Welcome Owner ${owner.UserName}`:`Access Your Account →`}
             </button>
           </div>
 

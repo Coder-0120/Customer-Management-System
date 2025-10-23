@@ -52,4 +52,20 @@ Router.post("/add", upload.single("image"), async (req, res) => {
   }
 });
 
+Router.get("/getAll",async(req,res)=>{
+  try{
+    const allProofs=await PaymentProofModel.find()
+    .populate("user","name address phoneNo DueAmount AdvanceDeposit");
+    if(!allProofs || allProofs.length===0){
+      return res.status(400).json({success:false,message:"no proofs found"});
+    }
+    return res.status(201).json({success:true,message:"all proofs fetched",data:allProofs});
+
+  }
+  catch(error){
+    return res.status(500).json({success:false,message:"failed to fetch all blogs"});
+
+  }
+})
+
 module.exports = Router;

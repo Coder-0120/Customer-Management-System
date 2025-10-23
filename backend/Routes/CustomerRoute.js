@@ -1,6 +1,7 @@
 const express = require('express');
 const CustomerModel = require('../Models/UserModel');
 const bcrypt = require("bcryptjs");
+const UserModel = require('../Models/UserModel');
 
 const Router = express.Router();
 
@@ -89,4 +90,18 @@ Router.put("/update/:id",async(req,res)=>{
         return res.status(404).json({success:false,message:"failed to update.."});
     }
 })
+// Router.get("/getDetails/:id",async(req,res)=>{
+//     const CustomerDetails=await UserModel.findOne(req.params._id);
+//     try{
+
+//         if(!userdetails){
+//             return res.status(404).json({success:false,message:"no customer exist"});
+//         }
+//         return res.status(201).json({success:true,message:'all details of customer',customer:CustomerDetails})
+//     }
+//     catch(error){
+//         return res.status(500).json({success:false,message:"internal server error"});
+//     }
+
+// })
 module.exports = Router;
