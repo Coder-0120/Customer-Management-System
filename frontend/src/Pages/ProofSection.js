@@ -9,11 +9,10 @@ const ProofSection = () => {
   const [TransactionType, setTransactionType] = useState("");
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
-  // const [historyFilterType, setHistoryFilterType] = useState("");
-  // const [historyStartDate, setHistoryStartDate] = useState("");
-  // const [historyEndDate, setHistoryEndDate] = useState("");
-  // const [History, setHistory] = useState([[]]);
-  // const [showHistoryModal, SetshowHistoryModal] = useState(false);
+  const [proofStatus, setproofStatus] = useState("unverified");
+  const [selectedProof, setSelectedProof] = useState(null);
+
+
 
   useEffect(() => {
     const fetchProofs = async () => {
@@ -33,8 +32,14 @@ const ProofSection = () => {
     pending: "#ffa500",
   };
 
-  const OpenCustomerModal = (customer) => {
+  const OpenCustomerModal = (proof,customer) => {
     SetselectedCustomer({ ...customer });
+    setSelectedProof(proof);
+    setproofStatus(proof.status|| "Unverified")
+    // to auto filled values in transaction modal during add new transactions(to update accouont)
+    setTransactionType(proof.transactiontype);
+    SetAmount(proof.transactionAmount);
+    SetRemarks(proof.message);
     setshowCustomerModal(true);
 
   }
@@ -50,34 +55,86 @@ const ProofSection = () => {
     setshowTransactionModal(true);
   }
   // to save transaction details.. 
-  const handleTransactionSave = async () => {
-    setshowTransactionModal(false);
-    const Data = {
+ const handleTransactionSave = async () => {
+  setshowTransactionModal(false);
+  const Data = {
+    transactionType: TransactionType,
+    amount: Amount,
+    remarks: Remarks,
+  };
 
-      transactionType: TransactionType,
-      amount: Amount,
-      remarks: Remarks
-    }
-    try {
-      const res = await axios.post(
-        `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`, Data
-      );
-      alert("Transaction saved..")
-      SetAmount(0);
-      SetRemarks("");
-      setTransactionType("");
+  try {
+    const res = await axios.post(
+      `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`,
+      Data
+    );
 
-    } catch (error) {
-      console.log(error);
-      alert("failed to add Transaction details");
-    }
+    // alert("Transaction saved ");
 
+    //  Update the modal’s customer details immediately
+    SetselectedCustomer((prev) => ({
+      ...prev,
+      DueAmount: res.data.updatedCustomer.DueAmount,
+      AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit,
+    }));
+
+    //  Update global proof list if needed
+    setAllProofs((prev) =>
+      prev.map((p) =>
+        p.user._id === selectedCustomer._id
+          ? { ...p, user: { ...p.user, DueAmount: res.data.updatedCustomer.DueAmount, AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit } }
+          : p
+      )
+    );
+
+    // reset inputs
+    SetAmount(0);
+    SetRemarks("");
+    setTransactionType("");
+
+  } catch (error) {
+    console.log(error);
+    alert("Failed to add transaction ❌");
   }
+};
+
   const resetTransactionFields = () => {
     setTransactionType("");
     SetAmount(0);
     SetRemarks("");
   };
+  // to change status of proofs
+  const handleStatusChange=(value)=>{
+    setproofStatus(value);
+  }
+ const handleStatusUpdate = async () => {
+  if (!selectedProof) return alert("No proof selected!");
+
+  try {
+    const res = await axios.put(
+      `http://localhost:5000/api/customer/paymentproof/update/${selectedProof._id}`,
+      { status: proofStatus }
+    );
+
+    if (res.data.success) {
+      setshowCustomerModal(false);
+      // alert("Status updated successfully!");
+
+      setAllProofs((prev) =>
+        prev.map((p) =>
+          p._id === selectedProof._id ? { ...p, status: proofStatus } : p
+        )
+      );
+
+    } else {
+      alert("Failed to update status");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Error in updating proof status");
+  }
+};
+
 
   return (
     <div style={{ padding: "20px" }}>
@@ -112,7 +169,7 @@ const ProofSection = () => {
                   year: 'numeric'
                 })}
               </span>
-              <p style={{ background: "yellow", borderRadius: '50px', color: "black", border: "2px solid orange", textAlign: "center", fontWeight: '600', cursor: "pointer" }} onClick={() => OpenCustomerModal(proof.user)}>Go to Customer</p>
+              <p style={{ background: "yellow", borderRadius: '50px', color: "black", border: "2px solid orange", textAlign: "center", fontWeight: '600', cursor: "pointer" }} onClick={() => OpenCustomerModal(proof,proof.user)}>Go to Customer</p>
               <button style={{
                 padding: "6px",
                 border: "none",
@@ -283,8 +340,8 @@ const ProofSection = () => {
                 </button>
                 <label>Status:</label>
                 <select
-                  // value={proofStatus}   // state variable for current proof status
-                  // onChange={(e) => handleStatusChange(e.target.value)}
+                  value={proofStatus}   // state variable for current proof status
+                  onChange={(e) => handleStatusChange(e.target.value)}
                 >
                   <option value="unverified">Unverified</option>
                   <option value="verified">Verified</option>
@@ -293,7 +350,7 @@ const ProofSection = () => {
 
               </div>
               <div>
-                <button style={{width:"100%",backgroundColor:'green',color:'white',borderRadius:"50px"}}>Save</button>
+                <button style={{width:"100%",backgroundColor:'green',color:'white',borderRadius:"50px"}} onClick={handleStatusUpdate}>Save</button>
               </div>
 
 

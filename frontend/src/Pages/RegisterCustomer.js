@@ -1,127 +1,307 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-// import { Link } from 'react-router-dom';
 
 const RegisterCustomer = () => {
-    const [Customer,SetCustomer]=useState({
-        name:"",
-        address:"",
-        phoneNo:"",
-        DueAmount:"",
-        AdvanceDeposit:"",
-        password:""
-    })
-    const handleChange=(e)=>{
-        SetCustomer({...Customer,[e.target.name]:e.target.value})
-    }
-   
-  
-    // to add new customer
+  const [Customer, SetCustomer] = useState({
+    name: "",
+    address: "",
+    phoneNo: "",
+    DueAmount: "",
+    AdvanceDeposit: "",
+    password: ""
+  });
+
+  const handleChange = (e) => {
+    SetCustomer({ ...Customer, [e.target.name]: e.target.value });
+  };
+
   const handleRegister = async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      try{
-        const res=await axios.post("http://localhost:5000/api/customer/register",{
-            ...Customer,
-            DueAmount:Number(Customer.DueAmount),
-            AdvanceDeposit:Number(Customer.AdvanceDeposit)
-        });
-        // console.log(res.data);
-        alert("New Customer Added Successful");
-        // navigate("/dashboard");
-      }catch(err){
-        console.log(err);
-        alert("Registeration Failed");
-      }
-  }
-
+    try {
+      const res = await axios.post("http://localhost:5000/api/customer/register", {
+        ...Customer,
+        DueAmount: Number(Customer.DueAmount),
+        AdvanceDeposit: Number(Customer.AdvanceDeposit)
+      });
+      alert("New Customer Added Successfully");
+      SetCustomer({
+        name: "",
+        address: "",
+        phoneNo: "",
+        DueAmount: "",
+        AdvanceDeposit: "",
+        password: ""
+      });
+    } catch (err) {
+      console.log(err);
+      alert("Registration Failed");
+    }
+  };
 
   return (
-   
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "20px"
+    }}>
+      <style>
+        {`
+          .register-input:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+          }
+        `}
+      </style>
 
-    <div className="container mt-2 borderradius" >
-      <h2 className="mb-4 text-center">Add Customer</h2>
-      <div className="row justify-content-center" >
-        <div className="col-md-6" >
-          <form onSubmit={handleRegister} className="border p-3 shadow-sm" style={{backgroundImage: "linear-gradient(to right, #f0f4f8, #e0e7ee)"}}>
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">Name</label>
+      <div style={{
+        background: "linear-gradient(135deg, rgba(45,45,45,0.95) 0%, rgba(30,30,30,0.95) 100%)",
+        borderRadius: "20px",
+        padding: "35px",
+        maxWidth: "450px",
+        width: "100%",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+        border: "1px solid rgba(212, 175, 55, 0.3)"
+      }}>
+        <h2 style={{
+          textAlign: "center",
+          fontSize: "26px",
+          fontWeight: "700",
+          color: "#D4AF37",
+          marginBottom: "8px"
+        }}>
+          Add New Customer
+        </h2>
+        <p style={{
+          textAlign: "center",
+          fontSize: "13px",
+          color: "rgba(255,255,255,0.6)",
+          marginBottom: "25px"
+        }}>
+          Register a new customer account
+        </p>
+
+        <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div>
+            <label style={{
+              display: "block",
+              marginBottom: "6px",
+              fontSize: "13px",
+              fontWeight: "600",
+              color: "rgba(255,255,255,0.8)"
+            }}>
+              Customer Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={Customer.name}
+              onChange={handleChange}
+              placeholder="Enter full name"
+              required
+              className="register-input"
+              style={{
+                width: "100%",
+                padding: "11px 14px",
+                borderRadius: "10px",
+                border: "1px solid rgba(212, 175, 55, 0.5)",
+                background: "#2d2d2d",
+                color: "#fff",
+                fontSize: "14px",
+                transition: "all 0.2s ease"
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: "block",
+              marginBottom: "6px",
+              fontSize: "13px",
+              fontWeight: "600",
+              color: "rgba(255,255,255,0.8)"
+            }}>
+              Phone Number
+            </label>
+            <input
+              type="text"
+              name="phoneNo"
+              value={Customer.phoneNo}
+              onChange={handleChange}
+              placeholder="Enter phone number"
+              required
+              className="register-input"
+              style={{
+                width: "100%",
+                padding: "11px 14px",
+                borderRadius: "10px",
+                border: "1px solid rgba(212, 175, 55, 0.5)",
+                background: "#2d2d2d",
+                color: "#fff",
+                fontSize: "14px",
+                transition: "all 0.2s ease"
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{
+              display: "block",
+              marginBottom: "6px",
+              fontSize: "13px",
+              fontWeight: "600",
+              color: "rgba(255,255,255,0.8)"
+            }}>
+              Address
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={Customer.address}
+              onChange={handleChange}
+              placeholder="Enter address"
+              required
+              className="register-input"
+              style={{
+                width: "100%",
+                padding: "11px 14px",
+                borderRadius: "10px",
+                border: "1px solid rgba(212, 175, 55, 0.5)",
+                background: "#2d2d2d",
+                color: "#fff",
+                fontSize: "14px",
+                transition: "all 0.2s ease"
+              }}
+            />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+            <div>
+              <label style={{
+                display: "block",
+                marginBottom: "6px",
+                fontSize: "13px",
+                fontWeight: "600",
+                color: "rgba(255,255,255,0.8)"
+              }}>
+                Due Amount
+              </label>
               <input
-                type="text"
-                className="form-control"
-                id="name"
-                name='name'
-                value={Customer.name}
-                onChange={handleChange}
-               
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="phoneNo" className="form-label">PhoneNo</label>
-              <input
-                type="text"
-                className="form-control"
-                id="phoneNo"
-                name='phoneNo'
-                value={Customer.phoneNo}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="address" className="form-label">Address</label>
-              <input
-                type="text"
-                className="form-control"
-                id="address"
-                name='address'
-                value={Customer.address}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="DueAmount" className="form-label">DueAmount</label>
-              <input
-                type="text"
-                className="form-control"
-                id="DueAmount"
-                name='DueAmount'
+                type="number"
+                name="DueAmount"
                 value={Customer.DueAmount}
                 onChange={handleChange}
+                placeholder="0"
+                className="register-input"
+                style={{
+                  width: "100%",
+                  padding: "11px 14px",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(212, 175, 55, 0.5)",
+                  background: "#2d2d2d",
+                  color: "#fff",
+                  fontSize: "14px",
+                  transition: "all 0.2s ease"
+                }}
               />
             </div>
-            <div className="mb-3">
-              <label htmlFor="AdvanceDeposit" className="form-label">AdvanceDeposit</label>
+
+            <div>
+              <label style={{
+                display: "block",
+                marginBottom: "6px",
+                fontSize: "13px",
+                fontWeight: "600",
+                color: "rgba(255,255,255,0.8)"
+              }}>
+                Advance
+              </label>
               <input
-                type="text"
-                className="form-control"
-                id="AdvanceDeposit"
-                name='AdvanceDeposit'
+                type="number"
+                name="AdvanceDeposit"
                 value={Customer.AdvanceDeposit}
                 onChange={handleChange}
+                placeholder="0"
+                className="register-input"
+                style={{
+                  width: "100%",
+                  padding: "11px 14px",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(212, 175, 55, 0.5)",
+                  background: "#2d2d2d",
+                  color: "#fff",
+                  fontSize: "14px",
+                  transition: "all 0.2s ease"
+                }}
               />
             </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name='password'
-                value={Customer.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-primary w-100 ">Add</button>
-           
-          </form>
-        </div>
+          </div>
+
+          <div>
+            <label style={{
+              display: "block",
+              marginBottom: "6px",
+              fontSize: "13px",
+              fontWeight: "600",
+              color: "rgba(255,255,255,0.8)"
+            }}>
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={Customer.password}
+              onChange={handleChange}
+              placeholder="Create password"
+              required
+              className="register-input"
+              style={{
+                width: "100%",
+                padding: "11px 14px",
+                borderRadius: "10px",
+                border: "1px solid rgba(212, 175, 55, 0.5)",
+                background: "#2d2d2d",
+                color: "#fff",
+                fontSize: "14px",
+                transition: "all 0.2s ease"
+              }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            style={{
+              width: "100%",
+              padding: "13px",
+              borderRadius: "12px",
+              border: "none",
+              background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+              color: "#1a1a1a",
+              fontSize: "15px",
+              fontWeight: "700",
+              cursor: "pointer",
+              marginTop: "8px",
+              boxShadow: "0 8px 20px rgba(212, 175, 55, 0.4)",
+              transition: "all 0.3s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 12px 25px rgba(212, 175, 55, 0.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 8px 20px rgba(212, 175, 55, 0.4)";
+            }}
+          >
+            Add Customer
+          </button>
+        </form>
       </div>
     </div>
-
   );
 };
 

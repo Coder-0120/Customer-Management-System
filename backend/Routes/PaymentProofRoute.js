@@ -68,4 +68,20 @@ Router.get("/getAll",async(req,res)=>{
   }
 })
 
+// PUT /api/customer/paymentproof/update/:id
+Router.put("/update/:id", async (req, res) => {
+  try {
+    const { status } = req.body;
+    const updated = await PaymentProofModel.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
 module.exports = Router;

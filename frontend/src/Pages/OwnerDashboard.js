@@ -9,20 +9,18 @@ const OwnerDashboard = () => {
   const [TransactionType, setTransactionType] = useState("");
   const [Amount, SetAmount] = useState(0);
   const [Remarks, SetRemarks] = useState("");
-  const [History, setHistory] = useState([[]]);
+  const [History, setHistory] = useState([]);
   const [showHistoryModal, SetshowHistoryModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [historyFilterType, setHistoryFilterType] = useState("");
   const [historyStartDate, setHistoryStartDate] = useState("");
   const [historyEndDate, setHistoryEndDate] = useState("");
+  const [viewMode, setViewMode] = useState("grid"); // grid or list
 
   useEffect(() => {
-    // to get all customers..
     const fetchAllCustomers = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/customer/AllCustomers"
-        );
+        const res = await axios.get("http://localhost:5000/api/customer/AllCustomers");
         setAllCustomers(res.data.data);
       } catch (error) {
         console.log("Error in fetching all customers..", error);
@@ -31,8 +29,8 @@ const OwnerDashboard = () => {
     fetchAllCustomers();
   }, []);
 
-  // to delete any customer..
   const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this customer?")) return;
     try {
       await axios.delete(`http://localhost:5000/api/customer/delete/${id}`);
       setAllCustomers(AllCustomers.filter((customer) => customer._id !== id));
@@ -42,100 +40,70 @@ const OwnerDashboard = () => {
     }
   };
 
-  // to edit customer details
   const handleEdit = (customer) => {
-    SetselectedCustomer({ ...customer }); // to show old values of customers details during edit..
+    SetselectedCustomer({ ...customer });
     setshowModal(true);
   };
 
-  // to save the updated details of customers
   const handleSave = async () => {
     setshowModal(false);
-
     try {
-      await axios.put(
-        `http://localhost:5000/api/customer/update/${selectedCustomer._id}`,
-        selectedCustomer
-      );
+      await axios.put(`http://localhost:5000/api/customer/update/${selectedCustomer._id}`, selectedCustomer);
       setAllCustomers((prev) =>
-        prev.map((cust) =>
-          cust._id === selectedCustomer._id ? selectedCustomer : cust
-        )
+        prev.map((cust) => (cust._id === selectedCustomer._id ? selectedCustomer : cust))
       );
-      alert("updated..");
+      alert("Updated successfully!");
     } catch (error) {
       console.log(error);
-      alert("failed to update customer details");
+      alert("Failed to update");
     }
   };
 
-  // to add transaction details
-  const handleEditTransaction = async (customer) => {
-    SetselectedCustomer({ ...customer })
+  const handleEditTransaction = (customer) => {
+    SetselectedCustomer({ ...customer });
     setshowTransactionModal(true);
-  }
+  };
 
-  // to save transaction details.. 
   const handleTransactionSave = async () => {
     setshowTransactionModal(false);
-    const Data = {
-
-      transactionType: TransactionType,
-      amount: Amount,
-      remarks: Remarks
-    }
+    const Data = { transactionType: TransactionType, amount: Amount, remarks: Remarks };
     try {
-      const res = await axios.post(
-        `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`, Data
-      );
-      alert("Transaction saved..")
-
+      const res = await axios.post(`http://localhost:5000/api/transaction/add/${selectedCustomer._id}`, Data);
+      alert("Transaction saved!");
       setAllCustomers((prev) =>
         prev.map((cust) =>
           cust._id === selectedCustomer._id
-            ? {
-              ...cust,
-              DueAmount: res.data.updatedCustomer.DueAmount,
-              AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit,
-            }
+            ? { ...cust, DueAmount: res.data.updatedCustomer.DueAmount, AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit }
             : cust
         )
       );
       SetAmount(0);
       SetRemarks("");
       setTransactionType("");
-
     } catch (error) {
       console.log(error);
-      alert("failed to add Transaction details");
+      alert("Failed to add transaction");
     }
+  };
 
-  }
-  const HandleHistory = async (customer) => {
+  const HandleHistory = (customer) => {
     SetselectedCustomer(customer);
     SetshowHistoryModal(true);
+  };
 
-  }
-
-  // to fetch history
   useEffect(() => {
     const fetchTransactionHistory = async () => {
+      if (!selectedCustomer) return;
       try {
         const res = await axios.get(`http://localhost:5000/api/transaction/history/${selectedCustomer._id}`);
         setHistory(res.data.transactions);
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
-        // alert("failed to get all history");
       }
-
-    }
+    };
     fetchTransactionHistory();
+  }, [selectedCustomer]);
 
-  }, [selectedCustomer]) // to fetch transactions only when customer changes.. also work without array but make performance slow as no. of calls increase..
-
-
-  // to clear values..
   const resetTransactionFields = () => {
     setTransactionType("");
     SetAmount(0);
@@ -149,128 +117,445 @@ const OwnerDashboard = () => {
     advanceWithdraw: "#007bff",
   };
 
+  const filteredCustomers = AllCustomers.filter((customer) => {
+    if (!searchTerm) return true;
+    return (
+      customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.phoneNo?.toString().includes(searchTerm)
+    );
+  });
+
+  const filteredHistory = (History || []).filter((t) => {
+    if (!t) return false;
+    const typeMatch = historyFilterType ? t.transactionType === historyFilterType : true;
+    const created = t.createdAt ? new Date(t.createdAt) : null;
+    const start = historyStartDate ? new Date(historyStartDate) : null;
+    const end = historyEndDate ? new Date(historyEndDate) : null;
+    const dateMatch = (!start || (created && created >= start)) && (!end || (created && created <= end));
+    return typeMatch && dateMatch;
+  });
+
+  // Calculate stats
+  const totalDue = AllCustomers.reduce((sum, c) => sum + (c.DueAmount || 0), 0);
+  const totalAdvance = AllCustomers.reduce((sum, c) => sum + (c.AdvanceDeposit || 0), 0);
 
   return (
-    <div>
-      <h1 style={{ textAlign: "center", textDecorationLine: "underline" }}>
-        Owner Dashboard
-      </h1>
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px", boxShadow: '0px 0px 20px black' }}>
-        <input
-          type="text"
-          placeholder="Search by name or phone..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            width: "250px",
-            padding: "8px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-            outline: "none",
-          }}
-        />
-      </div>
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+      padding: "20px"
+    }}>
+      <style>
+        {`
+          .input-focus:focus { outline: none; border-color: #D4AF37; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
+          .card-hover { transition: all 0.3s ease; }
+          .card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25); }
+          .stat-card { transition: all 0.3s ease; }
+          .stat-card:hover { transform: scale(1.05); }
+        `}
+      </style>
 
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        {/* Header with Stats */}
+        <div style={{
+          background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)",
+          borderRadius: "20px",
+          padding: "30px",
+          marginBottom: "30px",
+          border: "1px solid rgba(212, 175, 55, 0.3)"
+        }}>
+          <h1 style={{
+            color: "#D4AF37",
+            fontSize: "28px",
+            fontWeight: "700",
+            marginBottom: "25px",
+            textAlign: "center"
+          }}>
+            💼 Owner Dashboard
+          </h1>
 
-      {/*  Customer Cards */}
-      {AllCustomers && AllCustomers.length > 0 ? (
-        (() => {
-          const filteredCustomers = AllCustomers.filter((customer) => {
-            if (!searchTerm) return true;
-            const nameMatch = customer.name
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase());
-            const phoneMatch = customer.phoneNo
-              ?.toString()
-              .includes(searchTerm);
-            return nameMatch || phoneMatch;
-          });
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "15px"
+          }}>
+            <div className="stat-card" style={{
+              background: "rgba(212, 175, 55, 0.1)",
+              padding: "20px",
+              borderRadius: "12px",
+              border: "1px solid rgba(212, 175, 55, 0.3)",
+              textAlign: "center"
+            }}>
+              <div style={{ fontSize: "12px", color: "#D4AF37", fontWeight: "600", marginBottom: "8px" }}>TOTAL CUSTOMERS</div>
+              <div style={{ fontSize: "32px", color: "#FFD700", fontWeight: "700" }}>{AllCustomers.length}</div>
+            </div>
 
-          return filteredCustomers.length > 0 ? (
-            <div
+            <div className="stat-card" style={{
+              background: "rgba(255, 77, 77, 0.1)",
+              padding: "20px",
+              borderRadius: "12px",
+              border: "1px solid rgba(255, 77, 77, 0.3)",
+              textAlign: "center"
+            }}>
+              <div style={{ fontSize: "12px", color: "#ff4d4d", fontWeight: "600", marginBottom: "8px" }}>TOTAL DUE</div>
+              <div style={{ fontSize: "32px", color: "#ff4d4d", fontWeight: "700" }}>₹{totalDue.toLocaleString()}</div>
+            </div>
+
+            <div className="stat-card" style={{
+              background: "rgba(40, 167, 69, 0.1)",
+              padding: "20px",
+              borderRadius: "12px",
+              border: "1px solid rgba(40, 167, 69, 0.3)",
+              textAlign: "center"
+            }}>
+              <div style={{ fontSize: "12px", color: "#28a745", fontWeight: "600", marginBottom: "8px" }}>TOTAL ADVANCE</div>
+              <div style={{ fontSize: "32px", color: "#28a745", fontWeight: "700" }}>₹{totalAdvance.toLocaleString()}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Search and View Toggle */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+          gap: "15px",
+          flexWrap: "wrap"
+        }}>
+          <input
+            type="text"
+            placeholder="🔍 Search customers..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input-focus"
+            style={{
+              flex: 1,
+              minWidth: "250px",
+              padding: "12px 20px",
+              borderRadius: "10px",
+              border: "1px solid rgba(212, 175, 55, 0.5)",
+              background: "rgba(45, 45, 45, 0.5)",
+              color: "#fff",
+              fontSize: "14px"
+            }}
+          />
+
+          <div style={{
+            background: "rgba(45, 45, 45, 0.5)",
+            borderRadius: "10px",
+            padding: "5px",
+            display: "flex",
+            gap: "5px",
+            border: "1px solid rgba(212, 175, 55, 0.3)"
+          }}>
+            <button
+              onClick={() => setViewMode("grid")}
               style={{
-                display: "flex",
-                flexWrap: "wrap",
-                flexDirection: "row",
-                gap: "10px",
+                padding: "8px 16px",
+                background: viewMode === "grid" ? "#D4AF37" : "transparent",
+                color: viewMode === "grid" ? "#1a1a1a" : "#D4AF37",
+                border: "none",
+                borderRadius: "7px",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "600"
               }}
             >
+              ⊞ Grid
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              style={{
+                padding: "8px 16px",
+                background: viewMode === "list" ? "#D4AF37" : "transparent",
+                color: viewMode === "list" ? "#1a1a1a" : "#D4AF37",
+                border: "none",
+                borderRadius: "7px",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "600"
+              }}
+            >
+              ☰ List
+            </button>
+          </div>
+        </div>
+
+        {/* Customer Display */}
+        {filteredCustomers.length > 0 ? (
+          viewMode === "grid" ? (
+            // Grid View
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: "20px"
+            }}>
               {filteredCustomers.map((customer) => (
                 <div
                   key={customer._id}
+                  className="card-hover"
                   style={{
-                    border: "2px solid black",
-                    width: "300px",
-                    height: "250px",
-                    margin: "5px",
-                    padding: "10px",
-                    borderRadius: "20px",
-                    boxShadow: "2px 2px 6px rgba(0,0,0,0.2)",
+                    background: "linear-gradient(135deg, rgba(45,45,45,0.95) 0%, rgba(30,30,30,0.95) 100%)",
+                    borderRadius: "16px",
+                    padding: "25px",
+                    border: "1px solid rgba(212, 175, 55, 0.3)",
+                    boxShadow: "0 8px 20px rgba(0,0,0,0.5)",
+                    position: "relative",
+                    overflow: "hidden"
                   }}
                 >
-                  <h3>Name: {customer.name}</h3>
-                  <p>Phone No: {customer.phoneNo}</p>
-                  <p>Address: {customer.address}</p>
-                  <h6 style={{ color: "red" }}>Due Amount: {customer.DueAmount}</h6>
-                  <h6 style={{ color: "green" }}>
-                    Advance Deposit: {customer.AdvanceDeposit}
-                  </h6>
-                  <div style={{ gap: "5px", display: "flex" }}>
+                  {/* Decorative corner */}
+                  <div style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: "80px",
+                    height: "80px",
+                    background: "radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent)",
+                    borderBottomLeftRadius: "100%"
+                  }} />
+
+                  <h3 style={{
+                    color: "#D4AF37",
+                    fontSize: "20px",
+                    marginBottom: "15px",
+                    fontWeight: "700"
+                  }}>
+                    {customer.name}
+                  </h3>
+
+                  <div style={{ marginBottom: "15px" }}>
+                    <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", margin: "5px 0" }}>
+                      📱 {customer.phoneNo}
+                    </p>
+                    <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", margin: "5px 0" }}>
+                      📍 {customer.address}
+                    </p>
+                  </div>
+
+                  <div style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginBottom: "15px"
+                  }}>
+                    <div style={{
+                      flex: 1,
+                      background: "rgba(255,77,77,0.15)",
+                      padding: "12px",
+                      borderRadius: "10px",
+                      border: "1px solid rgba(255,77,77,0.3)"
+                    }}>
+                      <div style={{ fontSize: "10px", color: "#ff4d4d", fontWeight: "600" }}>DUE</div>
+                      <div style={{ fontSize: "18px", color: "#ff4d4d", fontWeight: "700" }}>
+                        ₹{customer.DueAmount.toLocaleString()}
+                      </div>
+                    </div>
+
+                    <div style={{
+                      flex: 1,
+                      background: "rgba(40,167,69,0.15)",
+                      padding: "12px",
+                      borderRadius: "10px",
+                      border: "1px solid rgba(40,167,69,0.3)"
+                    }}>
+                      <div style={{ fontSize: "10px", color: "#28a745", fontWeight: "600" }}>ADVANCE</div>
+                      <div style={{ fontSize: "18px", color: "#28a745", fontWeight: "700" }}>
+                        ₹{customer.AdvanceDeposit.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
                     <button
-                      style={{
-                        color: "black",
-                        backgroundColor: "yellow",
-                        borderRadius: "5px",
-                      }}
                       onClick={() => handleEdit(customer)}
+                      style={{
+                        padding: "10px",
+                        background: "#D4AF37",
+                        border: "none",
+                        borderRadius: "8px",
+                        color: "#1a1a1a",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
                     >
-                      Edit
+                      ✏️ Edit
                     </button>
                     <button
-                      style={{
-                        color: "white",
-                        backgroundColor: "red",
-                        borderRadius: "5px",
-                      }}
                       onClick={() => handleDelete(customer._id)}
+                      style={{
+                        padding: "10px",
+                        background: "#ff4757",
+                        border: "none",
+                        borderRadius: "8px",
+                        color: "#fff",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
                     >
-                      Delete
+                      🗑️ Delete
                     </button>
                     <button
-                      style={{
-                        color: "black",
-                        backgroundColor: "orange",
-                        borderRadius: "5px",
-                      }}
                       onClick={() => handleEditTransaction(customer)}
+                      style={{
+                        padding: "10px",
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        border: "none",
+                        borderRadius: "8px",
+                        color: "#fff",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
                     >
-                      Add Transaction
+                      💰 Transaction
                     </button>
                     <button
-                      style={{
-                        color: "white",
-                        backgroundColor: "indigo",
-                        borderRadius: "5px",
-                      }}
                       onClick={() => HandleHistory(customer)}
+                      style={{
+                        padding: "10px",
+                        background: "#8b5cf6",
+                        border: "none",
+                        borderRadius: "8px",
+                        color: "#fff",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
                     >
-                      History
+                      📋 History
                     </button>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p style={{ textAlign: "center", color: "#888" }}>
-              No matching customers found.
-            </p>
-          );
-        })()
-      ) : (
-        <p>No customers found.</p>
-      )}
+            // List View
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {filteredCustomers.map((customer) => (
+                <div
+                  key={customer._id}
+                  className="card-hover"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(45,45,45,0.95) 0%, rgba(30,30,30,0.95) 100%)",
+                    borderRadius: "12px",
+                    padding: "20px",
+                    border: "1px solid rgba(212, 175, 55, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "20px",
+                    flexWrap: "wrap"
+                  }}
+                >
+                  <div style={{ flex: 1, minWidth: "200px" }}>
+                    <h3 style={{ color: "#D4AF37", fontSize: "18px", marginBottom: "5px" }}>
+                      {customer.name}
+                    </h3>
+                    <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px" }}>
+                      📱 {customer.phoneNo} | 📍 {customer.address}
+                    </p>
+                  </div>
 
-      {/* Edit Modal */}
+                  <div style={{ display: "flex", gap: "15px" }}>
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: "10px", color: "#ff4d4d", fontWeight: "600" }}>DUE</div>
+                      <div style={{ fontSize: "16px", color: "#ff4d4d", fontWeight: "700" }}>
+                        ₹{customer.DueAmount.toLocaleString()}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: "10px", color: "#28a745", fontWeight: "600" }}>ADVANCE</div>
+                      <div style={{ fontSize: "16px", color: "#28a745", fontWeight: "700" }}>
+                        ₹{customer.AdvanceDeposit.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <button
+                      onClick={() => handleEdit(customer)}
+                      style={{
+                        padding: "8px 12px",
+                        background: "#D4AF37",
+                        border: "none",
+                        borderRadius: "6px",
+                        color: "#1a1a1a",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => handleDelete(customer._id)}
+                      style={{
+                        padding: "8px 12px",
+                        background: "#ff4757",
+                        border: "none",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      🗑️
+                    </button>
+                    <button
+                      onClick={() => handleEditTransaction(customer)}
+                      style={{
+                        padding: "8px 12px",
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        border: "none",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      💰
+                    </button>
+                    <button
+                      onClick={() => HandleHistory(customer)}
+                      style={{
+                        padding: "8px 12px",
+                        background: "#8b5cf6",
+                        border: "none",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        cursor: "pointer"
+                      }}
+                    >
+                      📋
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        ) : (
+          <div style={{
+            textAlign: "center",
+            padding: "60px 20px",
+            background: "rgba(45,45,45,0.5)",
+            borderRadius: "16px",
+            border: "1px solid rgba(212, 175, 55, 0.3)"
+          }}>
+            <div style={{ fontSize: "48px", marginBottom: "15px" }}>🔍</div>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "16px" }}>
+              {searchTerm ? `No customers found matching "${searchTerm}"` : "No customers found"}
+            </p>
+          </div>
+        )}
+      </div>
+
+       {/* Edit Modal */}
       {showModal && selectedCustomer && (
         <div
           style={{
@@ -1041,7 +1326,6 @@ const OwnerDashboard = () => {
           </div>
         </div>
       )}
-
 
     </div>
   );
