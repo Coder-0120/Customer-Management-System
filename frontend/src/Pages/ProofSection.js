@@ -11,8 +11,7 @@ const ProofSection = () => {
   const [Remarks, SetRemarks] = useState("");
   const [proofStatus, setproofStatus] = useState("unverified");
   const [selectedProof, setSelectedProof] = useState(null);
-
-
+  const [filterStatus, setFilterStatus] = useState("all");
 
   useEffect(() => {
     const fetchProofs = async () => {
@@ -27,168 +26,297 @@ const ProofSection = () => {
   }, []);
 
   const statusColors = {
-    unverified: "#ff4d4d",
+    unverified: "#ffa500",
     verified: "#28a745",
-    pending: "#ffa500",
+    rejected: "#ff4d4d",
   };
 
-  const OpenCustomerModal = (proof,customer) => {
+  const OpenCustomerModal = (proof, customer) => {
     SetselectedCustomer({ ...customer });
     setSelectedProof(proof);
-    setproofStatus(proof.status|| "Unverified")
-    // to auto filled values in transaction modal during add new transactions(to update accouont)
+    setproofStatus(proof.status || "unverified");
     setTransactionType(proof.transactiontype);
     SetAmount(proof.transactionAmount);
     SetRemarks(proof.message);
     setshowCustomerModal(true);
-
-  }
-  const typeColors = {
-    duePayment: "#ff4d4d",
-    dueIncrease: "#ffa500",
-    advanceDeposit: "#28a745",
-    advanceWithdraw: "#007bff",
   };
 
-   const handleTransactions = async (customer) => {
-    SetselectedCustomer({ ...customer })
+  const handleTransactions = (customer) => {
+    SetselectedCustomer({ ...customer });
     setshowTransactionModal(true);
-  }
-  // to save transaction details.. 
- const handleTransactionSave = async () => {
-  setshowTransactionModal(false);
-  const Data = {
-    transactionType: TransactionType,
-    amount: Amount,
-    remarks: Remarks,
   };
 
-  try {
-    const res = await axios.post(
-      `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`,
-      Data
-    );
+  const handleTransactionSave = async () => {
+    setshowTransactionModal(false);
+    const Data = { transactionType: TransactionType, amount: Amount, remarks: Remarks };
 
-    // alert("Transaction saved ");
+    try {
+      const res = await axios.post(`http://localhost:5000/api/transaction/add/${selectedCustomer._id}`, Data);
+      
+      SetselectedCustomer((prev) => ({
+        ...prev,
+        DueAmount: res.data.updatedCustomer.DueAmount,
+        AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit,
+      }));
 
-    //  Update the modal’s customer details immediately
-    SetselectedCustomer((prev) => ({
-      ...prev,
-      DueAmount: res.data.updatedCustomer.DueAmount,
-      AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit,
-    }));
+      setAllProofs((prev) =>
+        prev.map((p) =>
+          p.user._id === selectedCustomer._id
+            ? { ...p, user: { ...p.user, DueAmount: res.data.updatedCustomer.DueAmount, AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit } }
+            : p
+        )
+      );
 
-    //  Update global proof list if needed
-    setAllProofs((prev) =>
-      prev.map((p) =>
-        p.user._id === selectedCustomer._id
-          ? { ...p, user: { ...p.user, DueAmount: res.data.updatedCustomer.DueAmount, AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit } }
-          : p
-      )
-    );
-
-    // reset inputs
-    SetAmount(0);
-    SetRemarks("");
-    setTransactionType("");
-
-  } catch (error) {
-    console.log(error);
-    alert("Failed to add transaction ❌");
-  }
-};
+      SetAmount(0);
+      SetRemarks("");
+      setTransactionType("");
+    } catch (error) {
+      console.log(error);
+      alert("Failed to add transaction");
+    }
+  };
 
   const resetTransactionFields = () => {
     setTransactionType("");
     SetAmount(0);
     SetRemarks("");
   };
-  // to change status of proofs
-  const handleStatusChange=(value)=>{
+
+  const handleStatusChange = (value) => {
     setproofStatus(value);
-  }
- const handleStatusUpdate = async () => {
-  if (!selectedProof) return alert("No proof selected!");
+  };
 
-  try {
-    const res = await axios.put(
-      `http://localhost:5000/api/customer/paymentproof/update/${selectedProof._id}`,
-      { status: proofStatus }
-    );
+  const handleStatusUpdate = async () => {
+    if (!selectedProof) return alert("No proof selected!");
 
-    if (res.data.success) {
-      setshowCustomerModal(false);
-      // alert("Status updated successfully!");
-
-      setAllProofs((prev) =>
-        prev.map((p) =>
-          p._id === selectedProof._id ? { ...p, status: proofStatus } : p
-        )
+    try {
+      const res = await axios.put(
+        `http://localhost:5000/api/customer/paymentproof/update/${selectedProof._id}`,
+        { status: proofStatus }
       );
 
-    } else {
-      alert("Failed to update status");
+      if (res.data.success) {
+        setshowCustomerModal(false);
+        setAllProofs((prev) =>
+          prev.map((p) => (p._id === selectedProof._id ? { ...p, status: proofStatus } : p))
+        );
+      } else {
+        alert("Failed to update status");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error in updating proof status");
     }
-  } catch (error) {
-    console.error(error);
-    alert("Error in updating proof status");
-  }
-};
+  };
 
+  const filteredProofs = filterStatus === "all" 
+    ? AllProofs 
+    : AllProofs.filter(p => p.status === filterStatus);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Payment Proofs</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "15px" }}>
-        {AllProofs.length > 0 ? (
-          AllProofs.map((proof) => (
-            <div key={proof._id} style={{
-              backgroundColor: "#f9f9f9",
-              padding: "15px",
-              borderRadius: "10px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+      padding: "30px 20px"
+    }}>
+      <style>
+        {`
+          .proof-card { transition: all 0.3s ease; }
+          .proof-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3); }
+          .input-focus:focus { outline: none; border-color: #D4AF37; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
+        `}
+      </style>
+
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        {/* Header */}
+        <div style={{
+          background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)",
+          borderRadius: "16px",
+          padding: "25px",
+          marginBottom: "30px",
+          border: "1px solid rgba(212, 175, 55, 0.3)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "15px"
+        }}>
+          <h2 style={{ color: "#D4AF37", fontSize: "28px", fontWeight: "700", margin: 0 }}>
+            💳 Payment Proofs
+          </h2>
+
+          {/* Filter */}
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "1px solid rgba(212, 175, 55, 0.5)",
+              background: "rgba(45, 45, 45, 0.8)",
+              color: "#D4AF37",
               fontSize: "14px",
-            }}>
-              <strong>{proof.user.name}</strong>
-              <span>{proof.user.phoneNo} | {proof.user.address}</span>
-              <span>Txn ID: {proof.transactionID}</span>
-              <span>Amount: ₹{proof.transactionAmount.toLocaleString()}</span>
-              <span>Type: {proof.transactiontype}</span>
-              {proof.message && <span>Msg: {proof.message}</span>}
-              <img
-                src={`http://localhost:5000${proof.proofUrl}`}
-                alt="Proof"
-                style={{ width: "100%", height: "150px", objectFit: "contain", borderRadius: "6px" }}
-              />
-              <span style={{ fontSize: "12px", color: "#555" }}>
-                {new Date(proof.createdAt).toLocaleDateString('en-IN', {
-                  day: '2-digit',
-                  month: 'short',
-                  year: 'numeric'
-                })}
-              </span>
-              <p style={{ background: "yellow", borderRadius: '50px', color: "black", border: "2px solid orange", textAlign: "center", fontWeight: '600', cursor: "pointer" }} onClick={() => OpenCustomerModal(proof,proof.user)}>Go to Customer</p>
-              <button style={{
-                padding: "6px",
-                border: "none",
-                borderRadius: "5px",
-                backgroundColor: statusColors[proof.status] || "#aaa",
-                color: "#fff",
-                fontWeight: "600",
-                fontSize: "12px",
-              }}>
-                {proof.status}
-              </button>
-            </div>
-          ))
+              fontWeight: "600",
+              cursor: "pointer"
+            }}
+          >
+            <option value="all">All Proofs</option>
+            <option value="unverified">Unverified</option>
+            <option value="verified">Verified</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        {/* Proof Cards */}
+        {filteredProofs.length > 0 ? (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "20px"
+          }}>
+            {filteredProofs.map((proof) => (
+              <div
+                key={proof._id}
+                className="proof-card"
+                style={{
+                  background: "linear-gradient(135deg, rgba(45,45,45,0.95) 0%, rgba(30,30,30,0.95) 100%)",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  border: "1px solid rgba(212, 175, 55, 0.3)",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.5)",
+                  position: "relative",
+                  overflow: "hidden"
+                }}
+              >
+                {/* Status Badge */}
+                <div style={{
+                  position: "absolute",
+                  top: "15px",
+                  right: "15px",
+                  background: statusColors[proof.status] || "#aaa",
+                  color: "#fff",
+                  padding: "5px 12px",
+                  borderRadius: "20px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  textTransform: "uppercase"
+                }}>
+                  {proof.status}
+                </div>
+
+                <h3 style={{ color: "#D4AF37", fontSize: "18px", marginBottom: "12px", fontWeight: "700" }}>
+                  {proof.user.name}
+                </h3>
+
+                <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", marginBottom: "15px" }}>
+                  <p style={{ margin: "5px 0" }}>📱 {proof.user.phoneNo}</p>
+                  <p style={{ margin: "5px 0" }}>📍 {proof.user.address}</p>
+                </div>
+
+                <div style={{
+                  background: "rgba(212, 175, 55, 0.1)",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  marginBottom: "12px",
+                  border: "1px solid rgba(212, 175, 55, 0.3)"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Amount</span>
+                    <span style={{ color: "#D4AF37", fontSize: "16px", fontWeight: "700" }}>
+                      ₹{proof.transactionAmount.toLocaleString()}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Type</span>
+                    <span style={{ color: "#fff", fontSize: "13px", fontWeight: "600" }}>
+                      {proof.transactiontype}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Txn ID</span>
+                    <span style={{ color: "#fff", fontSize: "13px" }}>{proof.transactionID}</span>
+                  </div>
+                </div>
+
+                {proof.message && (
+                  <p style={{
+                    color: "rgba(255,255,255,0.6)",
+                    fontSize: "12px",
+                    fontStyle: "italic",
+                    marginBottom: "12px",
+                    padding: "8px",
+                    background: "rgba(0,0,0,0.3)",
+                    borderRadius: "6px"
+                  }}>
+                    💬 {proof.message}
+                  </p>
+                )}
+
+                <img
+                  src={`http://localhost:5000${proof.proofUrl}`}
+                  alt="Payment Proof"
+                  style={{
+                    width: "100%",
+                    height: "180px",
+                    objectFit: "cover",
+                    borderRadius: "10px",
+                    marginBottom: "12px",
+                    border: "2px solid rgba(212, 175, 55, 0.3)"
+                  }}
+                />
+
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "12px"
+                }}>
+                  <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)" }}>
+                    {new Date(proof.createdAt).toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => OpenCustomerModal(proof, proof.user)}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+                    color: "#1a1a1a",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 12px rgba(212, 175, 55, 0.3)"
+                  }}
+                >
+                  View Details →
+                </button>
+              </div>
+            ))}
+          </div>
         ) : (
-          <p style={{ textAlign: "center", color: "#888", gridColumn: "1/-1" }}>No proofs found</p>
+          <div style={{
+            textAlign: "center",
+            padding: "60px 20px",
+            background: "rgba(45,45,45,0.5)",
+            borderRadius: "16px",
+            border: "1px solid rgba(212, 175, 55, 0.3)"
+          }}>
+            <div style={{ fontSize: "48px", marginBottom: "15px" }}>📭</div>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "16px" }}>
+              No payment proofs found
+            </p>
+          </div>
         )}
       </div>
 
-      {/* customer Modal */}
+      {/* Customer Modal - Keep your existing modal code but update colors */}
       {showCustomerModal && selectedCustomer && (
         <div
           style={{
@@ -197,7 +325,7 @@ const ProofSection = () => {
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0,0,0,0.7)",
+            backgroundColor: "rgba(0,0,0,0.8)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -209,38 +337,17 @@ const ProofSection = () => {
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+              background: "linear-gradient(135deg, rgba(45,45,45,0.98) 0%, rgba(30,30,30,0.98) 100%)",
               padding: "35px",
               borderRadius: "16px",
               width: "100%",
               maxWidth: "480px",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
               position: "relative",
-              animation: "slideIn 0.3s ease-out",
+              border: "1px solid rgba(212, 175, 55, 0.3)"
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <style>
-              {`
-          @keyframes slideIn {
-            from {
-              opacity: 0;
-              transform: translateY(-20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          
-          .edit-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-          }
-        `}
-            </style>
-
             <button
               onClick={() => setshowCustomerModal(false)}
               style={{
@@ -254,116 +361,89 @@ const ProofSection = () => {
                 borderRadius: "50%",
                 fontSize: "18px",
                 cursor: "pointer",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s ease",
-                boxShadow: "0 2px 8px rgba(255,71,87,0.3)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#ee5a6f";
-                e.currentTarget.style.transform = "rotate(90deg)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#ff4757";
-                e.currentTarget.style.transform = "rotate(0deg)";
+                color: "#fff"
               }}
             >
               ✖
             </button>
 
+            <h2 style={{ color: "#D4AF37", fontSize: "24px", marginBottom: "25px" }}>
+              Customer Details
+            </h2>
 
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              <h4>Customer Details...</h4>
-              <div>
-
-
-                <p style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  color: "#2c3e50"
-                }}>
-                  Customer Name : {selectedCustomer.name}
-                </p>
-                <p style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  color: "#2c3e50"
-                }}>
-                  Address : {selectedCustomer.address}
-                </p>
-                <p style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  color: "#2c3e50"
-                }}>
-                  phoneNo : {selectedCustomer.phoneNo}
-                </p>
-                <p style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  color: "#2c3e50"
-                }}>
-                  DueAmount : <span style={{ color: 'red', fontWeight: "bold" }}>{selectedCustomer.DueAmount}</span>
-                </p>
-                <p style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  color: "#2c3e50"
-                }}>
-                  AdvanceDeposit :<span style={{ color: 'green', fontWeight: "bold" }}>{selectedCustomer.AdvanceDeposit}</span>
-                </p>
-
-              </div>
-              <div style={{ display: "flex", gap: '20px' }}>
-                <button
-                  style={{
-                    color: "black",
-                    backgroundColor: "orange",
-                    borderRadius: "5px",
-                  }}
-                  onClick={()=>handleTransactions(selectedCustomer)}
-                >
-                  Add Transaction
-                </button>
-                <label>Status:</label>
-                <select
-                  value={proofStatus}   // state variable for current proof status
-                  onChange={(e) => handleStatusChange(e.target.value)}
-                >
-                  <option value="unverified">Unverified</option>
-                  <option value="verified">Verified</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-
-              </div>
-              <div>
-                <button style={{width:"100%",backgroundColor:'green',color:'white',borderRadius:"50px"}} onClick={handleStatusUpdate}>Save</button>
-              </div>
-
-
-
-
-
-
+            <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "14px", marginBottom: "20px" }}>
+              <p style={{ margin: "10px 0" }}><strong>Name:</strong> {selectedCustomer.name}</p>
+              <p style={{ margin: "10px 0" }}><strong>Phone:</strong> {selectedCustomer.phoneNo}</p>
+              <p style={{ margin: "10px 0" }}><strong>Address:</strong> {selectedCustomer.address}</p>
+              <p style={{ margin: "10px 0" }}>
+                <strong>Due:</strong> <span style={{ color: "#ff4d4d", fontWeight: "700" }}>₹{selectedCustomer.DueAmount}</span>
+              </p>
+              <p style={{ margin: "10px 0" }}>
+                <strong>Advance:</strong> <span style={{ color: "#28a745", fontWeight: "700" }}>₹{selectedCustomer.AdvanceDeposit}</span>
+              </p>
             </div>
+
+            <div style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "center" }}>
+              <button
+                onClick={() => handleTransactions(selectedCustomer)}
+                style={{
+                  padding: "10px 20px",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  border: "none",
+                  borderRadius: "8px",
+                  color: "#fff",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  cursor: "pointer"
+                }}
+              >
+                💰 Add Transaction
+              </button>
+
+              <select
+                value={proofStatus}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                className="input-focus"
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(212, 175, 55, 0.5)",
+                  background: "#2d2d2d",
+                  color: "#fff",
+                  fontSize: "13px",
+                  fontWeight: "600"
+                }}
+              >
+                <option value="unverified">Unverified</option>
+                <option value="verified">Verified</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleStatusUpdate}
+              style={{
+                width: "100%",
+                padding: "14px",
+                background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+                border: "none",
+                borderRadius: "10px",
+                color: "#1a1a1a",
+                fontSize: "15px",
+                fontWeight: "700",
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(212, 175, 55, 0.4)"
+              }}
+            >
+              Save Changes
+            </button>
           </div>
         </div>
       )}
 
-      {/* Transaction Modal */}
+      {/* Transaction Modal - Keep your existing transaction modal code */}
+        {/* Transaction Modal */}
       {showTransactionModal && selectedCustomer && (
         <div
           style={{
@@ -663,12 +743,8 @@ const ProofSection = () => {
           </div>
         </div>
       )}
-
-   
     </div>
   );
 };
-
-
 
 export default ProofSection;

@@ -1,8 +1,6 @@
 import './App.css';
 import Navbar from './Components/Navbar';
 import LandingPage from './Pages/LandingPage';
-import Custlogin from './Pages/Custlogin';
-import Ownerlogin from './Pages/Ownerlogin';
 import OwnerDashboard from './Pages/OwnerDashboard';
 import RegisterCustomer from './Pages/RegisterCustomer';
 import CustomerDashboard from "./Pages/CustomerDashboard";
@@ -10,6 +8,7 @@ import Payment from './Pages/Payment';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import ProofSection from './Pages/ProofSection';
 import CustNotifications from './Pages/CustNotifications';
+import Login from './Pages/Login';
 
 const CustomerProtectedRoute = ({ children }) => {
 
@@ -28,9 +27,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Custlogin />} />
+        <Route path='/login' element={<Login/>}/>
         <Route path="/register" element={<OwnerProtectedRoute><RegisterCustomer/></OwnerProtectedRoute>} />
-        <Route path="/ownerLogin" element={<Ownerlogin />} /> 
         <Route path="/owner-dashboard" element={<OwnerProtectedRoute><OwnerDashboard/></OwnerProtectedRoute>} />
         <Route path="/proof-section" element={<OwnerProtectedRoute><ProofSection/></OwnerProtectedRoute>} />
         <Route path="/customer-dashboard" element={<CustomerProtectedRoute><CustomerDashboard/></CustomerProtectedRoute>}/>
