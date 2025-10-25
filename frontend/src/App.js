@@ -5,10 +5,11 @@ import OwnerDashboard from './Pages/OwnerDashboard';
 import RegisterCustomer from './Pages/RegisterCustomer';
 import CustomerDashboard from "./Pages/CustomerDashboard";
 import Payment from './Pages/Payment';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
 import ProofSection from './Pages/ProofSection';
 import CustNotifications from './Pages/CustNotifications';
 import Login from './Pages/Login';
+import ScrolltoTop from './Components/ScrolltoTop';
 
 const CustomerProtectedRoute = ({ children }) => {
 
@@ -24,6 +25,10 @@ const OwnerProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      <ScrolltoTop>
+              </ScrolltoTop>
+
+
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
