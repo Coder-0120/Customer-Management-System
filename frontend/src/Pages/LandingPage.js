@@ -1,13 +1,10 @@
 import React from 'react';
+import { Link, useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
-  const customer=JSON.parse(localStorage.getItem("CustomerDetails"));
-  const owner=JSON.parse(localStorage.getItem("OwnerDetails"));
-  const handleLogin = () => {
-    console.log('Navigate to login');
-    // Your navigation logic here
-  };
-
+  const navigate = useNavigate();
+  const customer = JSON.parse(localStorage.getItem("CustomerDetails"));
+  const owner = JSON.parse(localStorage.getItem("OwnerDetails"));
   return (
     <div style={{
       minHeight: "100vh",
@@ -115,7 +112,7 @@ const LandingPage = () => {
                 Fine Jewellery
               </span>
             </h1>
-            
+
             <p style={{
               fontSize: "20px",
               color: "rgba(255,255,255,0.8)",
@@ -123,12 +120,12 @@ const LandingPage = () => {
               maxWidth: "700px",
               margin: "0 auto 40px"
             }}>
-              Track your payments, manage advances, and view complete transaction history. 
+              Track your payments, manage advances, and view complete transaction history.
               Your trusted jeweller, now with digital convenience.
             </p>
 
             <button
-              onClick={handleLogin}
+            onClick={() => navigate(customer ? "" : owner ? "" : "/login")}
               style={{
                 padding: "18px 50px",
                 borderRadius: "12px",
@@ -142,7 +139,7 @@ const LandingPage = () => {
               }}
               className="cta-button"
             >
-              {customer?`Welcome ${customer.name}`:owner?`Welcome Owner ${owner.UserName}`:`Access Your Account →`}
+              {customer ? `Welcome ${customer.name}` : owner ? `Welcome Owner ${owner.UserName}` : `Access Your Account →`}
             </button>
           </div>
 
@@ -273,11 +270,11 @@ const LandingPage = () => {
             margin: "0 auto 35px",
             lineHeight: "1.8"
           }}>
-            For over 50 years, we've been creating precious memories with fine jewellery. 
+            For over 50 years, we've been creating precious memories with fine jewellery.
             Now, manage your account digitally while enjoying the same personal service you've always loved.
           </p>
           <button
-            onClick={handleLogin}
+            onClick={() => navigate(customer ? "/customer-dashboard" : owner ? "/owner-dashboard" : "/login")}
             style={{
               padding: "18px 50px",
               borderRadius: "12px",
@@ -291,7 +288,7 @@ const LandingPage = () => {
             }}
             className="cta-button"
           >
-            Login to Your Account
+            {customer ? "Access Your Dashboard" : owner ? "Access Your Dashboard" : "Login to Your Account"}
           </button>
         </div>
 

@@ -42,7 +42,7 @@ Router.post("/login", async (req, res) => {
         if (!existcustomer) {
             return res.status(400).json({ status: "false", message: "Customer don't exist" });
         }
-        const isMatch = bcrypt.compare(password, existcustomer.password);
+        const isMatch = await bcrypt.compare(password, existcustomer.password);
         if (!isMatch) {
             return res.status(400).json({ success: "false", message: "Invalid credentials.." });
         }

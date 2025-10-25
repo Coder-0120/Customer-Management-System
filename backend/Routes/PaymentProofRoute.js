@@ -51,11 +51,11 @@ Router.post("/add", upload.single("image"), async (req, res) => {
     });
   }
 });
-
+// to get all proofs for owner sections..
 Router.get("/getAll",async(req,res)=>{
   try{
     const allProofs=await PaymentProofModel.find()
-    .populate("user","name address phoneNo DueAmount AdvanceDeposit");
+    .populate("user","name address phoneNo DueAmount AdvanceDeposit").sort({createdAt:-1});;
     if(!allProofs || allProofs.length===0){
       return res.status(400).json({success:false,message:"no proofs found"});
     }
@@ -63,7 +63,24 @@ Router.get("/getAll",async(req,res)=>{
 
   }
   catch(error){
-    return res.status(500).json({success:false,message:"failed to fetch all blogs"});
+    return res.status(500).json({success:false,message:"failed to fetch all proofs"});
+
+  }
+})
+// to get particular customer proofs ..
+Router.get("/getAll/:id",async(req,res)=>{
+  
+  try{
+    const allProofs=await PaymentProofModel.find({user:req.params.id})
+    .populate("user","name address phoneNo DueAmount AdvanceDeposit").sort({createdAt:-1});
+    if(!allProofs || allProofs.length===0){
+      return res.status(400).json({success:false,message:"no proofs found related to customer"});
+    }
+    return res.status(201).json({success:true,message:"all proofs fetched related to customer",data:allProofs});
+
+  }
+  catch(error){
+    return res.status(500).json({success:false,message:"failed to fetch all proofs related to customer"});
 
   }
 })
