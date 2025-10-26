@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: "", 
     },
-
     DueAmount: {
       type: Number,
       default: 0,
@@ -31,7 +30,9 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      default: "1234",
+       minlength: 6,
+      // maxlength: 6,
+      default: "123456",
     },
   },
   {

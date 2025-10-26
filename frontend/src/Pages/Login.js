@@ -270,7 +270,8 @@ const Login = () => {
             Contact administrator
           </p>
         </div>
-      </div>
+       
+          </div>
     </div>
   );
 };
