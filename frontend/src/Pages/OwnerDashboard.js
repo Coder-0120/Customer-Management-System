@@ -32,8 +32,12 @@ const OwnerDashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this customer?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/customer/delete/${id}`);
+      await axios.delete(`http://localhost:5000/api/customer/delete/${id}`); // delete customer
       setAllCustomers(AllCustomers.filter((customer) => customer._id !== id));
+      await axios.delete(`http://localhost:5000/api/transaction/deleteByCustomer/${id}`); // delete transaction history also
+      setHistory([]);
+      await axios.delete(`http://localhost:5000/api/customer/paymentproof/deleteByCustomer/${id}`); // delete payment proof also
+      // setHistory([]);
       alert("Customer deleted Successfully..");
     } catch (error) {
       alert("failed to delete customer..");

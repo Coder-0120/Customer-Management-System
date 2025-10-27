@@ -88,5 +88,23 @@ Router.get("/history/:id", async (req, res) => {
     });
   }
 });
+// to delete transaction history also when customer is deleted
+Router.delete("/deleteByCustomer/:id",async(req,res)=>{
+  const customerId=req.params.id;
+  try{
+    await TransactionModel.deleteMany({customerId:customerId});
+     return res.status(200).json({
+      success: true,
+      message: "deleted transaction history successfully",
+    });
+  }
+  catch (error) {
+    console.error("Error in deleting transaction history:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in deleting transaction history",
+    });
+  }
+})
 
 module.exports = Router;
