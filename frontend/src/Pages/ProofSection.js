@@ -291,7 +291,7 @@ const ProofSection = () => {
                   alignItems: "center",
                   marginBottom: "12px"
                 }}>
-                  <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)" }}>
+                  <span style={{ fontSize: "11px", color: "rgba(255, 242, 242, 1)" }}>
                     {new Date(proof.createdAt).toLocaleDateString('en-IN', {
                       day: '2-digit',
                       month: 'short',
@@ -336,131 +336,6 @@ const ProofSection = () => {
         )}
       </div>
 
-      {/* Customer Modal */}
-      {showCustomerModal && selectedCustomer && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,0.8)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            backdropFilter: "blur(4px)",
-            padding: "20px",
-          }}
-          onClick={() => setshowCustomerModal(false)}
-        >
-          <div
-            style={{
-              background: "linear-gradient(135deg, rgba(45,45,45,0.98) 0%, rgba(30,30,30,0.98) 100%)",
-              padding: "35px",
-              borderRadius: "16px",
-              width: "100%",
-              maxWidth: "480px",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
-              position: "relative",
-              border: "1px solid rgba(212, 175, 55, 0.3)"
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setshowCustomerModal(false)}
-              style={{
-                position: "absolute",
-                top: "20px",
-                right: "20px",
-                background: "#ff4757",
-                border: "none",
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                fontSize: "18px",
-                cursor: "pointer",
-                color: "#fff"
-              }}
-            >
-              ✖
-            </button>
-
-            <h2 style={{ color: "#D4AF37", fontSize: "24px", marginBottom: "25px" }}>
-              Customer Details
-            </h2>
-
-            <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "14px", marginBottom: "20px" }}>
-              <p style={{ margin: "10px 0" }}><strong>Name:</strong> {selectedCustomer.name}</p>
-              <p style={{ margin: "10px 0" }}><strong>Phone:</strong> {selectedCustomer.phoneNo}</p>
-              <p style={{ margin: "10px 0" }}><strong>Address:</strong> {selectedCustomer.address}</p>
-              <p style={{ margin: "10px 0" }}>
-                <strong>Due:</strong> <span style={{ color: "#ff4d4d", fontWeight: "700" }}>₹{selectedCustomer.DueAmount}</span>
-              </p>
-              <p style={{ margin: "10px 0" }}>
-                <strong>Advance:</strong> <span style={{ color: "#28a745", fontWeight: "700" }}>₹{selectedCustomer.AdvanceDeposit}</span>
-              </p>
-            </div>
-
-            <div style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "center" }}>
-              <button
-                onClick={() => handleTransactions(selectedCustomer)}
-                style={{
-                  padding: "10px 20px",
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  border: "none",
-                  borderRadius: "8px",
-                  color: "#fff",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  cursor: "pointer"
-                }}
-              >
-                💰 Add Transaction
-              </button>
-
-              <select
-                value={proofStatus}
-                onChange={(e) => handleStatusChange(e.target.value)}
-                className="input-focus"
-                style={{
-                  flex: 1,
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "1px solid rgba(212, 175, 55, 0.5)",
-                  background: "#2d2d2d",
-                  color: "#fff",
-                  fontSize: "13px",
-                  fontWeight: "600"
-                }}
-              >
-                <option value="unverified">Unverified</option>
-                <option value="verified">Verified</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-
-            <button
-              onClick={handleStatusUpdate}
-              style={{
-                width: "100%",
-                padding: "14px",
-                background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
-                border: "none",
-                borderRadius: "10px",
-                color: "#1a1a1a",
-                fontSize: "15px",
-                fontWeight: "700",
-                cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(212, 175, 55, 0.4)"
-              }}
-            >
-              Save Changes
-            </button>
-          </div>
-        </div>
-      )}
        {/* Customer Modal  */}
       {showCustomerModal && selectedCustomer && (
         <div
@@ -600,7 +475,7 @@ const ProofSection = () => {
         </div>
       )}
 
-        {/* Transaction Modal */}
+    {/* Transaction Modal (updated to match customer modal UI) */}
       {showTransactionModal && selectedCustomer && (
         <div
           style={{
@@ -609,7 +484,6 @@ const ProofSection = () => {
             left: 0,
             width: "100%",
             height: "100%",
-            // backgroundColor: "rgba(0,0,0,0.7)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -624,44 +498,17 @@ const ProofSection = () => {
         >
           <div
             style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+              background: "linear-gradient(135deg, rgba(45,45,45,0.98) 0%, rgba(30,30,30,0.98) 100%)",
               padding: "35px",
               borderRadius: "16px",
               width: "100%",
               maxWidth: "480px",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
               position: "relative",
-              animation: "slideIn 0.3s ease-out",
+              border: "1px solid rgba(212, 175, 55, 0.3)"
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <style>
-              {`
-          @keyframes slideIn {
-            from {
-              opacity: 0;
-              transform: translateY(-20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          
-          .transaction-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-          }
-          
-          .transaction-select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-          }
-        `}
-            </style>
-
             <button
               onClick={() => {
                 setshowTransactionModal(false);
@@ -697,57 +544,40 @@ const ProofSection = () => {
               ✖
             </button>
 
-            <div style={{
-              marginBottom: "30px",
-              paddingBottom: "20px",
-              borderBottom: "2px solid #e0e0e0"
-            }}>
-              <h2 style={{
-                margin: 0,
-                fontSize: "24px",
-                fontWeight: "600",
-                color: "#2c3e50",
-                marginBottom: "5px"
-              }}>
-                Add Transaction
-              </h2>
-              <p style={{
-                margin: 0,
-                fontSize: "14px",
-                color: "#7f8c8d"
-              }}>
-                {selectedCustomer.name}
-              </p>
-            </div>
+            <h2 style={{ color: "#D4AF37", fontSize: "24px", marginBottom: "25px" }}>
+              Add Transaction
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", marginBottom: "25px" }}>
+              {selectedCustomer.name}
+            </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div>
                 <label style={{
                   display: "block",
                   marginBottom: "8px",
-                  fontSize: "14px",
+                  fontSize: "13px",
                   fontWeight: "600",
-                  color: "#2c3e50"
+                  color: "rgba(255,255,255,0.8)"
                 }}>
-                  Transaction Type <span style={{ color: "#e74c3c" }}>*</span>
+                  Transaction Type <span style={{ color: "#ff4d4d" }}>*</span>
                 </label>
                 <select
                   value={TransactionType}
                   onChange={(e) => setTransactionType(e.target.value)}
-                  className="transaction-select"
                   style={{
                     width: "100%",
                     padding: "12px 16px",
                     borderRadius: "8px",
-                    border: "2px solid #e0e0e0",
+                    border: "1px solid rgba(212, 175, 55, 0.5)",
                     fontSize: "14px",
-                    backgroundColor: "#fff",
+                    background: "#2d2d2d",
+                    color: "#fff",
                     cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    color: TransactionType ? "#2c3e50" : "#95a5a6"
+                    transition: "all 0.2s ease"
                   }}
                 >
-                  <option value="" >Select transaction type</option>
+                  <option value="">Select transaction type</option>
                   <option value="duePayment">💰 Pay Due Amount</option>
                   <option value="advanceDeposit">💵 Add Advance Payment</option>
                 </select>
@@ -757,11 +587,11 @@ const ProofSection = () => {
                 <label style={{
                   display: "block",
                   marginBottom: "8px",
-                  fontSize: "14px",
+                  fontSize: "13px",
                   fontWeight: "600",
-                  color: "#2c3e50"
+                  color: "rgba(255,255,255,0.8)"
                 }}>
-                  Amount <span style={{ color: "#e74c3c" }}>*</span>
+                  Amount <span style={{ color: "#ff4d4d" }}>*</span>
                 </label>
                 <div style={{ position: "relative" }}>
                   <span style={{
@@ -770,7 +600,7 @@ const ProofSection = () => {
                     top: "50%",
                     transform: "translateY(-50%)",
                     fontSize: "16px",
-                    color: "#7f8c8d",
+                    color: "#D4AF37",
                     fontWeight: "600"
                   }}>
                     ₹
@@ -780,15 +610,15 @@ const ProofSection = () => {
                     value={Amount}
                     onChange={(e) => SetAmount(e.target.value)}
                     placeholder="0"
-                    className="transaction-input"
                     style={{
                       width: "100%",
                       padding: "12px 16px 12px 38px",
                       borderRadius: "8px",
-                      border: "2px solid #e0e0e0",
+                      border: "1px solid rgba(212, 175, 55, 0.5)",
                       fontSize: "14px",
                       transition: "all 0.2s ease",
-                      backgroundColor: "#fff"
+                      background: "#2d2d2d",
+                      color: "#fff"
                     }}
                   />
                 </div>
@@ -798,9 +628,9 @@ const ProofSection = () => {
                 <label style={{
                   display: "block",
                   marginBottom: "8px",
-                  fontSize: "14px",
+                  fontSize: "13px",
                   fontWeight: "600",
-                  color: "#2c3e50"
+                  color: "rgba(255,255,255,0.8)"
                 }}>
                   Remarks
                 </label>
@@ -808,18 +638,18 @@ const ProofSection = () => {
                   value={Remarks}
                   placeholder="Add notes or description (optional)"
                   onChange={(e) => SetRemarks(e.target.value)}
-                  className="transaction-input"
                   rows="3"
                   style={{
                     width: "100%",
                     padding: "12px 16px",
                     borderRadius: "8px",
-                    border: "2px solid #e0e0e0",
+                    border: "1px solid rgba(212, 175, 55, 0.5)",
                     fontSize: "14px",
                     transition: "all 0.2s ease",
                     resize: "vertical",
                     fontFamily: "inherit",
-                    backgroundColor: "#fff"
+                    background: "#2d2d2d",
+                    color: "#fff"
                   }}
                 />
               </div>
@@ -836,26 +666,23 @@ const ProofSection = () => {
                   }}
                   style={{
                     flex: 1,
-                    backgroundColor: "#95a5a6",
-                    color: "white",
+                    background: "rgba(255,255,255,0.1)",
+                    color: "rgba(255,255,255,0.8)",
                     padding: "12px 20px",
                     borderRadius: "8px",
-                    border: "none",
+                    border: "1px solid rgba(255,255,255,0.2)",
                     fontSize: "15px",
                     fontWeight: "600",
                     cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    boxShadow: "0 2px 8px rgba(149,165,166,0.3)"
+                    transition: "all 0.2s ease"
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#7f8c8d";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(149,165,166,0.4)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#95a5a6";
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(149,165,166,0.3)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
                   }}
                 >
                   Cancel
@@ -866,31 +693,18 @@ const ProofSection = () => {
                   style={{
                     flex: 1,
                     background: (!TransactionType || !Amount)
-                      ? "#bdc3c7"
-                      : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    color: "white",
-                    padding: "12px 20px",
-                    borderRadius: "8px",
+                      ? "rgba(212, 175, 55, 0.3)"
+                      : "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+                    color: (!TransactionType || !Amount) ? "rgba(255,255,255,0.5)" : "#1a1a1a",
+                    padding: "14px",
+                    borderRadius: "10px",
                     border: "none",
                     fontSize: "15px",
-                    fontWeight: "600",
+                    fontWeight: "700",
                     cursor: (!TransactionType || !Amount) ? "not-allowed" : "pointer",
-                    transition: "all 0.2s ease",
                     boxShadow: (!TransactionType || !Amount)
                       ? "none"
-                      : "0 2px 8px rgba(102,126,234,0.3)"
-                  }}
-                  onMouseEnter={(e) => {
-                    if (TransactionType && Amount) {
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(102,126,234,0.4)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (TransactionType && Amount) {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = "0 2px 8px rgba(102,126,234,0.3)";
-                    }
+                      : "0 4px 12px rgba(212, 175, 55, 0.4)"
                   }}
                 >
                   Save Transaction

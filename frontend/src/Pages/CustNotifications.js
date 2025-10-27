@@ -160,7 +160,7 @@ const ProofSection = () => {
                       borderRadius: "10px",
                       marginBottom: "12px",
                       border: "2px solid rgba(212, 175, 55, 0.3)",
-                      cursor: "zoom-in",
+                      // cursor: "zoom-in",
                     }}
                     // onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
                     // onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
@@ -172,7 +172,7 @@ const ProofSection = () => {
                   alignItems: "center",
                   marginBottom: "12px"
                 }}>
-                  <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)" }}>
+                  <span style={{ fontSize: "11px", color: "rgba(255, 254, 254, 0.99)" }}>
                     {new Date(proof.createdAt).toLocaleDateString('en-IN', {
                       day: '2-digit',
                       month: 'short',

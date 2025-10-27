@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const paymentProofSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // reference to your existing User model
+        ref: "User", 
         required: true,
     },
     transactionAmount: {

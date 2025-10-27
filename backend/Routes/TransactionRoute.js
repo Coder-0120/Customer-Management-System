@@ -15,6 +15,9 @@ Router.post("/add/:id", async (req, res) => {
     if (!customer) {
       return res.status(404).json({ success: false, message: "Customer not found" });
     }
+    if(amount <=0){
+      return res.status(400).json({ success: false, message: "Amount must be greater than zero" });
+    }
 
     let updDueAmt = customer.DueAmount;
     let updAdvAmt = customer.AdvanceDeposit;
