@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ProofSection = () => {
   const [AllProofs, setAllProofs] = useState([]);
@@ -13,7 +13,7 @@ const ProofSection = () => {
   const [selectedProof, setSelectedProof] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [zoomProof, setZoomProof] = useState(null);
-
+  
   useEffect(() => {
     const fetchProofs = async () => {
       try {
