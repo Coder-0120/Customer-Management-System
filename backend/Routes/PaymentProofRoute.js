@@ -100,5 +100,17 @@ Router.put("/update/:id", async (req, res) => {
   }
 });
 
+Router.delete("/deleteByCustomer/:id",async(req,res)=>{
+  const customerId=req.params.id;
+  try{
+    await PaymentProofModel.deleteMany({user:customerId});
+    return res.status(201).json({success:true,message:'successfully deleted payment proofs'});
+  }
+  catch(error){
+    return res.status(500).json({success:false,message:"failed to delete payment proofs"});
+    
+  }
+})
+
 
 module.exports = Router;

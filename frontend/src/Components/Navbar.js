@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation(); 
   const [customerInfo, setCustomerInfo] = useState(null);
   const [ownerInfo, setOwnerInfo] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  //  Detect login/logout changes without refresh
+  // Detect login/logout changes
   useEffect(() => {
     const loadAuth = () => {
       setCustomerInfo(JSON.parse(localStorage.getItem("CustomerDetails")));
@@ -16,14 +17,13 @@ const Navbar = () => {
     };
 
     loadAuth();
-
     const handleStorageChange = () => loadAuth();
     window.addEventListener("storage", handleStorageChange);
 
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  //  Auto-refresh on route navigation (if login happens on another page)
+  // Auto refresh on route navigation
   useEffect(() => {
     const checkLoginChange = setInterval(() => {
       const c = JSON.parse(localStorage.getItem("CustomerDetails"));
@@ -50,19 +50,28 @@ const Navbar = () => {
 
   const handleLinkClick = () => setIsMenuOpen(false);
 
+  // Base link style
   const linkStyle = {
     color: "rgba(255,255,255,0.9)",
     textDecoration: "none",
     padding: "10px 20px",
-    borderRadius: "8px",
+    // borderRadius: "8px",
     fontWeight: "600",
     fontSize: "15px",
-    transition: "all 0.2s ease",
+    // transition: "all 0.2s ease",
+  };
+
+  // Active link style
+  const activeLinkStyle = {
+    ...linkStyle,
+    // backgroundColor: "orange",
+    color: "#FFD700",
+    fontWeight: "700",
   };
 
   const gradientButton = {
     ...linkStyle,
-    color: "#1a1a1a",
+    color: "#000000ff",
     fontWeight: "700",
     background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
     boxShadow: "0 2px 8px rgba(212, 175, 55, 0.3)",
@@ -116,13 +125,10 @@ const Navbar = () => {
           className="desktop-menu"
           style={{ display: "flex", gap: "5px", alignItems: "center" }}
         >
+          {/* Home */}
           <Link
             to="/"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
-            }
+            style={location.pathname === "/" ? activeLinkStyle : linkStyle}
           >
             Home
           </Link>
@@ -133,34 +139,35 @@ const Navbar = () => {
             </Link>
           )}
 
+          {/* Owner Menu */}
           {ownerInfo && (
             <>
               <Link
                 to="/register"
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                style={
+                  location.pathname === "/register"
+                    ? activeLinkStyle
+                    : linkStyle
                 }
               >
                 Add Customer
               </Link>
               <Link
                 to="/owner-dashboard"
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                style={
+                  location.pathname === "/owner-dashboard"
+                    ? activeLinkStyle
+                    : linkStyle
                 }
               >
                 Dashboard
               </Link>
               <Link
                 to="/proof-section"
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                style={
+                  location.pathname === "/proof-section"
+                    ? activeLinkStyle
+                    : linkStyle
                 }
               >
                 Proof Section
@@ -184,34 +191,35 @@ const Navbar = () => {
             </>
           )}
 
+          {/* Customer Menu */}
           {customerInfo && (
             <>
               <Link
                 to="/customer-dashboard"
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                style={
+                  location.pathname === "/customer-dashboard"
+                    ? activeLinkStyle
+                    : linkStyle
                 }
               >
                 Dashboard
               </Link>
               <Link
                 to="/payment"
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                style={
+                  location.pathname === "/payment"
+                    ? activeLinkStyle
+                    : linkStyle
                 }
               >
                 Payment
               </Link>
               <Link
                 to="/customer-notifications"
-                style={linkStyle}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                style={
+                  location.pathname === "/customer-notifications"
+                    ? activeLinkStyle
+                    : linkStyle
                 }
               >
                 Notifications
@@ -256,155 +264,6 @@ const Navbar = () => {
           {isMenuOpen ? "✕" : "☰"}
         </button>
       </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div
-          className="mobile-menu"
-          style={{
-            background: "rgba(26, 26, 26, 0.98)",
-            padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            borderTop: "1px solid rgba(212, 175, 55, 0.2)",
-          }}
-        >
-          <Link
-            to="/"
-            onClick={handleLinkClick}
-            style={{
-              ...linkStyle,
-              padding: "12px 20px",
-              background: "rgba(212, 175, 55, 0.1)",
-            }}
-          >
-            Home
-          </Link>
-
-          {!customerInfo && !ownerInfo && (
-            <Link
-              to="/login"
-              onClick={handleLinkClick}
-              style={{
-                ...gradientButton,
-                padding: "12px 20px",
-                textAlign: "center",
-              }}
-            >
-              Login
-            </Link>
-          )}
-
-          {ownerInfo && (
-            <>
-              <Link
-                to="/register"
-                onClick={handleLinkClick}
-                style={{
-                  ...linkStyle,
-                  padding: "12px 20px",
-                  background: "rgba(212,175,55,0.1)",
-                }}
-              >
-                Add Customer
-              </Link>
-              <Link
-                to="/owner-dashboard"
-                onClick={handleLinkClick}
-                style={{
-                  ...linkStyle,
-                  padding: "12px 20px",
-                  background: "rgba(212,175,55,0.1)",
-                }}
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/proof-section"
-                onClick={handleLinkClick}
-                style={{
-                  ...linkStyle,
-                  padding: "12px 20px",
-                  background: "rgba(212,175,55,0.1)",
-                }}
-              >
-                Proof Section
-              </Link>
-              <button
-                type="button"
-                onClick={handleOwnerLogout}
-                style={{
-                  color: "#fff",
-                  background: "#dc2626",
-                  border: "none",
-                  padding: "12px 20px",
-                  borderRadius: "8px",
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                }}
-              >
-                Logout
-              </button>
-            </>
-          )}
-
-          {customerInfo && (
-            <>
-              <Link
-                to="/customer-dashboard"
-                onClick={handleLinkClick}
-                style={{
-                  ...linkStyle,
-                  padding: "12px 20px",
-                  background: "rgba(212,175,55,0.1)",
-                }}
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/payment"
-                onClick={handleLinkClick}
-                style={{
-                  ...linkStyle,
-                  padding: "12px 20px",
-                  background: "rgba(212,175,55,0.1)",
-                }}
-              >
-                Payment
-              </Link>
-              <Link
-                to="/customer-notifications"
-                onClick={handleLinkClick}
-                style={{
-                  ...linkStyle,
-                  padding: "12px 20px",
-                  background: "rgba(212,175,55,0.1)",
-                }}
-              >
-                Notifications
-              </Link>
-              <button
-                type="button"
-                onClick={handleCustomerLogout}
-                style={{
-                  color: "#fff",
-                  background: "#dc2626",
-                  border: "none",
-                  padding: "12px 20px",
-                  borderRadius: "8px",
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                }}
-              >
-                Logout
-              </button>
-            </>
-          )}
-        </div>
-      )}
 
       <style>{`
         @media (max-width: 768px) {
