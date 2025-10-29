@@ -120,12 +120,10 @@ const Navbar = () => {
           💎 Shree Jewellers
         </Link>
 
-        {/* Desktop Menu */}
         <div
           className="desktop-menu"
           style={{ display: "flex", gap: "5px", alignItems: "center" }}
         >
-          {/* Home */}
           <Link
             to="/"
             style={location.pathname === "/" ? activeLinkStyle : linkStyle}
@@ -138,8 +136,7 @@ const Navbar = () => {
               Login
             </Link>
           )}
-
-          {/* Owner Menu */}
+{/* OwnerMenu */}
           {ownerInfo && (
             <>
               <Link
@@ -244,7 +241,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu Toggle */}
         <button
           type="button"
           aria-label="Toggle menu"
