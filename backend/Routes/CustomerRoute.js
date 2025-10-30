@@ -57,7 +57,7 @@ Router.post("/login", async (req, res) => {
 // to get all customers
 Router.get("/AllCustomers", async (req, res) => {
     try {
-        const AllCustomers = await CustomerModel.find();
+        const AllCustomers = await CustomerModel.find().sort({ createdAt: -1 });
         if (!AllCustomers || AllCustomers.length === 0) {
             return res.status(404).json({ success: false, message: "No Customers exist" });
         }

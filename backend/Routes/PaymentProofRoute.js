@@ -3,6 +3,8 @@ const Router = express.Router();
 const PaymentProofModel = require("../Models/PaymentProof");
 const multer = require("multer");
 const path = require("path");
+// const sendSMS = require("../utils/sendSMS");
+const UserModel = require("../Models/UserModel");
 
 //  Multer Storage Configuration 
 const storage = multer.diskStorage({
@@ -94,7 +96,36 @@ Router.put("/update/:id", async (req, res) => {
       { status },
       { new: true }
     );
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Payment proof not found" });
+    }
+      // Get related user/customer details using the "user" field
+    // const user = await UserModel.findById(updated.user);
+
+    // if (!user) {
+    //   return res.status(404).json({ success: false, message: "User not found for this payment proof" });
+    // }
+
+    // const customerName = user.name || "Customer";
+    // const phone = user.phoneNo; // Make sure this field exists in your UserModel
+    // const amount = updated.transactionAmount;
+
+    //   // Create SMS message based on status
+    // let message = "";
+    // if (status === "verified") {
+    //   message = `Hello ${customerName}, your payment of ₹${amount} (Txn ID: ${updated.transactionID}) has been verified successfully. Thank you!`;
+    // } else if (status === "rejected") {
+    //   message = `Hello ${customerName}, your payment of ₹${amount} (Txn ID: ${updated.transactionID}) was rejected. Please check your proof and resubmit.`;
+    // }
+    //   //  Send SMS if phone number exists
+    // if (phone) {
+    //   await sendSMS(phone, message);
+    //   console.log(`SMS sent to ${phone}: ${message}`);
+    // } else {
+    //   console.log("No phone number found for user:", user._id);
+    // }
     res.json({ success: true, data: updated });
+
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
