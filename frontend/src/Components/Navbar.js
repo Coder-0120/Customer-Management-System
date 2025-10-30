@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation(); 
   const [customerInfo, setCustomerInfo] = useState(null);
   const [ownerInfo, setOwnerInfo] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Detect login/logout changes
+  //  Detect login/logout changes without refresh
   useEffect(() => {
     const loadAuth = () => {
       setCustomerInfo(JSON.parse(localStorage.getItem("CustomerDetails")));
@@ -17,13 +16,14 @@ const Navbar = () => {
     };
 
     loadAuth();
+
     const handleStorageChange = () => loadAuth();
     window.addEventListener("storage", handleStorageChange);
 
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // Auto refresh on route navigation
+  //  Auto-refresh on route navigation (if login happens on another page)
   useEffect(() => {
     const checkLoginChange = setInterval(() => {
       const c = JSON.parse(localStorage.getItem("CustomerDetails"));
@@ -50,28 +50,19 @@ const Navbar = () => {
 
   const handleLinkClick = () => setIsMenuOpen(false);
 
-  // Base link style
   const linkStyle = {
     color: "rgba(255,255,255,0.9)",
     textDecoration: "none",
     padding: "10px 20px",
-    // borderRadius: "8px",
+    borderRadius: "8px",
     fontWeight: "600",
     fontSize: "15px",
-    // transition: "all 0.2s ease",
-  };
-
-  // Active link style
-  const activeLinkStyle = {
-    ...linkStyle,
-    // backgroundColor: "orange",
-    color: "#FFD700",
-    fontWeight: "700",
+    transition: "all 0.2s ease",
   };
 
   const gradientButton = {
     ...linkStyle,
-    color: "#000000ff",
+    color: "#1a1a1a",
     fontWeight: "700",
     background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
     boxShadow: "0 2px 8px rgba(212, 175, 55, 0.3)",
@@ -120,13 +111,18 @@ const Navbar = () => {
           💎 Shree Jewellers
         </Link>
 
+        {/* Desktop Menu */}
         <div
           className="desktop-menu"
           style={{ display: "flex", gap: "5px", alignItems: "center" }}
         >
           <Link
             to="/"
-            style={location.pathname === "/" ? activeLinkStyle : linkStyle}
+            style={linkStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+            }
           >
             Home
           </Link>
@@ -136,35 +132,35 @@ const Navbar = () => {
               Login
             </Link>
           )}
-{/* OwnerMenu */}
+
           {ownerInfo && (
             <>
               <Link
                 to="/register"
-                style={
-                  location.pathname === "/register"
-                    ? activeLinkStyle
-                    : linkStyle
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
                 }
               >
                 Add Customer
               </Link>
               <Link
                 to="/owner-dashboard"
-                style={
-                  location.pathname === "/owner-dashboard"
-                    ? activeLinkStyle
-                    : linkStyle
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
                 }
               >
                 Dashboard
               </Link>
               <Link
                 to="/proof-section"
-                style={
-                  location.pathname === "/proof-section"
-                    ? activeLinkStyle
-                    : linkStyle
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
                 }
               >
                 Proof Section
@@ -188,35 +184,34 @@ const Navbar = () => {
             </>
           )}
 
-          {/* Customer Menu */}
           {customerInfo && (
             <>
               <Link
                 to="/customer-dashboard"
-                style={
-                  location.pathname === "/customer-dashboard"
-                    ? activeLinkStyle
-                    : linkStyle
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
                 }
               >
                 Dashboard
               </Link>
               <Link
                 to="/payment"
-                style={
-                  location.pathname === "/payment"
-                    ? activeLinkStyle
-                    : linkStyle
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
                 }
               >
                 Payment
               </Link>
               <Link
                 to="/customer-notifications"
-                style={
-                  location.pathname === "/customer-notifications"
-                    ? activeLinkStyle
-                    : linkStyle
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
                 }
               >
                 Notifications
@@ -241,6 +236,7 @@ const Navbar = () => {
           )}
         </div>
 
+        {/* Mobile Menu Toggle */}
         <button
           type="button"
           aria-label="Toggle menu"
@@ -260,6 +256,155 @@ const Navbar = () => {
           {isMenuOpen ? "✕" : "☰"}
         </button>
       </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div
+          className="mobile-menu"
+          style={{
+            background: "rgba(26, 26, 26, 0.98)",
+            padding: "20px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            borderTop: "1px solid rgba(212, 175, 55, 0.2)",
+          }}
+        >
+          <Link
+            to="/"
+            onClick={handleLinkClick}
+            style={{
+              ...linkStyle,
+              padding: "12px 20px",
+              background: "rgba(212, 175, 55, 0.1)",
+            }}
+          >
+            Home
+          </Link>
+
+          {!customerInfo && !ownerInfo && (
+            <Link
+              to="/login"
+              onClick={handleLinkClick}
+              style={{
+                ...gradientButton,
+                padding: "12px 20px",
+                textAlign: "center",
+              }}
+            >
+              Login
+            </Link>
+          )}
+
+          {ownerInfo && (
+            <>
+              <Link
+                to="/register"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Add Customer
+              </Link>
+              <Link
+                to="/owner-dashboard"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/proof-section"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Proof Section
+              </Link>
+              <button
+                type="button"
+                onClick={handleOwnerLogout}
+                style={{
+                  color: "#fff",
+                  background: "#dc2626",
+                  border: "none",
+                  padding: "12px 20px",
+                  borderRadius: "8px",
+                  fontWeight: "700",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                }}
+              >
+                Logout
+              </button>
+            </>
+          )}
+
+          {customerInfo && (
+            <>
+              <Link
+                to="/customer-dashboard"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/payment"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Payment
+              </Link>
+              <Link
+                to="/customer-notifications"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Notifications
+              </Link>
+              <button
+                type="button"
+                onClick={handleCustomerLogout}
+                style={{
+                  color: "#fff",
+                  background: "#dc2626",
+                  border: "none",
+                  padding: "12px 20px",
+                  borderRadius: "8px",
+                  fontWeight: "700",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                }}
+              >
+                Logout
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       <style>{`
         @media (max-width: 768px) {

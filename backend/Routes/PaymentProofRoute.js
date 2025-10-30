@@ -4,19 +4,19 @@ const PaymentProofModel = require("../Models/PaymentProof");
 const multer = require("multer");
 const path = require("path");
 
-// ===== Multer Storage Configuration =====
+//  Multer Storage Configuration 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Folder to store uploaded images
+    cb(null, "uploads/"); 
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // unique filename
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
 const upload = multer({ storage });
 
-// ===== POST: Add Payment Proof =====
+// to add Payment Proof 
 Router.post("/add", upload.single("image"), async (req, res) => {
   try {
     const { user, transactionAmount, transactionID, transactiontype, message } = req.body;
@@ -85,7 +85,7 @@ Router.get("/getAll/:id",async(req,res)=>{
   }
 })
 
-// PUT /api/customer/paymentproof/update/:id
+// to update payment proofs
 Router.put("/update/:id", async (req, res) => {
   try {
     const { status } = req.body;
@@ -99,7 +99,7 @@ Router.put("/update/:id", async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
-
+// to delete customer paymentproofs if cutsomer is deleted
 Router.delete("/deleteByCustomer/:id",async(req,res)=>{
   const customerId=req.params.id;
   try{
@@ -114,3 +114,4 @@ Router.delete("/deleteByCustomer/:id",async(req,res)=>{
 
 
 module.exports = Router;
+ 
