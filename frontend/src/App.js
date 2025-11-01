@@ -10,6 +10,7 @@ import ProofSection from './Pages/ProofSection';
 import CustNotifications from './Pages/CustNotifications';
 import Login from './Pages/Login';
 import ScrolltoTop from './Components/ScrolltoTop';
+import GoldRatePage from './Pages/GoldRatePage';
 
 const CustomerProtectedRoute = ({ children }) => {
 
@@ -39,6 +40,7 @@ function App() {
         <Route path="/customer-dashboard" element={<CustomerProtectedRoute><CustomerDashboard/></CustomerProtectedRoute>}/>
         <Route path="/customer-notifications" element={<CustomerProtectedRoute><CustNotifications/></CustomerProtectedRoute>}/>
         <Route path="/payment" element={<CustomerProtectedRoute><Payment/></CustomerProtectedRoute>}/>
+        <Route path="/gold-rate" element={<CustomerProtectedRoute><GoldRatePage/></CustomerProtectedRoute>}/>
       </Routes>
     </Router>
   );

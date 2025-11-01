@@ -25,7 +25,6 @@ app.use("/api/owner", ownerRoutes);
 app.use("/api/customer", CustomerRoutes); 
 app.use("/api/transaction", TransactionRoute);
 app.use("/api/customer/paymentproof", paymentProofRoute);
-
 app.listen(5000, () => {
   console.log("Server started on port 5000");
 });

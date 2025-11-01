@@ -152,7 +152,7 @@ const LandingPage = () => {
             flexWrap: "wrap"
           }}>
             <button
-              onClick={() => window.open('https://www.goodreturns.in/gold-rates/', '_blank')}
+              onClick={() => navigate("/gold-rate")}
               style={{
                 padding: "15px 40px",
                 borderRadius: "12px",
