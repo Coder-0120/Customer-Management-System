@@ -53,6 +53,21 @@ Router.post("/login", async (req, res) => {
     }
 })
 
+// fetch customer profile
+Router.get("/profile/:id",async(req,res)=>{
+    try{
+        const result=await CustomerModel.findById(req.params.id);
+        if(!result){
+            return res.status(404).json({success:false,message:'no customer info found..'})
+        }
+        return res.status(201).json({success:true,message:"Customer info fetched..",data:result})
+
+    }
+    catch(error){
+        return res.status(400).json({success:false,message:"Customer not found.."});
+    }
+})
+
 
 // to get all customers
 Router.get("/AllCustomers", async (req, res) => {

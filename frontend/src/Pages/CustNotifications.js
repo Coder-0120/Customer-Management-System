@@ -131,10 +131,16 @@ const ProofSection = () => {
                       {proof.transactiontype}
                     </span>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between",marginBottom: "8px"  }}>
                     <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Txn ID</span>
                     <span style={{ color: "#fff", fontSize: "13px" }}>{proof.transactionID}</span>
                   </div>
+                  {proof.DigitalGoldAmount > 0 && (
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                      <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>DigitalGold</span>
+                      <span style={{ color: "#fff", fontSize: "13px" }}>{proof.DigitalGoldWeight} gm</span>
+                    </div>
+                  )}
                 </div>
                 {proof.message && (
                   <p style={{

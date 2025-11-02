@@ -1150,6 +1150,7 @@ const handleTransactionSave = async () => {
           <option value="dueIncrease">Increase Due Amount</option>
           <option value="advanceDeposit">Add Advance Payment</option>
           <option value="advanceWithdraw">Withdraw from Advance</option>
+          <option value="digitalGold">DigitalGold</option>
         </select>
 
         <input
@@ -1207,6 +1208,7 @@ const handleTransactionSave = async () => {
                     <th style={{ padding: "14px 16px", textAlign: "left", color: "#1a1a1a", fontWeight: "700" }}>Remarks</th>
                     <th style={{ padding: "14px 16px", textAlign: "right", color: "#1a1a1a", fontWeight: "700" }}>Updated Due</th>
                     <th style={{ padding: "14px 16px", textAlign: "right", color: "#1a1a1a", fontWeight: "700" }}>Updated Advance</th>
+                    <th style={{ padding: "14px 16px", textAlign: "right", color: "#1a1a1a", fontWeight: "700" }}>Updated DigitalGold</th>
                     <th style={{ padding: "14px 16px", textAlign: "center", color: "#1a1a1a", fontWeight: "700" }}>Date</th>
                   </tr>
                 </thead>
@@ -1257,6 +1259,14 @@ const handleTransactionSave = async () => {
                         fontWeight: "600"
                       }}>
                         ₹{(t?.updatedAdvance || 0).toLocaleString()}
+                      </td>
+                      <td style={{ 
+                        padding: "12px 16px", 
+                        textAlign: "right", 
+                        color: t?.DigitalGoldWeight > 0 ? "#D4AF37" : "rgba(255,255,255,0.4)",
+                        fontWeight: "600"
+                      }}>
+                        {(t?.DigitalGoldWeight || 0).toLocaleString()} gm
                       </td>
                       <td style={{ 
                         padding: "12px 16px", 

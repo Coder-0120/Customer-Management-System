@@ -3,6 +3,7 @@ import axios from 'axios'
 
 const CustomerDashboard = () => {
   const customerInfo = JSON.parse(localStorage.getItem("CustomerDetails"));
+  const[profile,setProfile]=useState([]);
   const [transactions, setTransactions] = useState([]);
   const [historyFilterType, setHistoryFilterType] = useState("");
   const [historyStartDate, setHistoryStartDate] = useState("");
@@ -18,7 +19,20 @@ const CustomerDashboard = () => {
       }
     };
     fetchTransactions();
-  }, [customerInfo._id]);
+  },);
+
+  useEffect(()=>{
+    const fetchCustomerProfile=async()=>{
+      try{
+        const customerprofile=await axios.get(`http://localhost:5000/api/customer/profile/${customerInfo._id}`);
+        setProfile(customerprofile.data.data);
+      }
+      catch(error){
+        console.log(error);
+      }
+    }
+    fetchCustomerProfile();
+  }, );
 
   const typeColors = {
     duePayment: "#10b981",
@@ -129,7 +143,7 @@ const CustomerDashboard = () => {
                 Name
               </div>
               <div style={{ fontSize: "20px", fontWeight: "600", color: "#fff" }}>
-                {customerInfo.name}
+                {profile.name}
               </div>
             </div>
 
@@ -145,7 +159,7 @@ const CustomerDashboard = () => {
                 Phone
               </div>
               <div style={{ fontSize: "20px", fontWeight: "600", color: "#fff" }}>
-                {customerInfo.phoneNo}
+                {profile.phoneNo}
               </div>
             </div>
 
@@ -161,7 +175,7 @@ const CustomerDashboard = () => {
                 Address
               </div>
               <div style={{ fontSize: "17px", fontWeight: "500", color: "rgba(255,255,255,0.9)" }}>
-                {customerInfo.address}
+                {profile.address}
               </div>
             </div>
             <div>
@@ -176,7 +190,7 @@ const CustomerDashboard = () => {
                 Digital Gold Weight (grams)
               </div>
               <div style={{ fontSize: "17px", fontWeight: "500", color: "rgba(255,255,255,0.9)" }}>
-                {customerInfo.DigitalGoldWeight} g
+                {profile.DigitalGoldWeight} g
               </div>
             </div>
           </div>
@@ -204,7 +218,7 @@ const CustomerDashboard = () => {
                 Due Amount
               </div>
               <div style={{ fontSize: "32px", fontWeight: "700", color: "#ef4444" }}>
-                ₹{customerInfo.DueAmount.toLocaleString()}
+                ₹{profile.DueAmount}
               </div>
             </div>
 
@@ -225,7 +239,7 @@ const CustomerDashboard = () => {
                 Advance Deposit
               </div>
               <div style={{ fontSize: "32px", fontWeight: "700", color: "#10b981" }}>
-                ₹{customerInfo.AdvanceDeposit.toLocaleString()}
+                ₹{profile.AdvanceDeposit}
               </div>
             </div>
           </div>
@@ -289,6 +303,7 @@ const CustomerDashboard = () => {
               <option value="dueIncrease">📈 Increase Due Amount</option>
               <option value="advanceDeposit">💵 Add Advance Payment</option>
               <option value="advanceWithdraw">💸 Withdraw from Advance</option>
+              <option value="digitalGold">DigitalGold</option>
             </select>
 
             <input
@@ -427,6 +442,14 @@ const CustomerDashboard = () => {
                     </th>
                     <th style={{ 
                       padding: "16px", 
+                      textAlign: "right", 
+                      fontWeight: "700", 
+                      color: "#D4AF37" 
+                    }}>
+                      Updated DigitalGold 
+                    </th>
+                    <th style={{ 
+                      padding: "16px", 
                       textAlign: "center", 
                       fontWeight: "700", 
                       color: "#D4AF37",
@@ -493,6 +516,14 @@ const CustomerDashboard = () => {
                         color: t.updatedAdvance > 0 ? "#10b981" : "rgba(255,255,255,0.5)" 
                       }}>
                         ₹{t.updatedAdvance.toLocaleString()}
+                      </td>
+                      <td style={{ 
+                        padding: "14px 16px", 
+                        textAlign: "right", 
+                        fontWeight: "600", 
+                        color: t.updatedAdvance > 0 ? "#eaa419ff" : "rgba(255,255,255,0.5)" 
+                      }}>
+                        {t.DigitalGoldWeight.toLocaleString()} Gm
                       </td>
                       <td style={{ 
                         padding: "14px 16px", 

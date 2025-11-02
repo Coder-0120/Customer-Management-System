@@ -1,15 +1,15 @@
-import React, { useState ,useEffect} from 'react'
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import rates from "../Pages/GoldRatePage";
 
 const DigitalGold = () => {
-    const[buyAmount,setBuyAmount]=useState("");
-    const[buyWeight,setBuyWeight]=useState("");
-    const[sellWeight,setSellWeight]=useState("");
-    const[sellAmount,setSellAmount]=useState("");
-    const navigate=useNavigate();
-    const [rates, setRates] = useState([]);
+  const [buyAmount, setBuyAmount] = useState("");
+  const [buyWeight, setBuyWeight] = useState("");
+  const [sellWeight, setSellWeight] = useState("");
+  const [sellAmount, setSellAmount] = useState("");
+  const navigate = useNavigate();
+  const [rates, setRates] = useState([]);
   const [usdToInr, setUsdToInr] = useState(88.2);
 
   // const fetchExchangeRate = async () => {
@@ -58,88 +58,222 @@ const DigitalGold = () => {
     const goldInterval = setInterval(fetchGoldRate, 1000);
     return () => clearInterval(goldInterval);
   }, [usdToInr]);
-  const handleBuyWeightChange=(e)=>{
-      setBuyWeight(e.target.value);
+
+  const handleBuyWeightChange = (e) => {
+    setBuyWeight(e.target.value);
+    if (rates.gold24k && e.target.value) {
       setBuyAmount((e.target.value * rates.gold24k).toFixed(2));
-  }
-    const handleBuyAmountChange=(e)=>{
-        setBuyAmount(e.target.value);
-        setBuyWeight((e.target.value / rates.gold24k).toFixed(2));
-
     }
-  const handleSellWeightChange=(e)=>{
-      setSellWeight(e.target.value);
+  }
+
+  const handleBuyAmountChange = (e) => {
+    setBuyAmount(e.target.value);
+    if (rates.gold24k && e.target.value) {
+      setBuyWeight((e.target.value / rates.gold24k).toFixed(2));
+    }
+  }
+
+  const handleSellWeightChange = (e) => {
+    setSellWeight(e.target.value);
+    if (rates.gold24k && e.target.value) {
       setSellAmount((e.target.value * rates.gold24k).toFixed(2));
-  }
-    const handleSellAmountChange=(e)=>{
-        setSellAmount(e.target.value);
-        setSellWeight((e.target.value / rates.gold24k).toFixed(2));
-
     }
+  }
+
+  const handleSellAmountChange = (e) => {
+    setSellAmount(e.target.value);
+    if (rates.gold24k && e.target.value) {
+      setSellWeight((e.target.value / rates.gold24k).toFixed(2));
+    }
+  }
 
   return (
-     <div style={{
+    <div style={{
       minHeight: "100vh",
       background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
       position: "relative",
-      overflow: "hidden"
+      overflow: "hidden",
+      padding: "20px"
     }}>
-        <div style={{marginRight:"0px",top:"0px"}}>
-            <p style={{ color: "#D4AF37", fontWeight: "700" }}>Digital Gold Available: 2 gram</p>
-            <p style={{ color: "#D4AF37", fontWeight: "700" }}>Total Worth: 1000</p>
-            {/* <h1 style={{ color: "#D4AF37", fontWeight: "700" }}>rates {JSON.stringify(rates.gold24k)}</h1> */}
-        </div>
-        <div style={{display:"flex",width:"100%",height:"300px",gap:"20px"}}>
-            <div className='buy-digital-gold' style={{border:"2px solid #D4AF37",padding:"20px",width:"50%"}}>
-                <p style={{ color: "#D4AF37", fontWeight: "700" }}>Buy Digital Gold</p>
-              
-                <br></br>
-                <label style={{color:"white"}}>Amount in INR</label>
-                <input type='number' placeholder='Enter amount in INR' value={buyAmount} onChange={handleBuyAmountChange} />
-                <br></br>
-                  <label style={{color:"white"}}>Weight (grams)</label>
+      <style>
+        {`
+          @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
+          }
+          .gold-card { transition: transform 0.3s ease; }
+          .gold-card:hover { transform: translateY(-5px); }
+          .gold-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            transition: all 0.3s;
+          }
+          .gold-input:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+          }
+          .gold-btn {
+            transition: all 0.3s;
+          }
+          .gold-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+          }
+        `}
+      </style>
 
-                <input type="number" placeholder="Enter weight in grams" value={buyWeight} onChange={handleBuyWeightChange} />
-                <br></br>
-                <button style={{
-                    color: "#fff",
-                    background: "#D4AF37",
-                    border: "none",
-                    padding: "10px 24px",
-                    borderRadius: "8px",
-                    fontWeight: "700",
-                    fontSize: "15px",
-                    cursor: "pointer"
-                }}
-                onClick={()=>navigate("/payment",
-                    {state:{
-                        DigitalGoldAmount:buyAmount,
-                        DigitalGoldWeight:buyWeight
-                    }}
-                )}
-                >Buy</button>
-            </div>
-            <div className='sell-digital-gold' style={{border:"2px solid #D4AF37",padding:"20px",width:"50%"}}>
-                <p style={{ color: "#D4AF37", fontWeight: "700" }}>Sell Digital Gold</p>
-                <label style={{color:"white"}}>Weight (grams)</label>
-                <input type='number' placeholder='Enter weight of gold in grams' value={sellWeight} onChange={handleSellWeightChange} />
-                <br></br>
-                <label style={{color:"white"}}>Amount in INR</label>
-                <input type="number" placeholder="Enter amount in INR" value={sellAmount} onChange={handleSellAmountChange} />
-                <br></br>
-                <br></br>
-                <button style={{
-                    color: "#fff",
-                    background: "#D4AF37",
-                    border: "none",
-                    padding: "10px 24px",
-                    borderRadius: "8px",
-                    fontWeight: "700",
-                    fontSize: "15px",
-                    cursor: "pointer"
-                }}>Sell</button>
-            </div>
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <div style={{
+          background: "rgba(30, 30, 30, 0.8)",
+          borderRadius: "15px",
+          padding: "25px",
+          marginBottom: "25px",
+          border: "2px solid rgba(212, 175, 55, 0.4)",
+          animation: "glow 2s infinite",
+          display: "flex",
+          justifyContent: "space-around",
+          flexWrap: "wrap",
+          gap: "20px"
+        }}>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "14px", marginBottom: "8px" }}>
+              Digital Gold Available
+            </p>
+            <p style={{ color: "#D4AF37", fontWeight: "700", fontSize: "28px" }}>2 gram</p>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "14px", marginBottom: "8px" }}>
+              Total Worth
+            </p>
+            <p style={{ color: "#D4AF37", fontWeight: "700", fontSize: "28px" }}>₹1,000</p>
+          </div>
+          {/* <h1 style={{ color: "#D4AF37", fontWeight: "700" }}>rates {JSON.stringify(rates.gold24k)}</h1> */}
         </div>
+
+        <div style={{ display: "flex", width: "100%", gap: "20px", flexWrap: "wrap" }}>
+          <div className='buy-digital-gold gold-card' style={{
+            border: "2px solid #D4AF37",
+            padding: "30px",
+            width: "calc(50% - 10px)",
+            minWidth: "300px",
+            background: "rgba(30, 30, 30, 0.6)",
+            borderRadius: "15px",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)"
+          }}>
+            <p style={{ color: "#D4AF37", fontWeight: "700", fontSize: "22px", marginBottom: "25px" }}>
+              💎 Buy Digital Gold
+            </p>
+
+            <label style={{ color: "white", display: "block", marginBottom: "8px", fontWeight: "600" }}>
+              Amount in INR
+            </label>
+            <input
+              className="gold-input"
+              type='number'
+              placeholder='Enter amount in INR'
+              value={buyAmount}
+              onChange={handleBuyAmountChange}
+            />
+            <br /><br />
+
+            <label style={{ color: "white", display: "block", marginBottom: "8px", fontWeight: "600" }}>
+              Weight (grams)
+            </label>
+            <input
+              className="gold-input"
+              type="number"
+              placeholder="Enter weight in grams"
+              value={buyWeight}
+              onChange={handleBuyWeightChange}
+            />
+            <br /><br />
+
+            <button
+              className="gold-btn"
+              style={{
+                color: "#fff",
+                background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+                border: "none",
+                padding: "14px 32px",
+                borderRadius: "10px",
+                fontWeight: "700",
+                fontSize: "16px",
+                cursor: "pointer",
+                width: "100%"
+              }}
+              onClick={() => navigate("/payment", {
+                state: {
+                  DigitalGoldAmount: buyAmount,
+                  DigitalGoldWeight: buyWeight
+                }
+              })}
+            >
+              Buy
+            </button>
+          </div>
+
+          <div className='sell-digital-gold gold-card' style={{
+            border: "2px solid #D4AF37",
+            padding: "30px",
+            width: "calc(50% - 10px)",
+            minWidth: "300px",
+            background: "rgba(30, 30, 30, 0.6)",
+            borderRadius: "15px",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)"
+          }}>
+            <p style={{ color: "#D4AF37", fontWeight: "700", fontSize: "22px", marginBottom: "25px" }}>
+              💸 Sell Digital Gold
+            </p>
+
+            <label style={{ color: "white", display: "block", marginBottom: "8px", fontWeight: "600" }}>
+              Weight (grams)
+            </label>
+            <input
+              className="gold-input"
+              type='number'
+              placeholder='Enter weight of gold in grams'
+              value={sellWeight}
+              onChange={handleSellWeightChange}
+            />
+            <br /><br />
+
+            <label style={{ color: "white", display: "block", marginBottom: "8px", fontWeight: "600" }}>
+              Amount in INR
+            </label>
+            <input
+              className="gold-input"
+              type="number"
+              placeholder="Enter amount in INR"
+              value={sellAmount}
+              onChange={handleSellAmountChange}
+            />
+            <br /><br />
+
+            <button
+              className="gold-btn"
+              style={{
+                color: "#fff",
+                background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+                border: "none",
+                padding: "14px 32px",
+                borderRadius: "10px",
+                fontWeight: "700",
+                fontSize: "16px",
+                cursor: "pointer",
+                width: "100%"
+              }}
+            >
+              Sell
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
