@@ -6,22 +6,23 @@ const GoldRatePage = () => {
   const [rates, setRates] = useState(null);
   const [usdToInr, setUsdToInr] = useState(88.2);
 
-  const fetchExchangeRate = async () => {
-    try {
-      const fxRes = await axios.get(
-        "https://v6.exchangerate-api.com/v6/c4abc8c3ef3751eada122d87/latest/USD"
-      );
-      setUsdToInr(fxRes.data.conversion_rates.INR);
-      console.log("Fetched new INR rate:", fxRes.data.conversion_rates.INR);
-    } catch (err) {
-      console.error("Error fetching INR rate", err);
-    }
-  };
+  // const fetchExchangeRate = async () => {
+  //   try {
+  //     const fxRes = await axios.get(
+  //       "https://v6.exchangerate-api.com/v6/c4abc8c3ef3751eada122d87/latest/USD"
+  //     );
+  //     setUsdToInr(fxRes.data.conversion_rates.INR);
+  //     console.log("Fetched new INR rate:", fxRes.data.conversion_rates.INR);
+  //   } catch (err) {
+  //     console.error("Error fetching INR rate", err);
+  //   }
+  // };
 
   const fetchGoldRate = async () => {
     try {
       const res = await axios.get("https://api.gold-api.com/price/XAU");
-      let priceUSD = res.data.price;
+      let priceUSD = res.data.price ;
+      let usdToInr = 88.2; // Hardcoded INR conversion rate
 
       let gold24k = ((priceUSD / 31.1035) * usdToInr) + 900;
       let gold22k = gold24k * (22 / 24);
@@ -41,11 +42,11 @@ const GoldRatePage = () => {
     }
   };
 
-  useEffect(() => {
-    fetchExchangeRate();
-    const fxInterval = setInterval(fetchExchangeRate, 24 * 60 * 60 * 1000);
-    return () => clearInterval(fxInterval);
-  }, []);
+  // useEffect(() => {
+  //   fetchExchangeRate();
+  //   const fxInterval = setInterval(fetchExchangeRate, 24 * 60 * 60 * 1000);
+  //   return () => clearInterval(fxInterval);
+  // }, []);
 
   useEffect(() => {
     fetchGoldRate();

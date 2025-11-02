@@ -28,12 +28,12 @@ const userSchema = new mongoose.Schema(
       min: 0,
       set: v => v || 0,
     },
-    DigitalGoldAmount: {
-      type: Number,
-      default: 0,
-      min: 0,
-      set: v => v || 0,
-    },
+    // DigitalGoldAmount: {
+    //   type: Number,
+    //   default: 0,
+    //   min: 0,
+    //   set: v => v || 0,
+    // },
     DigitalGoldWeight:{
       type: Number,
       default:0,

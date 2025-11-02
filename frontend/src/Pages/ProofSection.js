@@ -49,10 +49,13 @@ const ProofSection = () => {
 
   const handleTransactionSave = async () => {
     setshowTransactionModal(false);
-    const Data = { transactionType: TransactionType, amount: Amount, remarks: Remarks , DigitalGoldAmount: selectedCustomer.DigitalGoldAmount, DigitalGoldWeight: selectedCustomer.DigitalGoldWeight };
+    const Data = { transactionType: TransactionType, amount: Amount, remarks: Remarks , DigitalGoldAmount:selectedProof.DigitalGoldAmount, DigitalGoldWeight:selectedProof.DigitalGoldWeight };
+    alert(JSON.stringify(Data));
+    
 
     try {
       const res = await axios.post(`http://localhost:5000/api/transaction/add/${selectedCustomer._id}`, Data);
+      alert(selectedCustomer._id);
 
       SetselectedCustomer((prev) => ({
         ...prev,
