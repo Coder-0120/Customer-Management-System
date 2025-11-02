@@ -49,7 +49,7 @@ const ProofSection = () => {
 
   const handleTransactionSave = async () => {
     setshowTransactionModal(false);
-    const Data = { transactionType: TransactionType, amount: Amount, remarks: Remarks };
+    const Data = { transactionType: TransactionType, amount: Amount, remarks: Remarks , DigitalGoldAmount: selectedCustomer.DigitalGoldAmount, DigitalGoldWeight: selectedCustomer.DigitalGoldWeight };
 
     try {
       const res = await axios.post(`http://localhost:5000/api/transaction/add/${selectedCustomer._id}`, Data);
@@ -58,6 +58,8 @@ const ProofSection = () => {
         ...prev,
         DueAmount: res.data.updatedCustomer.DueAmount,
         AdvanceDeposit: res.data.updatedCustomer.AdvanceDeposit,
+        DigitalGoldAmount: res.data.updatedCustomer.DigitalGoldAmount,
+        DigitalGoldWeight: res.data.updatedCustomer.DigitalGoldWeight,
       }));
 
       setAllProofs((prev) =>
@@ -580,6 +582,7 @@ const ProofSection = () => {
                   <option value="">Select transaction type</option>
                   <option value="duePayment">💰 Pay Due Amount</option>
                   <option value="advanceDeposit">💵 Add Advance Payment</option>
+                  <option value="digitalGold">💎 Pay for Digital Gold</option>
                 </select>
               </div>
 

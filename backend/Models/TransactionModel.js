@@ -8,7 +8,7 @@ const transactionSchema = new mongoose.Schema(
     },
     transactionType: {
       type: String,
-      enum: ["duePayment", "dueIncrease", "advanceDeposit", "advanceWithdraw"],
+      enum: ["duePayment", "dueIncrease", "advanceDeposit", "advanceWithdraw", "digitalGold"],
       required: true,
     },
     amount: { type: Number, required: true },
@@ -17,6 +17,8 @@ const transactionSchema = new mongoose.Schema(
     // auto-calculated in backend
     updatedDue: { type: Number },
     updatedAdvance: { type: Number },
+    DigitalGoldAmount: { type: Number, default: 0 },
+    DigitalGoldWeight: { type: Number, default: 0 },
 
    
   },

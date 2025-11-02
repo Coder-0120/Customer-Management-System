@@ -21,7 +21,7 @@ const upload = multer({ storage });
 // to add Payment Proof 
 Router.post("/add", upload.single("image"), async (req, res) => {
   try {
-    const { user, transactionAmount, transactionID, transactiontype, message } = req.body;
+    const { user, transactionAmount, transactionID, transactiontype, message, DigitalGoldAmount, DigitalGoldWeight } = req.body;
 
     // File path from multer
     const proofUrl = req.file ? `/uploads/${req.file.filename}` : null;
@@ -37,6 +37,8 @@ Router.post("/add", upload.single("image"), async (req, res) => {
       transactiontype,
       message,
       proofUrl,
+      DigitalGoldAmount,
+      DigitalGoldWeight
     });
 
     return res.status(201).json({

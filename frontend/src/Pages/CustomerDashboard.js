@@ -164,6 +164,21 @@ const CustomerDashboard = () => {
                 {customerInfo.address}
               </div>
             </div>
+            <div>
+              <div style={{ 
+                fontSize: "11px", 
+                color: "rgba(212, 175, 55, 0.7)", 
+                fontWeight: "600", 
+                marginBottom: "8px",
+                textTransform: "uppercase",
+                letterSpacing: "1px"
+              }}>
+                Digital Gold Weight (grams)
+              </div>
+              <div style={{ fontSize: "17px", fontWeight: "500", color: "rgba(255,255,255,0.9)" }}>
+                {customerInfo.DigitalGoldWeight} g
+              </div>
+            </div>
           </div>
 
           <div style={{

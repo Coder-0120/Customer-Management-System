@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const Payment = () => {
   const CustomerInfo = JSON.parse(localStorage.getItem("CustomerDetails"));
+  const { state } = useLocation(); // <-- to get the passed state
+  const DigitalGoldAmount = state?.DigitalGoldAmount || 0;
+  const DigitalGoldWeight = state?.DigitalGoldWeight || 0;
   const [paymentProof, setPaymentProof] = useState({
-    transactionAmount: "",
+    transactionAmount: state?.DigitalGoldAmount || "",
     transactionID: "",
-    transactiontype: "",
+    transactiontype: state?.DigitalGoldAmount ? "digitalGold" : "",
     image: null,
-    message: ""
+    message: `Please Verify Payment and update my account`
   });
 
   const handleChanges = (e) => {
@@ -28,6 +32,8 @@ const Payment = () => {
       formData.append("transactiontype", paymentProof.transactiontype);
       formData.append("message", paymentProof.message || "Please Verify Payment and update my account");
       formData.append("image", paymentProof.image);
+      formData.append("DigitalGoldAmount", DigitalGoldAmount);
+      formData.append("DigitalGoldWeight", DigitalGoldWeight);
 
       //  Must include correct Content-Type
       const res = await axios.post(
@@ -87,7 +93,7 @@ const Payment = () => {
           style={{
             width: "100%",
             maxWidth: "400px",
-            borderRadius: "16px",
+            borderRadius: "16px", 
             boxShadow: "0 10px 30px rgba(212, 175, 55, 0.5)"
           }}
         />
@@ -191,6 +197,7 @@ const Payment = () => {
               <option value="">Select Type</option>
               <option value="duePayment">Pay Due Amount</option>
               <option value="advanceDeposit">Pay Advance Payment</option>
+              <option value="digitalGold">Pay for Digital Gold</option>
             </select>
           </div>
 

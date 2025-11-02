@@ -207,6 +207,16 @@ const Navbar = () => {
                 Payment
               </Link>
               <Link
+                to="/digital-gold"
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                }
+              >
+                Digital Gold
+              </Link>
+              <Link
                 to="/customer-notifications"
                 style={linkStyle}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
@@ -373,6 +383,17 @@ const Navbar = () => {
                 }}
               >
                 Payment
+              </Link>
+              <Link
+                to="/digital-gold"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Digital Gold
               </Link>
               <Link
                 to="/customer-notifications"

@@ -358,6 +358,9 @@ const handleTransactionSave = async () => {
                     <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", margin: "5px 0" }}>
                       📍 {customer.address}
                     </p>
+                    <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", margin: "5px 0" }}>
+                      📍 {customer.DigitalGoldWeight} g (DigitalGold)
+                    </p>
                   </div>
 
                   <div style={{

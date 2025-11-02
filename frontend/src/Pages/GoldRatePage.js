@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 const GoldRatePage = () => {
   const navigate = useNavigate();
   const [rates, setRates] = useState(null);
@@ -341,6 +340,7 @@ const GoldRatePage = () => {
         </footer>
       </div>
     </div>
+
   );
 };
 

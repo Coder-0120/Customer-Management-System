@@ -32,8 +32,15 @@ const paymentProofSchema = new mongoose.Schema({
         type: String,
         enum: ["unverified", "verified", "rejected"],
         default: "unverified",
+    },
+    DigitalGoldAmount:{
+        type: Number,
+        default:0
+    },
+    DigitalGoldWeight:{
+        type: Number,
+        default:0
     }
-
 },
     {
         timestamps: true,

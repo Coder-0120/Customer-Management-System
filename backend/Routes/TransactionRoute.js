@@ -8,6 +8,8 @@ Router.post("/add/:id", async (req, res) => {
   try {
     const { transactionType, remarks } = req.body;
     let amount = Number(req.body.amount); 
+    let BuyDigitalGoldWeight = (req.body.DigitalGoldWeight) || 0;
+    let BuyDigitalGoldAmount = (req.body.DigitalGoldAmount) || 0;
     const customerId = req.params.id;
 
     // Fetch customer to update amounts
@@ -15,13 +17,14 @@ Router.post("/add/:id", async (req, res) => {
     if (!customer) {
       return res.status(404).json({ success: false, message: "Customer not found" });
     }
-    if(amount <=0){
+    if(transactionType !== 'digitalGold' && amount <= 0){
       return res.status(400).json({ success: false, message: "Amount must be greater than zero" });
     }
 
-    let updDueAmt = customer.DueAmount;
-    let updAdvAmt = customer.AdvanceDeposit;
-
+    let updDueAmt = customer.DueAmount || 0;
+    let updAdvAmt = customer.AdvanceDeposit || 0;
+    let CurDigitalGoldWeight = customer.DigitalGoldWeight || 0;
+    let CurDigitalGoldAmount = customer.DigitalGoldAmount || 0;
     //Calculate updated amounts
     switch (transactionType) {
       case "duePayment":
@@ -36,6 +39,10 @@ Router.post("/add/:id", async (req, res) => {
       case "advanceWithdraw":
         updAdvAmt = Math.max(updAdvAmt - amount, 0);
         break;
+      case "digitalGold":
+        CurDigitalGoldWeight += BuyDigitalGoldWeight;
+        CurDigitalGoldAmount += BuyDigitalGoldAmount;
+        break;  
       default:
         return res.status(400).json({ success: false, message: "Invalid transaction type" });
     }
@@ -48,12 +55,16 @@ Router.post("/add/:id", async (req, res) => {
       remarks,
       updatedDue: updDueAmt,
       updatedAdvance: updAdvAmt,
+      DigitalGoldAmount: CurDigitalGoldAmount,
+      DigitalGoldWeight: CurDigitalGoldWeight,
     });
     await transaction.save();
 
     //  Update customer's current balances
     customer.DueAmount = updDueAmt;
     customer.AdvanceDeposit = updAdvAmt;
+    customer.DigitalGoldWeight = CurDigitalGoldWeight || 0;
+    customer.DigitalGoldAmount = CurDigitalGoldAmount || 0;
     await customer.save();
 
     return res.status(200).json({

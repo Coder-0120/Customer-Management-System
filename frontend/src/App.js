@@ -11,7 +11,7 @@ import CustNotifications from './Pages/CustNotifications';
 import Login from './Pages/Login';
 import ScrolltoTop from './Components/ScrolltoTop';
 import GoldRatePage from './Pages/GoldRatePage';
-
+import DigitalGold from './Pages/DigitalGold';
 const CustomerProtectedRoute = ({ children }) => {
 
   const isLoggedIn = localStorage.getItem("CustomerDetails"); 
@@ -41,6 +41,7 @@ function App() {
         <Route path="/customer-notifications" element={<CustomerProtectedRoute><CustNotifications/></CustomerProtectedRoute>}/>
         <Route path="/payment" element={<CustomerProtectedRoute><Payment/></CustomerProtectedRoute>}/>
         <Route path="/gold-rate" element={<CustomerProtectedRoute><GoldRatePage/></CustomerProtectedRoute>}/>
+        <Route path="/digital-gold" element={<CustomerProtectedRoute><DigitalGold/></CustomerProtectedRoute>}/>
       </Routes>
     </Router>
   );
