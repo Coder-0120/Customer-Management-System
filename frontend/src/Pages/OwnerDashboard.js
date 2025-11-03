@@ -67,19 +67,17 @@ const OwnerDashboard = () => {
     SetselectedCustomer({ ...customer });
     setshowTransactionModal(true);
   };
+  
 const handleTransactionSave = async () => {
   setshowTransactionModal(false);
   const Data = { transactionType: TransactionType, amount: Number(Amount), remarks: Remarks };
-
   try {
     const res = await axios.post(
       `http://localhost:5000/api/transaction/add/${selectedCustomer._id}`,
       Data
     );
-
     if (res.data.success) {
       alert(res.data.message || "Transaction saved!");
-
       // Update state in UI
       setAllCustomers((prev) =>
         prev.map((cust) =>
@@ -92,13 +90,11 @@ const handleTransactionSave = async () => {
             : cust
         )
       );
-
       // Update local selectedCustomer for consistency
       SetselectedCustomer(res.data.updatedCustomer);
     } else {
       alert(res.data.message || "Error in adding transaction");
     }
-
     SetAmount(0);
     SetRemarks("");
     setTransactionType("");
@@ -108,8 +104,6 @@ const handleTransactionSave = async () => {
     alert(errorMessage);
   }
 };
-
-
   const HandleHistory = (customer) => {
     SetselectedCustomer(customer);
     SetshowHistoryModal(true);

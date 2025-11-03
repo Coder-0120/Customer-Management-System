@@ -58,12 +58,13 @@ Router.post("/add/:id", async (req, res) => {
       DigitalGoldAmount: CurDigitalGoldAmount,
       DigitalGoldWeight: CurDigitalGoldWeight,
     });
-    console.log("Saving transaction with:", {
-  BuyDigitalGoldAmount,
-  BuyDigitalGoldWeight,
-  CurDigitalGoldAmount,
-  CurDigitalGoldWeight,
-});
+//     console.log("Saving transaction with:", {
+//   BuyDigitalGoldAmount,
+//   BuyDigitalGoldWeight,
+//   CurDigitalGoldAmount,
+//   CurDigitalGoldWeight,
+// }
+// );
 
     await transaction.save();
 

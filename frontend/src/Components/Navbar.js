@@ -108,7 +108,7 @@ const Navbar = () => {
           onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           onClick={handleLinkClick}
         >
-          💎 Shree Jewellers
+          💎 Shree Jewellers{ownerInfo?" (Admin)":customerInfo?" (Customer)":" "}
         </Link>
 
         {/* Desktop Menu */}
