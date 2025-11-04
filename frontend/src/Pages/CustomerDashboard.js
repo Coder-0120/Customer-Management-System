@@ -303,7 +303,7 @@ const CustomerDashboard = () => {
               <option value="dueIncrease">📈 Increase Due Amount</option>
               <option value="advanceDeposit">💵 Add Advance Payment</option>
               <option value="advanceWithdraw">💸 Withdraw from Advance</option>
-              <option value="digitalGold">DigitalGold</option>
+              <option value="buydigitalGold">💎 Buy Digital Gold</option>
             </select>
 
             <input

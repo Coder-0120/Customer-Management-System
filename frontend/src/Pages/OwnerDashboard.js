@@ -67,7 +67,7 @@ const OwnerDashboard = () => {
     SetselectedCustomer({ ...customer });
     setshowTransactionModal(true);
   };
-  
+
 const handleTransactionSave = async () => {
   setshowTransactionModal(false);
   const Data = { transactionType: TransactionType, amount: Number(Amount), remarks: Remarks };
@@ -913,6 +913,7 @@ const handleTransactionSave = async () => {
                   <option value="dueIncrease">📈 Increase Due Amount</option>
                   <option value="advanceDeposit">💵 Add Advance Payment</option>
                   <option value="advanceWithdraw">💸 Withdraw from Advance</option>
+                  {/* <option value="buydigitalGold">💎 Buy Digital Gold</option> */}
                 </select>
               </div>
 
@@ -1144,7 +1145,7 @@ const handleTransactionSave = async () => {
           <option value="dueIncrease">Increase Due Amount</option>
           <option value="advanceDeposit">Add Advance Payment</option>
           <option value="advanceWithdraw">Withdraw from Advance</option>
-          <option value="digitalGold">DigitalGold</option>
+          <option value="buydigitalGold">Buy DigitalGold</option>
         </select>
 
         <input

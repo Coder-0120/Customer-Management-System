@@ -585,7 +585,7 @@ const ProofSection = () => {
                   <option value="">Select transaction type</option>
                   <option value="duePayment">💰 Pay Due Amount</option>
                   <option value="advanceDeposit">💵 Add Advance Payment</option>
-                  <option value="digitalGold">💎 Pay for Digital Gold</option>
+                  <option value="buydigitalGold">💎 Pay for Digital Gold</option>
                 </select>
               </div>
 

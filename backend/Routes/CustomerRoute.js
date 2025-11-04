@@ -2,6 +2,7 @@ const express = require('express');
 const CustomerModel = require('../Models/UserModel');
 const bcrypt = require("bcryptjs");
 const UserModel = require('../Models/UserModel');
+const SellDigitalGoldModel = require('../Models/SellDigitalGold');
 
 const Router = express.Router();
 
@@ -119,4 +120,52 @@ Router.put("/update/:id",async(req,res)=>{
 //     }
 
 // })
+
+Router.post("/sellDigitalGold/add",async(req,res)=>{
+    const{customerId,weight,amount,upiID,Remarks}=req.body;
+    try{
+        const newSellDigitalGold=new SellDigitalGoldModel({
+            user: customerId,
+            SellDigitalGoldWeight: weight,
+            SellDigitalGoldAmount: amount,
+            upiID,
+            Remarks
+        });
+        await newSellDigitalGold.save();
+        return res.status(201).json({success:true,message:"Sell digital gold request submitted successfully."});
+    }
+    catch(error){
+        return res.status(500).json({success:false,message:"Internal server error."});
+    }
+})
+// to show all selldigitalgold requests to admin 
+Router.get("/sellDigitalGold/getAll",async(req,res)=>{
+    try{
+       const allrequests=await SellDigitalGoldModel.find()
+       .populate("user","name address phoneNo DueAmount AdvanceDeposit").sort({createdAt:-1});
+       if(!allrequests || allrequests===0){
+        return res.status(400).json({success:false,message:'no request found..'})
+       }
+        return res.status(201).json({success:true,message:"Sell digital gold request fetched successfully.",data:allrequests});
+    }
+    catch(error){
+        return res.status(500).json({success:false,message:"Internal server error."});
+    }
+})
+
+// to show submit selldigitalgold request for particular customer
+Router.get('/sellDigitalGold/fetchAll/:id',async(req,res)=>{
+    try{
+        const allcustrequests=await SellDigitalGoldModel.find({user:req.params.id})
+        .populate("user","name address phoneNo DueAmount AdvanceDeposit");
+        if(!allcustrequests || allcustrequests===0){
+            return res.status(400).json({success:false,message:'no requests found..'});
+        }
+        return res.status(201).json({success:true,message:"all digital gold requests fetched successfully..",data:allcustrequests});
+
+    }
+    catch(error){
+        return res.status(500).json({success:false,message:"Internal server error..."});
+    }
+})
 module.exports = Router;

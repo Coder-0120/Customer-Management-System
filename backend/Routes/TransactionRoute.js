@@ -17,7 +17,7 @@ Router.post("/add/:id", async (req, res) => {
     if (!customer) {
       return res.status(404).json({ success: false, message: "Customer not found" });
     }
-    if(transactionType !== 'digitalGold' && amount <= 0){
+    if(transactionType !== 'buydigitalGold' && amount <= 0){
       return res.status(400).json({ success: false, message: "Amount must be greater than zero" });
     }
 
@@ -39,7 +39,7 @@ Router.post("/add/:id", async (req, res) => {
       case "advanceWithdraw":
         updAdvAmt = Math.max(updAdvAmt - amount, 0);
         break;
-      case "digitalGold":
+      case "buydigitalGold":
         CurDigitalGoldWeight += BuyDigitalGoldWeight;
         CurDigitalGoldAmount += BuyDigitalGoldAmount;
         break;  

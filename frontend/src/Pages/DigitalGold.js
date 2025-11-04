@@ -13,7 +13,9 @@ const DigitalGold = () => {
   const [usdToInr, setUsdToInr] = useState(88.2);
   const [profile, setProfile] = useState([]);
   const customerInfo = JSON.parse(localStorage.getItem("CustomerDetails"));
-
+  const [showModal, setShowModal] = useState(false);
+  const [upiID, setUpiID] = useState("");
+  const [remarks, setRemarks] = useState("");
   // const fetchExchangeRate = async () => {
   //   try {
   //     const fxRes = await axios.get(
@@ -76,13 +78,35 @@ const DigitalGold = () => {
   };
 
   const handleSellWeightChange = (e) => {
-    setSellWeight(e.target.value);
+    const value = parseFloat(e.target.value);
+    // Prevent selling more gold than owned
+    if (value > profile.DigitalGoldWeight) {
+      alert(
+        `You cannot sell more than your available gold (${profile.DigitalGoldWeight} grams).`);
+      setSellWeight(profile.DigitalGoldWeight); // set max allowed
+      setSellAmount((profile.DigitalGoldWeight * rates.gold24k).toFixed(2));
+      return;
+    }
+
+    setSellWeight(value);
+
     if (rates.gold24k && e.target.value) {
       setSellAmount((e.target.value * rates.gold24k).toFixed(2));
+    }
+    else{
+      setSellAmount(0);
     }
   };
 
   const handleSellAmountChange = (e) => {
+    const value=e.target.value;
+    if(value>profile.DigitalGoldWeight*rates.gold24k){
+      alert(
+        `You cannot sell more than your available gold worth (${(profile.DigitalGoldWeight * rates.gold24k).toFixed(2)} INR).`);
+      setSellAmount(0);
+      setSellWeight(0);
+      return;
+    }
     setSellAmount(e.target.value);
     if (rates.gold24k && e.target.value) {
       setSellWeight((e.target.value / rates.gold24k).toFixed(2));
@@ -101,6 +125,39 @@ const DigitalGold = () => {
     };
     fetchCustomerProfile();
   });
+
+  const handleSellClick = () => {
+    setShowModal(true);
+  };
+
+  const handleSellSubmit=async()=>{
+    if (!upiID) {
+      alert("Please enter your UPI ID.");
+      return;
+    }
+    try{
+      setShowModal(false);
+      const sellData={
+        customerId:customerInfo._id,
+        transactionType:"sellDigitalGold",
+        weight:sellWeight,
+        amount:sellAmount,
+        upiID:upiID,
+        remarks:remarks
+      }
+      // console.log("Sell Data Submitted:", sellData);
+      await axios.post("http://localhost:5000/api/customer/sellDigitalGold/add",sellData);
+      alert("sell digital gold submitted..");
+      setSellWeight(0);
+      setSellAmount(0);
+      setUpiID("");
+      setRemarks("");
+    }
+    catch(error){
+      console.error("Error during sell submission:", error);
+    }
+
+  }
 
   return (
     <div
@@ -293,92 +350,182 @@ const DigitalGold = () => {
               Buy
             </button>
           </div>
-              {profile.DigitalGoldWeight>0?(
-                 <div
-            className="sell-digital-gold gold-card"
-            style={{
-              border: "2px solid #D4AF37",
-              padding: "30px",
-              width: "calc(50% - 10px)",
-              minWidth: "300px",
-              background: "rgba(30, 30, 30, 0.6)",
-              borderRadius: "15px",
-              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
-            }}
-          >
-            <p
+          {profile.DigitalGoldWeight > 0 ? (
+            <div
+              className="sell-digital-gold gold-card"
               style={{
-                color: "#D4AF37",
-                fontWeight: "700",
-                fontSize: "22px",
-                marginBottom: "25px",
+                border: "2px solid #D4AF37",
+                padding: "30px",
+                width: "calc(50% - 10px)",
+                minWidth: "300px",
+                background: "rgba(30, 30, 30, 0.6)",
+                borderRadius: "15px",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
               }}
             >
-              💸 Sell Digital Gold
-            </p>
+              <p
+                style={{
+                  color: "#D4AF37",
+                  fontWeight: "700",
+                  fontSize: "22px",
+                  marginBottom: "25px",
+                }}
+              >
+                💸 Sell Digital Gold
+              </p>
 
-            <label
-              style={{
-                color: "white",
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: "600",
-              }}
-            >
-              Weight (grams)
-            </label>
-            <input
-              className="gold-input"
-              type="number"
-              placeholder="Enter weight of gold in grams"
-              value={sellWeight}
-              onChange={handleSellWeightChange}
-            />
-            <br />
-            <br />
+              <label
+                style={{
+                  color: "white",
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                }}
+              >
+                Weight (grams)
+              </label>
+              <input
+                className="gold-input"
+                type="number"
+                placeholder="Enter weight of gold in grams"
+                value={sellWeight}
+                onChange={handleSellWeightChange}
+              />
+              <br />
+              <br />
 
-            <label
-              style={{
-                color: "white",
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: "600",
-              }}
-            >
-              Amount in INR
-            </label>
-            <input
-              className="gold-input"
-              type="number"
-              placeholder="Enter amount in INR"
-              value={sellAmount}
-              onChange={handleSellAmountChange}
-            />
-            <br />
-            <br />
+              <label
+                style={{
+                  color: "white",
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                }}
+              >
+                Amount in INR
+              </label>
+              <input
+                className="gold-input"
+                type="number"
+                placeholder="Enter amount in INR"
+                value={sellAmount}
+                onChange={handleSellAmountChange}
+              />
+              <br />
+              <br />
 
-            <button
-              className="gold-btn"
-              style={{
-                color: "#fff",
-                background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
-                border: "none",
-                padding: "14px 32px",
-                borderRadius: "10px",
-                fontWeight: "700",
-                fontSize: "16px",
-                cursor: "pointer",
-                width: "100%",
-              }}
-            >
-              Sell
-            </button>
-          </div>
-
-              ):""}
-         
+              <button
+                className="gold-btn"
+                style={{
+                  color: "#fff",
+                  background:
+                    "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+                  border: "none",
+                  padding: "14px 32px",
+                  borderRadius: "10px",
+                  fontWeight: "700",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  width: "100%",
+                }}
+                onClick={handleSellClick}
+                >
+                Sell
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
+      {showModal && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(0,0,0,0.6)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 2000,
+    }}
+  >
+    <div
+      style={{
+        background: "#222",
+        padding: "30px",
+        borderRadius: "12px",
+        width: "90%",
+        maxWidth: "400px",
+        color: "#fff",
+        border: "2px solid #D4AF37",
+      }}
+    >
+      <h2 style={{ color: "#D4AF37", marginBottom: "20px", textAlign: "center" }}>
+        💰 Confirm Sell
+      </h2>
+
+      <label style={{ display: "block", marginBottom: "8px" }}>UPI ID</label>
+      <input
+        className="gold-input"
+        type="text"
+        placeholder="Enter your UPI ID"
+        value={upiID}
+        onChange={(e) => setUpiID(e.target.value)}
+      />
+
+      <br />
+      <br />
+
+      <label style={{ display: "block", marginBottom: "8px" }}>Remarks</label>
+      <input
+        className="gold-input"
+        type="text"
+        placeholder="Any remarks (optional)"
+        value={remarks}
+        onChange={(e) => setRemarks(e.target.value)}
+      />
+
+      <br />
+      <br />
+
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <button
+          onClick={() => setShowModal(false)}
+          style={{
+            background: "#555",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleSellSubmit}
+          style={{
+            background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+            color: "#000",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            border: "none",
+            fontWeight: "700",
+            cursor: "pointer",
+          }}
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

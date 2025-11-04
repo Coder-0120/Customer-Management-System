@@ -156,7 +156,7 @@ const Navbar = () => {
                 Dashboard
               </Link>
               <Link
-                to="/proof-section"
+                to="/owner-proofs"
                 style={linkStyle}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
                 onMouseLeave={(e) =>
@@ -164,6 +164,16 @@ const Navbar = () => {
                 }
               >
                 Proof Section
+              </Link>
+              <Link
+                to="/owner-notifications"
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                }
+              >
+                Notifications
               </Link>
               <button
                 type="button"
@@ -215,6 +225,16 @@ const Navbar = () => {
                 }
               >
                 Digital Gold
+              </Link>
+              <Link
+                to="/customer-proofs"
+                style={linkStyle}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "rgba(255,255,255,0.9)")
+                }
+              >
+                 Payment Proofs
               </Link>
               <Link
                 to="/customer-notifications"
@@ -331,7 +351,7 @@ const Navbar = () => {
                 Dashboard
               </Link>
               <Link
-                to="/proof-section"
+                to="/owner-proofs"
                 onClick={handleLinkClick}
                 style={{
                   ...linkStyle,
@@ -340,6 +360,17 @@ const Navbar = () => {
                 }}
               >
                 Proof Section
+              </Link>
+              <Link
+                to="/owner-notifications"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Notifications
               </Link>
               <button
                 type="button"
@@ -394,6 +425,17 @@ const Navbar = () => {
                 }}
               >
                 Digital Gold
+              </Link>
+              <Link
+                to="/customer-proofs"
+                onClick={handleLinkClick}
+                style={{
+                  ...linkStyle,
+                  padding: "12px 20px",
+                  background: "rgba(212,175,55,0.1)",
+                }}
+              >
+                Payment Proofs
               </Link>
               <Link
                 to="/customer-notifications"

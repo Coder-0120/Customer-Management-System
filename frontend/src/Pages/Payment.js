@@ -10,7 +10,7 @@ const Payment = () => {
   const [paymentProof, setPaymentProof] = useState({
     transactionAmount: state?.DigitalGoldAmount || "",
     transactionID: "",
-    transactiontype: state?.DigitalGoldAmount ? "digitalGold" : "",
+    transactiontype: state?.DigitalGoldAmount ? "buydigitalGold" : "",
     image: null,
     message: `Please Verify Payment and update my account`
   });
@@ -197,7 +197,7 @@ const Payment = () => {
               <option value="">Select Type</option>
               <option value="duePayment">Pay Due Amount</option>
               <option value="advanceDeposit">Pay Advance Payment</option>
-              <option value="digitalGold">Pay for Digital Gold</option>
+              <option value="buydigitalGold">Pay for Digital Gold</option>
             </select>
           </div>
 
@@ -227,7 +227,7 @@ const Payment = () => {
                 fontSize: "12px", 
                 marginTop: "5px" 
               }}>
-                ✅ {paymentProof.image.name}
+                 {paymentProof.image.name}
               </p>
             )}
           </div>
