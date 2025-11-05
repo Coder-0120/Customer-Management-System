@@ -89,6 +89,64 @@ Router.post("/add/:id", async (req, res) => {
   }
 });
 
+// Add a sell digital gold transaction
+Router.post("/sellDigitalGold/add/:id", async (req, res) => {
+  try {
+    const { transactionType, remarks } = req.body;
+    let amount = Number(req.body.amount); 
+    let SellDigitalGoldWeight = (req.body.DigitalGoldWeight) || 0;
+    let SellDigitalGoldAmount = (req.body.DigitalGoldAmount) || 0;
+    const customerId = req.params.id;
+
+    // Fetch customer to update amounts
+    const customer = await customerModel.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({ success: false, message: "Customer not found" });
+    }
+    let updDueAmt = customer.DueAmount || 0;
+    let updAdvAmt = customer.AdvanceDeposit || 0;
+    let CurDigitalGoldWeight = customer.DigitalGoldWeight || 0;
+    let CurDigitalGoldAmount = customer.DigitalGoldAmount || 0;
+    //Calculate updated amounts
+    CurDigitalGoldWeight-=SellDigitalGoldWeight;
+    //  Save the transaction
+    const transaction = new TransactionModel({
+      customerId,
+      transactionType,
+      amount,
+      remarks,
+      updatedDue: updDueAmt,
+      updatedAdvance: updAdvAmt,
+      DigitalGoldAmount: amount,
+      DigitalGoldWeight: CurDigitalGoldWeight,
+    });
+//     console.log("Saving transaction with:", {
+//   SellDigitalGoldAmount,
+//   SellDigitalGoldWeight,
+//   CurDigitalGoldAmount,
+//   CurDigitalGoldWeight,
+// }
+// );
+
+    await transaction.save();
+    //  Update customer's current balances
+    customer.DigitalGoldWeight = CurDigitalGoldWeight || 0;
+    await customer.save();
+    return res.status(200).json({
+      success: true,
+      message: "Transaction added successfully",
+      updatedCustomer: customer,
+    });
+  } catch (error) {
+    console.error("Error while adding transaction:", error); 
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Internal server error while adding transaction",
+    });
+  }
+});
+
+
 // Fetch transaction history
 Router.get("/history/:id", async (req, res) => {
   const customerId = req.params.id;

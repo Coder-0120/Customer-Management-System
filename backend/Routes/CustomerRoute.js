@@ -138,6 +138,26 @@ Router.post("/sellDigitalGold/add",async(req,res)=>{
         return res.status(500).json({success:false,message:"Internal server error."});
     }
 })
+
+// to update request of sell digitalgold 
+Router.put("/sellDigitalGold/update/:id", async (req, res) => {
+  try {
+    const { status } = req.body;
+    const updated = await SellDigitalGoldModel.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "request is not found" });
+    }
+    res.json({ success: true, data: updated });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // to show all selldigitalgold requests to admin 
 Router.get("/sellDigitalGold/getAll",async(req,res)=>{
     try{

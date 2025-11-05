@@ -8,7 +8,7 @@ const transactionSchema = new mongoose.Schema(
     },
     transactionType: {
       type: String,
-      enum: ["duePayment", "dueIncrease", "advanceDeposit", "advanceWithdraw", "buydigitalGold"],
+      enum: ["duePayment", "dueIncrease", "advanceDeposit", "advanceWithdraw", "buydigitalGold","sellDigitalGold"],
       required: true,
     },
     amount: { type: Number, required: true },
