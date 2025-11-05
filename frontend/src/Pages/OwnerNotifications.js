@@ -11,6 +11,7 @@ const OwnerNotifications = () => {
     const[Weight,SetWeight]=useState(0);
     const[Amount,SetAmount]=useState(0);
     const[Remarks,SetRemarks]=useState("");
+    const[filterStatus,setFilterStatus]=useState("all");
 
     useEffect(()=>{
         const fetchallNotifications=async()=>{
@@ -131,6 +132,10 @@ const OwnerNotifications = () => {
             };
         }
       };
+      
+  const filteredProofs = filterStatus === "all"
+    ? notifications
+    : notifications.filter(p => p.status === filterStatus);
     
   return (
     <div style={{
@@ -172,6 +177,42 @@ const OwnerNotifications = () => {
         filter: "blur(100px)",
         pointerEvents: "none"
       }} />
+       <div style={{
+          background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)",
+          borderRadius: "16px",
+          padding: "25px",
+          marginBottom: "30px",
+          border: "1px solid rgba(212, 175, 55, 0.3)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "15px"
+        }}>
+          <h2 style={{ color: "#D4AF37", fontSize: "28px", fontWeight: "700", margin: 0 }}>
+            💳 DigitalGold Selling request
+          </h2>
+
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "1px solid rgba(212, 175, 55, 0.5)",
+              background: "rgba(45, 45, 45, 0.8)",
+              color: "#D4AF37",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer"
+            }}
+          >
+            <option value="all">All Proofs</option>
+            <option value="unverified">Unverified</option>
+            <option value="verified">Verified</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div> 
 
       <div style={{
         maxWidth: "1400px",
@@ -180,13 +221,13 @@ const OwnerNotifications = () => {
         zIndex: 1
       }}>
 
-        {notifications.length > 0 ? (
+        {filteredProofs.length > 0 ? (
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
             gap: "35px"
           }}>
-            {notifications.map((notification, index) => {
+            {filteredProofs.map((notification, index) => {
               const statusInfo = getStatusInfo(notification.status);
               return (
                 <div 
@@ -234,7 +275,7 @@ const OwnerNotifications = () => {
                   </div>
 
                   {/* Main Content */}
-                  <div style={{ padding: "30px" }}>
+                  <div style={{ padding: "10px" }}>
                     {/* Customer Info Header */}
                     <div style={{
                       background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%)",
@@ -369,18 +410,6 @@ const OwnerNotifications = () => {
                       border: "1px solid rgba(212, 175, 55, 0.15)",
                       marginBottom: "20px"
                     }}>
-                      <div style={{
-                        fontSize: "24px",
-                        width: "40px",
-                        height: "40px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: "linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%)",
-                        borderRadius: "10px"
-                      }}>
-                        📅
-                      </div>
                       <div style={{ flex: 1 }}>
                         <div style={{
                           fontSize: "10px",

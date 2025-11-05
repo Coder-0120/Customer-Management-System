@@ -130,9 +130,11 @@ const handleTransactionSave = async () => {
 
   const typeColors = {
     duePayment: "#ff4d4d",
-    dueIncrease: "#ffa500",
-    advanceDeposit: "#28a745",
-    advanceWithdraw: "#007bff",
+    dueIncrease: "#ca950ff4",
+    advanceDeposit: "#3ce10fa7",
+    advanceWithdraw: "#0b9087ff",
+    buydigitalGold:"#6619dbff",
+    sellDigitalGold:"#d011a0c7"
   };
 
   const filteredCustomers = AllCustomers.filter((customer) => {
@@ -1096,7 +1098,12 @@ const handleTransactionSave = async () => {
           {selectedCustomer.name}
         </h2>
         <button
-          onClick={() => SetshowHistoryModal(false)}
+          onClick={() => {SetshowHistoryModal(false)
+            setHistoryFilterType("");
+      setHistoryStartDate("");
+      setHistoryEndDate("");
+      setHistoryFilterType("");
+          }}
           style={{
             background: "#ff4757",
             border: "none",
@@ -1146,6 +1153,7 @@ const handleTransactionSave = async () => {
           <option value="advanceDeposit">Add Advance Payment</option>
           <option value="advanceWithdraw">Withdraw from Advance</option>
           <option value="buydigitalGold">Buy DigitalGold</option>
+          <option value="sellDigitalGold">Sell DigitalGold</option>
         </select>
 
         <input

@@ -4,6 +4,7 @@ import axios from 'axios';
 const CustNotifications = () => {
   const[notifications,setNotfications]=useState([]);
   const customerinfo=JSON.parse(localStorage.getItem("CustomerDetails"));
+  const[filterStatus,setFilterStatus]=useState("all");
   
   useEffect(()=>{
     const fetchallNotifications=async()=>{
@@ -26,6 +27,9 @@ const CustNotifications = () => {
     };
     return statusMap[status?.toLowerCase()] || statusMap.unverified;
   };
+  const filteredNotifications = filterStatus === "all"
+    ? notifications
+    : notifications.filter(n => n.status === filterStatus);
 
   return (
     <div style={{
@@ -33,26 +37,46 @@ const CustNotifications = () => {
       background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
       padding: "40px 20px"
     }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "50px" }}>
-          <div style={{ fontSize: "48px", marginBottom: "15px" }}>💎</div>
-          <h1 style={{
-            fontSize: "42px",
-            fontWeight: "700",
-            background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            marginBottom: "10px"
-          }}>
-            Your Sale Requests
-          </h1>
-          <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.7)" }}>
-            Track your digital gold sale requests and their status
-          </p>
-        </div>
+       <div style={{
+          background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)",
+          borderRadius: "16px",
+          padding: "25px",
+          marginBottom: "30px",
+          border: "1px solid rgba(212, 175, 55, 0.3)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "15px"
+        }}>
+          <h2 style={{ color: "#D4AF37", fontSize: "28px", fontWeight: "700", margin: 0 }}>
+            💳 DigitalGold Selling request
+          </h2>
 
-        {notifications.length > 0 ? (
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "1px solid rgba(212, 175, 55, 0.5)",
+              background: "rgba(45, 45, 45, 0.8)",
+              color: "#D4AF37",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer"
+            }}
+          >
+            <option value="all">All Proofs</option>
+            <option value="unverified">Unverified</option>
+            <option value="verified">Verified</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div> 
+
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+
+        {filteredNotifications.length > 0 ? (
           <>
           
           <div style={{
@@ -60,7 +84,7 @@ const CustNotifications = () => {
             gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
             gap: "30px"
           }}>
-            {notifications.map((notification) => {
+            {filteredNotifications.map((notification) => {
               const statusInfo = getStatusInfo(notification.status);
               return (
                 <div 
