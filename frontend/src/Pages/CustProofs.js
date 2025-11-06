@@ -41,7 +41,6 @@ const ProofSection = () => {
         `}
       </style>
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-        {/* Header */}
         <div style={{
           background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)",
           borderRadius: "16px",
@@ -77,7 +76,6 @@ const ProofSection = () => {
             <option value="rejected">Rejected</option>
           </select>
         </div>
-        {/* Proof Cards */}
         {filteredProofs.length > 0 ? (
           <div style={{
             display: "grid",
@@ -166,7 +164,6 @@ const ProofSection = () => {
                       borderRadius: "10px",
                       marginBottom: "12px",
                       border: "2px solid rgba(212, 175, 55, 0.3)",
-                      // cursor: "zoom-in",
                     }}
                     // onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.02)"}
                     // onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}

@@ -163,7 +163,6 @@ const GoldRatePage = () => {
         `}
       </style>
 
-      {/* Decorative background elements */}
       <div style={{
         position: "absolute",
         width: "500px",
@@ -192,7 +191,6 @@ const GoldRatePage = () => {
         position: "relative",
         zIndex: 1
       }}>
-        {/* Header Section */}
         <div className="fade-in" style={{
           textAlign: "center",
           marginBottom: "40px"
@@ -208,7 +206,6 @@ const GoldRatePage = () => {
             Live Gold Rates
           </h1>
         </div>
-        {/* Loading State */}
         {!rates ? (
           <div className="fade-in" style={{
             textAlign: "center",

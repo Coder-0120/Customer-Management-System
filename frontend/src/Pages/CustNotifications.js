@@ -2,31 +2,28 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 
 const CustNotifications = () => {
-  const[notifications,setNotfications]=useState([]);
-  const customerinfo=JSON.parse(localStorage.getItem("CustomerDetails"));
-  const[filterStatus,setFilterStatus]=useState("all");
+  const [notifications, setNotfications] = useState([]);
+  const customer = JSON.parse(localStorage.getItem("CustomerDetails"));
+  const [filterStatus, setFilterStatus] = useState("all");
   
-  useEffect(()=>{
-    const fetchallNotifications=async()=>{
-      try{
-        const res=await axios.get(`http://localhost:5000/api/customer/sellDigitalGold/fetchAll/${customerinfo._id}`);
+  useEffect(() => {
+    const fetchallNotifications = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/customer/sellDigitalGold/fetchAll/${customer._id}`);
         setNotfications(res.data.data);
-      }
-      catch(error){
+      } catch (error) {
         console.log(error);
       }
     }
     fetchallNotifications();
-  })
+  }, []);
 
-  const getStatusInfo = (status) => {
-    const statusMap = {
-      verified: { bg: 'rgba(76, 175, 80, 0.2)', border: '#4CAF50', text: '#66bb6a', icon: '✓' },
-      unverified: { bg: 'rgba(255, 165, 0, 0.2)', border: '#FFA500', text: '#FFD700', icon: '⏳' },
-      rejected: { bg: 'rgba(244, 67, 54, 0.2)', border: '#f44336', text: '#ff6b6b', icon: '✗' }
-    };
-    return statusMap[status?.toLowerCase()] || statusMap.unverified;
+  const statusColors = {
+    unverified: "#ffa500",
+    verified: "#28a745",
+    rejected: "#ff4d4d",
   };
+
   const filteredNotifications = filterStatus === "all"
     ? notifications
     : notifications.filter(n => n.status === filterStatus);
@@ -35,9 +32,17 @@ const CustNotifications = () => {
     <div style={{
       minHeight: "100vh",
       background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
-      padding: "40px 20px"
+      padding: "30px 20px"
     }}>
-       <div style={{
+      <style>
+        {`
+          .notification-card { transition: all 0.3s ease; }
+          .notification-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3); }
+        `}
+      </style>
+      
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        <div style={{
           background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)",
           borderRadius: "16px",
           padding: "25px",
@@ -50,9 +55,8 @@ const CustNotifications = () => {
           gap: "15px"
         }}>
           <h2 style={{ color: "#D4AF37", fontSize: "28px", fontWeight: "700", margin: 0 }}>
-            💳 DigitalGold Selling request
+            💰 Digital Gold Sale Requests
           </h2>
-
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -60,143 +64,131 @@ const CustNotifications = () => {
               padding: "10px 20px",
               borderRadius: "8px",
               border: "1px solid rgba(212, 175, 55, 0.5)",
-              background: "rgba(45, 45, 45, 0.8)",
+              background: "#2d2d2d",
               color: "#D4AF37",
               fontSize: "14px",
               fontWeight: "600",
               cursor: "pointer"
             }}
           >
-            <option value="all">All Proofs</option>
+            <option value="all">All Requests</option>
             <option value="unverified">Unverified</option>
             <option value="verified">Verified</option>
             <option value="rejected">Rejected</option>
           </select>
-        </div> 
-
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        </div>
 
         {filteredNotifications.length > 0 ? (
-          <>
-          
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-            gap: "30px"
+            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+            gap: "20px"
           }}>
-            {filteredNotifications.map((notification) => {
-              const statusInfo = getStatusInfo(notification.status);
-              return (
-                <div 
-                  key={notification._id} 
-                  style={{
-                    background: "linear-gradient(135deg, rgba(45, 45, 45, 0.95) 0%, rgba(30, 30, 30, 0.95) 100%)",
-                    border: "1px solid rgba(212, 175, 55, 0.3)",
-                    borderRadius: "20px",
-                    overflow: "hidden",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-                    transition: "all 0.3s ease",
-                    position: "relative"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)";
-                    e.currentTarget.style.boxShadow = "0 15px 40px rgba(212, 175, 55, 0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 10px 30px rgba(0,0,0,0.5)";
-                  }}
-                >
-                  {/* Status Badge - Top Right */}
-                  <div style={{
-                    position: "absolute",
-                    top: "20px",
-                    right: "20px",
-                    padding: "6px 14px",
-                    borderRadius: "20px",
-                    background: statusInfo.bg,
-                    border: `1.5px solid ${statusInfo.border}`,
-                    fontSize: "12px",
-                    fontWeight: "700",
-                    color: statusInfo.text,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    zIndex: 1
-                  }}>
-                    {statusInfo.icon} {notification.status}
+            {filteredNotifications.map((notification) => (
+              <div
+                key={notification._id}
+                className="notification-card"
+                style={{
+                  background: "linear-gradient(135deg, rgba(45,45,45,0.95) 0%, rgba(30,30,30,0.95) 100%)",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  border: "1px solid rgba(212, 175, 55, 0.3)",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.5)",
+                  position: "relative",
+                  overflow: "hidden"
+                }}
+              >
+                {/* Status Badge */}
+                <div style={{
+                  position: "absolute",
+                  top: "0px",
+                  right: "0px",
+                  background: statusColors[notification.status] || "#aaa",
+                  color: "#fff",
+                  padding: "5px 12px",
+                  borderRadius: "20px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  textTransform: "uppercase"
+                }}>
+                  {notification.status}
+                </div>
+
+                {/* Main Content */}
+                <div style={{
+                  background: "rgba(212, 175, 55, 0.1)",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  marginBottom: "12px",
+                  marginTop: "25px",
+                  border: "1px solid rgba(212, 175, 55, 0.3)"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Weight</span>
+                    <span style={{ color: "#D4AF37", fontSize: "16px", fontWeight: "700" }}>
+                      {notification.SellDigitalGoldWeight} gm
+                    </span>
                   </div>
-
-                  {/* Content */}
-                  <div style={{ padding: "25px", paddingTop: "60px" }}>
-                    {/* Weight and Amount */}
-                    <div style={{
-                      background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%)",
-                      borderRadius: "12px",
-                      padding: "20px",
-                      marginBottom: "20px",
-                      border: "1px solid rgba(212, 175, 55, 0.3)"
-                    }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-                        <div>
-                          <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.6)", marginBottom: "5px", textTransform: "uppercase" }}>
-                            Weight
-                          </div>
-                          <div style={{ fontSize: "28px", fontWeight: "700", color: "#D4AF37" }}>
-                            {notification.SellDigitalGoldWeight}g
-                          </div>
-                        </div>
-                        <div style={{ fontSize: "36px", color: "rgba(212, 175, 55, 0.3)" }}>⚖️</div>
-                      </div>
-                      <div style={{ height: "1px", background: "linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent)", margin: "15px 0" }} />
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div>
-                          <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.6)", marginBottom: "5px", textTransform: "uppercase" }}>
-                            Amount
-                          </div>
-                          <div style={{ fontSize: "28px", fontWeight: "700", color: "#FFD700" }}>
-                            ₹{notification.SellDigitalGoldAmount.toLocaleString('en-IN')}
-                          </div>
-                        </div>
-                        <div style={{ fontSize: "36px", color: "rgba(255, 215, 0, 0.3)" }}>💵</div>
-                      </div>
-                    </div>
-
-                    {/* Date */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.6)" }}>
-                      <span>📅</span>
-                      {new Date(notification.createdAt).toLocaleString('en-IN', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Amount</span>
+                    <span style={{ color: "#FFD700", fontSize: "16px", fontWeight: "700" }}>
+                      ₹{notification.SellDigitalGoldAmount.toLocaleString('en-IN')}
+                    </span>
                   </div>
                 </div>
-              );
-            })}
+
+                {/* Gold Icon Visual
+                <div style={{
+                  background: "linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(255, 215, 0, 0.05) 100%)",
+                  borderRadius: "10px",
+                  padding: "20px",
+                  marginBottom: "12px",
+                  border: "1px dashed rgba(212, 175, 55, 0.2)",
+                  textAlign: "center"
+                }}>
+                  <div style={{ fontSize: "48px", marginBottom: "8px" }}>⚖️</div>
+                  <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px", textTransform: "uppercase" }}>
+                    Sale Request
+                  </div>
+                </div> */}
+
+                {/* Date */}
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}>
+                  <span style={{ fontSize: "11px", color: "rgba(255, 254, 254, 0.99)" }}>
+                    {new Date(notification.createdAt).toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                  </span>
+                  <span style={{ fontSize: "11px", color: "rgba(255, 254, 254, 0.7)" }}>
+                    {new Date(notification.createdAt).toLocaleTimeString('en-IN', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
-          </>
         ) : (
           <div style={{
-            background: "linear-gradient(135deg, rgba(45, 45, 45, 0.95) 0%, rgba(30, 30, 30, 0.95) 100%)",
-            border: "1px solid rgba(212, 175, 55, 0.3)",
-            borderRadius: "20px",
-            padding: "80px 40px",
             textAlign: "center",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
+            padding: "60px 20px",
+            background: "rgba(45,45,45,0.5)",
+            borderRadius: "16px",
+            border: "1px solid rgba(212, 175, 55, 0.3)"
           }}>
-            <div style={{ fontSize: "72px", marginBottom: "20px", opacity: "0.6" }}>📭</div>
-            <h3 style={{ fontSize: "28px", color: "#D4AF37", marginBottom: "12px", fontWeight: "700" }}>
-              No Requests Yet
-            </h3>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "16px", maxWidth: "400px", margin: "0 auto" }}>
-              You haven't made any digital gold sale requests. Your requests will appear here once submitted.
+            <div style={{ fontSize: "48px", marginBottom: "15px" }}>📭</div>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "16px" }}>
+              No sale requests found
             </p>
           </div>
         )}
-      
       </div>
     </div>
   )

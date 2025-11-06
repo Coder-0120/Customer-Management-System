@@ -35,10 +35,12 @@ const CustomerDashboard = () => {
   }, );
 
   const typeColors = {
-    duePayment: "#10b981",
-    dueIncrease: "#ef4444",
-    advanceDeposit: "#3b82f6",
-    advanceWithdraw: "#f59e0b",
+    duePayment: "#ff4d4d",
+    dueIncrease: "#ca950ff4",
+    advanceDeposit: "#3ce10fa7",
+    advanceWithdraw: "#0b9087ff",
+    buydigitalGold:"#6619dbff",
+    sellDigitalGold:"#d011a0c7"
   };
 
   const filteredTransactions = transactions.filter((t) => {
@@ -292,7 +294,7 @@ const CustomerDashboard = () => {
                 borderRadius: "10px", 
                 border: "1px solid rgba(212, 175, 55, 0.3)",
                 fontSize: "14px",
-                backgroundColor: "rgba(45, 45, 45, 0.5)",
+                backgroundColor: "#2d2d2d",
                 color: "#fff",
                 cursor: "pointer",
                 transition: "all 0.2s ease"
@@ -304,6 +306,7 @@ const CustomerDashboard = () => {
               <option value="advanceDeposit">💵 Add Advance Payment</option>
               <option value="advanceWithdraw">💸 Withdraw from Advance</option>
               <option value="buydigitalGold">💎 Buy Digital Gold</option>
+              <option value="sellDigitalGold">💰 Sell Digital Gold</option>
             </select>
 
             <input

@@ -7,7 +7,6 @@ const OwnerNotifications = () => {
     const[selectedCustomer,setSelectedCustomer]=useState(null);
     const[proofStatus,setProofStatus]=useState("unverified");
     const[showTransactionModal,setshowTransactionModal]=useState(false);
-    // const[TransactionType,setTransactionType]=useState("💎 Sell Digital Gold");
     const[Weight,SetWeight]=useState(0);
     const[Amount,SetAmount]=useState(0);
     const[Remarks,SetRemarks]=useState("");
@@ -24,7 +23,7 @@ const OwnerNotifications = () => {
             }
         }
         fetchallNotifications();
-    })
+    },[])
 
     const handleAddTransaction=(notification)=>{
         setshowCustomerModal(true);
@@ -45,12 +44,11 @@ const OwnerNotifications = () => {
       SetWeight(0);
       SetRemarks("");
     }
-    // to change status of requests only..
+
     const handleStatusChange=(value)=>{
       setProofStatus(value);
-
     }
-    // to update in database also..
+
     const handleStatusUpdate=async()=>{
       try {
       const res = await axios.put(
@@ -70,16 +68,11 @@ const OwnerNotifications = () => {
       console.error(error);
       alert("Error in updating request status");
     }
-
     }
-
-  
 
     const handleTransactionSave=async()=>{
       setshowTransactionModal(false);
        const Data = { transactionType: "sellDigitalGold", amount: Amount, remarks: Remarks , DigitalGoldAmount:selectedCustomer.SellDigitalGoldAmount, DigitalGoldWeight:selectedCustomer.SellDigitalGoldWeight };
-      //  alert(selectedCustomer.user._id);
-      console.log(Data);
        try {
             await axios.post(`http://localhost:5000/api/transaction/sellDigitalGold/add/${selectedCustomer.user._id}`, Data);
             SetAmount(0);
@@ -88,50 +81,13 @@ const OwnerNotifications = () => {
             console.log(error);
             alert("Failed to add transaction");
           }
-
-
     }
 
-    const getStatusInfo = (status) => {
-        switch(status?.toLowerCase()) {
-          case 'verified':
-            return { 
-              bg: 'linear-gradient(135deg, rgba(76, 175, 80, 0.25) 0%, rgba(76, 175, 80, 0.1) 100%)', 
-              border: '#4CAF50', 
-              text: '#66bb6a', 
-              icon: '✓',
-              label: 'Verified',
-              glow: '0 0 20px rgba(76, 175, 80, 0.3)'
-            };
-          case 'unverified':
-            return { 
-              bg: 'linear-gradient(135deg, rgba(255, 165, 0, 0.25) 0%, rgba(255, 165, 0, 0.1) 100%)', 
-              border: '#FFA500', 
-              text: '#FFD700', 
-              icon: '⏳',
-              label: 'Pending',
-              glow: '0 0 20px rgba(255, 165, 0, 0.3)'
-            };
-          case 'rejected':
-            return { 
-              bg: 'linear-gradient(135deg, rgba(244, 67, 54, 0.25) 0%, rgba(244, 67, 54, 0.1) 100%)', 
-              border: '#f44336', 
-              text: '#ff6b6b', 
-              icon: '✗',
-              label: 'Rejected',
-              glow: '0 0 20px rgba(244, 67, 54, 0.3)'
-            };
-          default:
-            return { 
-              bg: 'linear-gradient(135deg, rgba(158, 158, 158, 0.25) 0%, rgba(158, 158, 158, 0.1) 100%)', 
-              border: '#9e9e9e', 
-              text: '#bdbdbd', 
-              icon: '◯',
-              label: 'Unknown',
-              glow: '0 0 20px rgba(158, 158, 158, 0.3)'
-            };
-        }
-      };
+    const statusColors = {
+      unverified: "#ffa500",
+      verified: "#28a745",
+      rejected: "#ff4d4d",
+    };
       
   const filteredProofs = filterStatus === "all"
     ? notifications
@@ -140,44 +96,18 @@ const OwnerNotifications = () => {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)",
-      padding: "60px 20px",
-      position: "relative",
-      overflow: "hidden"
+      background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+      padding: "30px 20px"
     }}>
       <style>
         {`
-          @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-          }
+          .notification-card { transition: all 0.3s ease; }
+          .notification-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3); }
         `}
       </style>
 
-      {/* Decorative Background Elements */}
-      <div style={{
-        position: "absolute",
-        width: "600px",
-        height: "600px",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%)",
-        top: "-300px",
-        right: "-200px",
-        filter: "blur(100px)",
-        pointerEvents: "none"
-      }} />
-      <div style={{
-        position: "absolute",
-        width: "500px",
-        height: "500px",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%)",
-        bottom: "-200px",
-        left: "-150px",
-        filter: "blur(100px)",
-        pointerEvents: "none"
-      }} />
-       <div style={{
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        <div style={{
           background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)",
           borderRadius: "16px",
           padding: "25px",
@@ -190,9 +120,8 @@ const OwnerNotifications = () => {
           gap: "15px"
         }}>
           <h2 style={{ color: "#D4AF37", fontSize: "28px", fontWeight: "700", margin: 0 }}>
-            💳 DigitalGold Selling request
+            💰 Digital Gold Sale Requests
           </h2>
-
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -200,320 +129,157 @@ const OwnerNotifications = () => {
               padding: "10px 20px",
               borderRadius: "8px",
               border: "1px solid rgba(212, 175, 55, 0.5)",
-              background: "rgba(45, 45, 45, 0.8)",
+              background: "#2d2d2d",
               color: "#D4AF37",
               fontSize: "14px",
               fontWeight: "600",
               cursor: "pointer"
             }}
           >
-            <option value="all">All Proofs</option>
+            <option value="all">All Requests</option>
             <option value="unverified">Unverified</option>
             <option value="verified">Verified</option>
             <option value="rejected">Rejected</option>
           </select>
-        </div> 
-
-      <div style={{
-        maxWidth: "1400px",
-        margin: "0 auto",
-        position: "relative",
-        zIndex: 1
-      }}>
+        </div>
 
         {filteredProofs.length > 0 ? (
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: "35px"
+            gap: "20px"
           }}>
-            {filteredProofs.map((notification, index) => {
-              const statusInfo = getStatusInfo(notification.status);
-              return (
-                <div 
-                  key={notification._id} 
-                  className="notification-card"
+            {filteredProofs.map((notification) => (
+              <div
+                key={notification._id}
+                className="notification-card"
+                style={{
+                  background: "linear-gradient(135deg, rgba(45,45,45,0.95) 0%, rgba(30,30,30,0.95) 100%)",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  border: "1px solid rgba(212, 175, 55, 0.3)",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.5)",
+                  position: "relative",
+                  overflow: "hidden"
+                }}
+              >
+                <div style={{
+                  position: "absolute",
+                  top: "0px",
+                  right: "0px",
+                  background: statusColors[notification.status] || "#aaa",
+                  color: "#fff",
+                  padding: "5px 12px",
+                  borderRadius: "20px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  textTransform: "uppercase"
+                }}>
+                  {notification.status}
+                </div>
+
+                <div style={{
+                  background: "rgba(212, 175, 55, 0.1)",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  marginBottom: "12px",
+                  border: "1px solid rgba(212, 175, 55, 0.3)"
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Customer</span>
+                    <span style={{ color: "#fff", fontSize: "14px", fontWeight: "600" }}>
+                      {notification.user.name}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Phone</span>
+                    <span style={{ color: "#fff", fontSize: "13px" }}>
+                      {notification.user.phoneNo}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Weight</span>
+                    <span style={{ color: "#D4AF37", fontSize: "16px", fontWeight: "700" }}>
+                      {notification.SellDigitalGoldWeight} gm
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Amount</span>
+                    <span style={{ color: "#FFD700", fontSize: "16px", fontWeight: "700" }}>
+                      ₹{notification.SellDigitalGoldAmount.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>UPI-ID</span>
+                    <span style={{ color: "#FFD700", fontSize: "16px", fontWeight: "700" }}>
+                      {notification.upiID}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px" }}>Remarks</span>
+                    <span style={{ color: "#FFD700", fontSize: "16px", fontWeight: "700" }}>
+                      {notification.Remarks || "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "12px"
+                }}>
+                  <span style={{ fontSize: "11px", color: "rgba(255, 254, 254, 0.99)" }}>
+                    {new Date(notification.createdAt).toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                </div>
+
+                <button 
+                  onClick={() => handleAddTransaction(notification)}
                   style={{
-                    background: "linear-gradient(135deg, rgba(30, 30, 30, 0.98) 0%, rgba(20, 20, 20, 0.98) 100%)",
-                    border: "1px solid rgba(212, 175, 55, 0.25)",
-                    borderRadius: "24px",
-                    overflow: "hidden",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                    animationDelay: `${index * 0.1}s`,
-                    position: "relative"
+                    width: "100%",
+                    padding: "12px",
+                    background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
+                    border: "none",
+                    borderRadius: "10px",
+                    color: "#1a1a1a",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 15px rgba(212, 175, 55, 0.4)",
+                    transition: "all 0.3s ease"
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-12px) scale(1.02)";
-                    e.currentTarget.style.borderColor = "rgba(212, 175, 55, 0.6)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 6px 20px rgba(212, 175, 55, 0.6)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0) scale(1)";
-                    e.currentTarget.style.borderColor = "rgba(212, 175, 55, 0.25)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 4px 15px rgba(212, 175, 55, 0.4)";
                   }}
                 >
-                  {/* Status Badge - Top Right Corner */}
-                  <div style={{
-                    position: "absolute",
-                    top: "20px",
-                    right: "20px",
-                    padding: "8px 18px",
-                    borderRadius: "25px",
-                    background: statusInfo.bg,
-                    border: `2px solid ${statusInfo.border}`,
-                    fontSize: "13px",
-                    fontWeight: "700",
-                    color: statusInfo.text,
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
-                    boxShadow: statusInfo.glow,
-                    backdropFilter: "blur(10px)",
-                    zIndex: 2
-                  }}>
-                    <span style={{ marginRight: "6px" }}>{statusInfo.icon}</span>
-                    {statusInfo.label}
-                  </div>
-
-                  {/* Main Content */}
-                  <div style={{ padding: "10px" }}>
-                    {/* Customer Info Header */}
-                    <div style={{
-                      background: "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%)",
-                      borderRadius: "14px",
-                      padding: "18px",
-                      marginBottom: "20px",
-                      border: "1px solid rgba(212, 175, 55, 0.3)"
-                    }}>
-                      <div style={{
-                        fontSize: "11px",
-                        color: "rgba(212, 175, 55, 0.8)",
-                        marginBottom: "8px",
-                        textTransform: "uppercase",
-                        letterSpacing: "1.5px",
-                        fontWeight: "600"
-                      }}>
-                        Customer Details
-                      </div>
-                      <div style={{
-                        fontSize: "20px",
-                        fontWeight: "700",
-                        color: "#D4AF37",
-                        marginBottom: "10px"
-                      }}>
-                        👤 {notification.user.name}
-                      </div>
-                      <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)", marginBottom: "6px" }}>
-                        📞 {notification.user.phoneNo}
-                      </div>
-                      <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)" }}>
-                        📍 {notification.user.address}
-                      </div>
-                    </div>
-
-                 
-
-                    {/* Weight & Amount Section */}
-                    <div style={{
-                      background: "linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(255, 215, 0, 0.06) 100%)",
-                      borderRadius: "16px",
-                      padding: "25px",
-                      marginBottom: "25px",
-                      border: "1px solid rgba(212, 175, 55, 0.25)",
-                      position: "relative",
-                      overflow: "hidden"
-                    }}>
-                      {/* Decorative Corner */}
-                      <div style={{
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        width: "100px",
-                        height: "100px",
-                        background: "radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent)",
-                        pointerEvents: "none"
-                      }} />
-                      
-                      <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: "20px"
-                      }}>
-                        {/* Weight */}
-                        <div>
-                          <div style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                            marginBottom: "8px"
-                          }}>
-                            <span style={{ fontSize: "20px" }}>⚖️</span>
-                            <span style={{
-                              fontSize: "11px",
-                              color: "rgba(255,255,255,0.5)",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.5px",
-                              fontWeight: "600"
-                            }}>
-                              Weight
-                            </span>
-                          </div>
-                          <div style={{
-                            fontSize: "32px",
-                            fontWeight: "800",
-                            color: "#D4AF37",
-                            lineHeight: "1"
-                          }}>
-                            {notification.SellDigitalGoldWeight}
-                            <span style={{ fontSize: "18px", fontWeight: "600", marginLeft: "4px" }}>g</span>
-                          </div>
-                        </div>
-
-                        {/* Amount */}
-                        <div>
-                          <div style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                            marginBottom: "8px"
-                          }}>
-                            <span style={{ fontSize: "20px" }}>💰</span>
-                            <span style={{
-                              fontSize: "11px",
-                              color: "rgba(255,255,255,0.5)",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.5px",
-                              fontWeight: "600"
-                            }}>
-                              Amount
-                            </span>
-                          </div>
-                          <div style={{
-                            fontSize: "32px",
-                            fontWeight: "800",
-                            color: "#FFD700",
-                            lineHeight: "1"
-                          }}>
-                            ₹{(notification.SellDigitalGoldAmount )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Date */}
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "12px",
-                      padding: "14px",
-                      background: "rgba(45, 45, 45, 0.5)",
-                      borderRadius: "12px",
-                      border: "1px solid rgba(212, 175, 55, 0.15)",
-                      marginBottom: "20px"
-                    }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{
-                          fontSize: "10px",
-                          color: "rgba(255,255,255,0.4)",
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                          marginBottom: "3px"
-                        }}>
-                          Request Date
-                        </div>
-                        <div style={{
-                          fontSize: "14px",
-                          color: "rgba(255,255,255,0.8)",
-                          fontWeight: "600"
-                        }}>
-                          {new Date(notification.createdAt).toLocaleString('en-IN', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <button 
-                      onClick={() => handleAddTransaction(notification)}
-                      style={{
-                        width: "100%",
-                        padding: "16px",
-                        background: "linear-gradient(135deg, #D4AF37 0%, #FFD700 100%)",
-                        border: "none",
-                        borderRadius: "12px",
-                        color: "#1a1a1a",
-                        fontSize: "15px",
-                        fontWeight: "700",
-                        cursor: "pointer",
-                        boxShadow: "0 4px 15px rgba(212, 175, 55, 0.4)",
-                        transition: "all 0.3s ease",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "10px"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(212, 175, 55, 0.6)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = "0 4px 15px rgba(212, 175, 55, 0.4)";
-                      }}
-                    >
-                      <span style={{ fontSize: "18px" }}>💼</span>
-                      Manage Transaction
-                    </button>
-                  </div>
-
-                  {/* Bottom Accent Bar */}
-                  <div style={{
-                    height: "4px",
-                    background: `linear-gradient(90deg, transparent, ${statusInfo.border}, transparent)`
-                  }} />
-                </div>
-              );
-            })}
+                  Manage Request
+                </button>
+              </div>
+            ))}
           </div>
         ) : (
           <div style={{
-            background: "linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%)",
-            border: "2px dashed rgba(212, 175, 55, 0.3)",
-            borderRadius: "24px",
-            padding: "100px 40px",
             textAlign: "center",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
-            backdropFilter: "blur(10px)"
+            padding: "60px 20px",
+            background: "rgba(45,45,45,0.5)",
+            borderRadius: "16px",
+            border: "1px solid rgba(212, 175, 55, 0.3)"
           }}>
-            <div style={{
-              fontSize: "96px", 
-              marginBottom: "25px", 
-              opacity: "0.4",
-              animation: "float 3s ease-in-out infinite"
-            }}>
-              📭
-            </div>
-            <h3 style={{
-              fontSize: "32px",
-              color: "#D4AF37",
-              marginBottom: "15px",
-              fontWeight: "700"
-            }}>
-              No Sale Requests
-            </h3>
-            <p style={{
-              color: "rgba(255,255,255,0.5)",
-              fontSize: "17px",
-              maxWidth: "500px",
-              margin: "0 auto",
-              lineHeight: "1.7"
-            }}>
-              There are no pending sale requests at the moment.<br />
-              New requests will appear here for your review.
+            <div style={{ fontSize: "48px", marginBottom: "15px" }}>📭</div>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "16px" }}>
+              No sale requests found
             </p>
           </div>
         )}
@@ -533,6 +299,7 @@ const OwnerNotifications = () => {
             justifyContent: "center",
             zIndex: 1000,
             backdropFilter: "blur(4px)",
+            backgroundColor: "rgba(0,0,0,0.6)",
             padding: "20px",
           }}
           onClick={() => setshowCustomerModal(false)}
@@ -609,7 +376,16 @@ const OwnerNotifications = () => {
                   color: "#fff",
                   fontSize: "13px",
                   fontWeight: "600",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  transition: "all 0.2s ease"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               >
                 💰 Add Transaction
@@ -618,7 +394,6 @@ const OwnerNotifications = () => {
               <select
                 value={proofStatus}
                 onChange={(e) => handleStatusChange(e.target.value)}
-                className="input-focus"
                 style={{
                   flex: 1,
                   padding: "10px",
@@ -627,7 +402,8 @@ const OwnerNotifications = () => {
                   background: "#2d2d2d",
                   color: "#fff",
                   fontSize: "13px",
-                  fontWeight: "600"
+                  fontWeight: "600",
+                  cursor: "pointer"
                 }}
               >
                 <option value="unverified">Unverified</option>
@@ -648,7 +424,16 @@ const OwnerNotifications = () => {
                 fontSize: "15px",
                 fontWeight: "700",
                 cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(212, 175, 55, 0.4)"
+                boxShadow: "0 4px 12px rgba(212, 175, 55, 0.4)",
+                transition: "all 0.2s ease"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 6px 16px rgba(212, 175, 55, 0.6)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(212, 175, 55, 0.4)";
               }}
             >
               Save Changes
@@ -671,6 +456,7 @@ const OwnerNotifications = () => {
             justifyContent: "center",
             zIndex: 1000,
             backdropFilter: "blur(4px)",
+            backgroundColor: "rgba(0,0,0,0.6)",
             padding: "20px",
           }}
           onClick={() => {
@@ -755,8 +541,7 @@ const OwnerNotifications = () => {
                     fontSize: "14px",
                     background: "#2d2d2d",
                     color: "#fff",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease"
+                    cursor: "not-allowed"
                   }}
                 />
               </div>
@@ -784,6 +569,7 @@ const OwnerNotifications = () => {
                     ₹
                   </span>
                   <input
+                    type="number"
                     value={Amount}
                     onChange={(e) => SetAmount(e.target.value)}
                     placeholder="0"
@@ -793,13 +579,13 @@ const OwnerNotifications = () => {
                       borderRadius: "8px",
                       border: "1px solid rgba(212, 175, 55, 0.5)",
                       fontSize: "14px",
-                      transition: "all 0.2s ease",
                       background: "#2d2d2d",
                       color: "#fff"
                     }}
                   />
                 </div>
               </div>
+
               <div>
                 <label style={{
                   display: "block",
@@ -813,30 +599,29 @@ const OwnerNotifications = () => {
                 <div style={{ position: "relative" }}>
                   <span style={{
                     position: "absolute",
-                    left: "16px",
+                    right: "16px",
                     top: "50%",
                     transform: "translateY(-50%)",
-                    fontSize: "16px",
+                    fontSize: "14px",
                     color: "#D4AF37",
                     fontWeight: "600"
                   }}>
-                    g
-                    
+                    gm
                   </span>
                   <input
+                    type="number"
                     value={Weight}
                     readOnly
-                    // onChange={(e) => {SetWeight(e.target.value)}}
                     placeholder="0"
                     style={{
                       width: "100%",
-                      padding: "12px 16px 12px 38px",
+                      padding: "12px 16px",
                       borderRadius: "8px",
                       border: "1px solid rgba(212, 175, 55, 0.5)",
                       fontSize: "14px",
-                      transition: "all 0.2s ease",
                       background: "#2d2d2d",
-                      color: "#fff"
+                      color: "#fff",
+                      cursor: "not-allowed"
                     }}
                   />
                 </div>
@@ -863,7 +648,6 @@ const OwnerNotifications = () => {
                     borderRadius: "8px",
                     border: "1px solid rgba(212, 175, 55, 0.5)",
                     fontSize: "14px",
-                    transition: "all 0.2s ease",
                     resize: "vertical",
                     fontFamily: "inherit",
                     background: "#2d2d2d",
@@ -896,11 +680,9 @@ const OwnerNotifications = () => {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = "rgba(255,255,255,0.15)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
                   }}
                 >
                   Cancel
@@ -919,10 +701,23 @@ const OwnerNotifications = () => {
                     border: "none",
                     fontSize: "15px",
                     fontWeight: "700",
-                    cursor: ( !Weight || !Amount) ? "not-allowed" : "pointer",
-                    boxShadow: (!Weight|| !Amount)
+                    cursor: (!Weight || !Amount) ? "not-allowed" : "pointer",
+                    boxShadow: (!Weight || !Amount)
                       ? "none"
-                      : "0 4px 12px rgba(212, 175, 55, 0.4)"
+                      : "0 4px 12px rgba(212, 175, 55, 0.4)",
+                    transition: "all 0.2s ease"
+                  }}
+                  onMouseEnter={(e) => {
+                    if (Weight && Amount) {
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.boxShadow = "0 6px 16px rgba(212, 175, 55, 0.6)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (Weight && Amount) {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(212, 175, 55, 0.4)";
+                    }
                   }}
                 >
                   Save Transaction

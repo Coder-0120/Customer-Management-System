@@ -42,7 +42,7 @@ function App() {
         <Route path="/customer-dashboard" element={<CustomerProtectedRoute><CustomerDashboard/></CustomerProtectedRoute>}/>
         <Route path="/customer-proofs" element={<CustomerProtectedRoute><CustProofs/></CustomerProtectedRoute>}/>
         <Route path="/payment" element={<CustomerProtectedRoute><Payment/></CustomerProtectedRoute>}/>
-        <Route path="/gold-rate" element={<CustomerProtectedRoute><GoldRatePage/></CustomerProtectedRoute>}/>
+        <Route path="/gold-rate" element={<GoldRatePage/>}/>
         <Route path="/digital-gold" element={<CustomerProtectedRoute><DigitalGold/></CustomerProtectedRoute>}/>
         <Route path="/customer-notifications" element={<CustomerProtectedRoute><CustNotifications/></CustomerProtectedRoute>}/>
         <Route path="/owner-notifications" element={<OwnerProtectedRoute><OwnerNotifications/></OwnerProtectedRoute>}/>
