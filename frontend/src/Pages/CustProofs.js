@@ -5,7 +5,6 @@ const ProofSection = () => {
   const [AllProofs, setAllProofs] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const customer=JSON.parse(localStorage.getItem("CustomerDetails"));
-
   useEffect(() => {
     const fetchProofs = async () => {
       try {

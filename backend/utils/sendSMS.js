@@ -7,6 +7,6 @@ async function sendSMS(phone, message) {
     to: `whatsapp:+91${phone}`,  // e.g. whatsapp:+918977654321
     body: message,
   });
-  console.log("✅ WhatsApp message sent!");
+  console.log(" WhatsApp message sent!");
 }
 module.exports = sendSMS;

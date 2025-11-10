@@ -137,7 +137,7 @@ const CustNotifications = () => {
                   </div>
                 </div>
 
-                {/* Gold Icon Visual
+                Gold Icon Visual
                 <div style={{
                   background: "linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(255, 215, 0, 0.05) 100%)",
                   borderRadius: "10px",
@@ -150,7 +150,7 @@ const CustNotifications = () => {
                   <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px", textTransform: "uppercase" }}>
                     Sale Request
                   </div>
-                </div> */}
+                </div>
 
                 {/* Date */}
                 <div style={{

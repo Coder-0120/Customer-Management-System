@@ -19,7 +19,7 @@ const CustomerDashboard = () => {
       }
     };
     fetchTransactions();
-  },);
+  });
 
   useEffect(()=>{
     const fetchCustomerProfile=async()=>{
@@ -32,7 +32,7 @@ const CustomerDashboard = () => {
       }
     }
     fetchCustomerProfile();
-  }, );
+  });
 
   const typeColors = {
     duePayment: "#ff4d4d",
