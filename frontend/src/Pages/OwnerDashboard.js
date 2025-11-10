@@ -589,10 +589,9 @@ const handleTransactionSave = async () => {
       {/* Transaction Modal */}
 
     {showTransactionModal && <TransactionModal setshowTransactionModal={setshowTransactionModal} resetTransactionFields={resetTransactionFields} selectedCustomer={selectedCustomer} TransactionType={TransactionType} setTransactionType={setTransactionType} Amount={Amount} SetAmount={SetAmount} Remarks={Remarks} SetRemarks={SetRemarks} handleTransactionSave={handleTransactionSave}/>}
-    
+
       {/* History Modal */}
      {showHistoryModal && <HistoryModal SetshowHistoryModal={SetshowHistoryModal} selectedCustomer={selectedCustomer} historyFilterType={historyFilterType} historyStartDate={historyStartDate} historyEndDate={historyEndDate} setHistoryFilterType={setHistoryFilterType} setHistoryStartDate={setHistoryStartDate} setHistoryEndDate={setHistoryEndDate}  typeColors={typeColors} filteredHistory={filteredHistory}/>}
-
 
     </div>
   );
