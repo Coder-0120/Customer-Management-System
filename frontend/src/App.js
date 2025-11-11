@@ -30,8 +30,6 @@ function App() {
     <Router>
       <ScrolltoTop>
               </ScrolltoTop>
-
-
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />

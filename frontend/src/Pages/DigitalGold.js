@@ -279,5 +279,4 @@ const DigitalGold = () => {
     </div>
   );
 };
-
 export default DigitalGold;

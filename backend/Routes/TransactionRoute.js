@@ -108,7 +108,11 @@ Router.post("/sellDigitalGold/add/:id", async (req, res) => {
     let CurDigitalGoldWeight = customer.DigitalGoldWeight || 0;
     let CurDigitalGoldAmount = customer.DigitalGoldAmount || 0;
     //Calculate updated amounts
+
     CurDigitalGoldWeight-=SellDigitalGoldWeight;
+    if(CurDigitalGoldWeight<0){
+      return res.status(400).json({ success: false, message: "Insufficient Digital Gold Weight to sell" });
+    }
     //  Save the transaction
     const transaction = new TransactionModel({
       customerId,
