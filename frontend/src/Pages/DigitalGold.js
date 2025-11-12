@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import rates from "../Pages/GoldRatePage";
+// import rates from "../Pages/GoldRatePage";
 import SellDigGoldModal from "../Components/SellDigGoldModal";
 import SellDGCard from "../Components/SellDGCard";
 import BuyDGCard from "../Components/BuyDGCard";
-
+import { useGoldRates } from "../context/GoldRateContext";
 const DigitalGold = () => {
   const [buyAmount, setBuyAmount] = useState(0);
   const [buyWeight, setBuyWeight] = useState(0);
   const [sellWeight, setSellWeight] = useState(0);
   const [sellAmount, setSellAmount] = useState(0);
   const navigate = useNavigate();
-  const [rates, setRates] = useState([]);
-  const [usdToInr, setUsdToInr] = useState(88.2);
   const [profile, setProfile] = useState([]);
   const customerInfo = JSON.parse(localStorage.getItem("CustomerDetails"));
   const [showModal, setShowModal] = useState(false);
   const [upiID, setUpiID] = useState("");
   const [remarks, setRemarks] = useState("");
+  const{rates}=useGoldRates();
+  // const [rates, setRates] = useState([]);
+  // const [usdToInr, setUsdToInr] = useState(88.2);
   // const fetchExchangeRate = async () => {
   //   try {
   //     const fxRes = await axios.get(
@@ -31,28 +32,28 @@ const DigitalGold = () => {
   //   }
   // };
 
-  const fetchGoldRate = async () => {
-    try {
-      const res = await axios.get("https://api.gold-api.com/price/XAU");
-      let priceUSD = res.data.price;
-      let usdToInr = 88.2; // Hardcoded INR conversion rate
-      let gold24k = (priceUSD / 31.1035) * usdToInr + 900;
-      let gold22k = gold24k * (22 / 24);
-      let gold20k = gold24k * (20 / 24);
-      let gold18k = gold24k * (18 / 24);
+  // const fetchGoldRate = async () => {
+  //   try {
+  //     const res = await axios.get("https://api.gold-api.com/price/XAU");
+  //     let priceUSD = res.data.price;
+  //     let usdToInr = 88.2; // Hardcoded INR conversion rate
+  //     let gold24k = (priceUSD / 31.1035) * usdToInr + 900;
+  //     let gold22k = gold24k * (22 / 24);
+  //     let gold20k = gold24k * (20 / 24);
+  //     let gold18k = gold24k * (18 / 24);
 
-      setRates({
-        gold24k: gold24k.toFixed(0),
-        gold22k: gold22k.toFixed(0),
-        gold20k: gold20k.toFixed(0),
-        gold18k: gold18k.toFixed(0),
-        updatedAt: new Date().toLocaleTimeString(),
-        updatedAtReadable: res.data.updatedAtReadable,
-      });
-    } catch (err) {
-      console.error("Error fetching gold rate", err);
-    }
-  };
+  //     setRates({
+  //       gold24k: gold24k.toFixed(0),
+  //       gold22k: gold22k.toFixed(0),
+  //       gold20k: gold20k.toFixed(0),
+  //       gold18k: gold18k.toFixed(0),
+  //       updatedAt: new Date().toLocaleTimeString(),
+  //       updatedAtReadable: res.data.updatedAtReadable,
+  //     });
+  //   } catch (err) {
+  //     console.error("Error fetching gold rate", err);
+  //   }
+  // };
 
   // useEffect(() => {
   //   fetchExchangeRate();
@@ -60,11 +61,11 @@ const DigitalGold = () => {
   //   return () => clearInterval(fxInterval);
   // }, []);
 
-  useEffect(() => {
-    fetchGoldRate();
-    const goldInterval = setInterval(fetchGoldRate, 1000);
-    return () => clearInterval(goldInterval);
-  }, [usdToInr]);
+  // useEffect(() => {
+  //   fetchGoldRate();
+  //   const goldInterval = setInterval(fetchGoldRate, 1000);
+  //   return () => clearInterval(goldInterval);
+  // }, [usdToInr]);
 
   const handleBuyWeightChange = (e) => {
     setBuyWeight(e.target.value);
