@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import GoldRateCard from "../Components/GoldRateCard";
 const GoldRatePage = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [rates, setRates] = useState(null);
   const [usdToInr, setUsdToInr] = useState(88.2);
 

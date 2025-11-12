@@ -1,6 +1,7 @@
 import { Layout } from 'lucide-react';
 import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import ReviewSection from '../Components/ReviewSection';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -292,6 +293,7 @@ const LandingPage = () => {
             {customer ? "Access Your Dashboard" : owner ? "Access Your Dashboard" : "Login to Your Account"}
           </button>
         </div>
+        <ReviewSection/>
 
         {/* Footer */}
         <footer style={{

@@ -65,8 +65,15 @@ const Payment = () => {
   };
 
   return (
-   <PaymentCard paymentProof={paymentProof} handleChanges={handleChanges} handleProof={handleProof}/>
-  );
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+      padding: "40px 20px"
+    }}>
+      <PaymentCard paymentProof={paymentProof} handleChanges={handleChanges} handleProof={handleProof}/>
+
+    </div>
+      );
 };
 
 export default Payment;
