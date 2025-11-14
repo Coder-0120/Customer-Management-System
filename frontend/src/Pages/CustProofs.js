@@ -18,7 +18,7 @@ const ProofSection = () => {
       }
     };
     fetchProofs();
-  });
+  },[]);
 
   const statusColors = {
     unverified: "#ffa500",

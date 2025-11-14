@@ -128,7 +128,7 @@ const DigitalGold = () => {
       }
     };
     fetchCustomerProfile();
-  });
+  },[]);
 
   const handleSellClick = () => {
     setShowModal(true);

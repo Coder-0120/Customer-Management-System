@@ -15,6 +15,7 @@ import DigitalGold from './Pages/DigitalGold';
 import CustNotifications from './Pages/CustNotifications';
 import OwnerNotifications from './Pages/OwnerNotifications';
 import { GoldRateProvider } from './context/GoldRateContext';
+import { UserProfileProvider } from './context/UserProfileContext';
 const CustomerProtectedRoute = ({ children }) => {
 
   const isLoggedIn = localStorage.getItem("CustomerDetails"); 
@@ -29,6 +30,7 @@ const OwnerProtectedRoute = ({ children }) => {
 function App() {
   return (
     <GoldRateProvider>
+      <UserProfileProvider>
 
     <Router>
       <ScrolltoTop>
@@ -49,6 +51,7 @@ function App() {
         <Route path="/owner-notifications" element={<OwnerProtectedRoute><OwnerNotifications/></OwnerProtectedRoute>}/>
       </Routes>
     </Router>
+    </UserProfileProvider>
         </GoldRateProvider>
 
   );

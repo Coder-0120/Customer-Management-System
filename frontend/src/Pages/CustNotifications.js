@@ -19,7 +19,7 @@ const CustNotifications = () => {
       }
     }
     fetchallNotifications();
-  });
+  },[]);
 
   const statusColors = {
     unverified: "#ffa500",
