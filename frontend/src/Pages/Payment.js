@@ -23,7 +23,6 @@ const Payment = () => {
 
   const handleProof = async (e) => {
     e.preventDefault();
-
     try {
       // Use FormData for file upload
       const formData = new FormData();

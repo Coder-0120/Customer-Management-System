@@ -17,7 +17,7 @@ export const UserProfileProvider = ({ children }) => {
       }
     }
     fetchCustomerProfile();
-  },[customerInfo._id]);
+  });
 
  
 

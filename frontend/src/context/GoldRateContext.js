@@ -45,7 +45,7 @@ export const GoldRateProvider = ({ children }) => {
     fetchGoldRate();
     const interval = setInterval(fetchGoldRate, 60000); // refresh every 1 min
     return () => clearInterval(interval);
-  }, [usdToInr]);
+  },[]);
 
   //  Return Provider that wraps the app
   return (
